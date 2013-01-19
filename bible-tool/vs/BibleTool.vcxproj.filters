@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{1bc482fb-c34f-462a-9e0b-822b6dedd5bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{f6c2da7d-5ef7-4250-8354-56a42f11c38b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command">
+      <UniqueIdentifier>{fc703d37-ba2f-47df-98de-dd8c3a0f02af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{f9da233f-29bf-40c9-9e21-8d3ee847edac}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\core\BibleTool.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\pch\StdAfx.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\core\TaskManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\commands\Cmd.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\commands\CmdFactory.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\commands\Encode.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\utils\Utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\commands\Combine.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\pch\Targetver.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\pch\StdAfx.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Typedefs.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\TaskManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\commands\Cmd.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\commands\CmdFactory.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\commands\Encode.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\Utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\commands\Combine.h">
+      <Filter>command</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
