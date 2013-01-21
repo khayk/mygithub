@@ -97,6 +97,9 @@ bool readFileAsBinary( const wstring_t& fileName, string_t& rawData )
 		rawData.resize(size);
 		srcFile.read(&rawData[0], size);
 	}
+    else {
+        return false;
+    }
 
 	srcFile.close();
 	return true;
@@ -117,9 +120,23 @@ bool writeFileAsBinary( const wstring_t& fileName, string_t& rawData )
 	}
 
 	/// write into destination file
-	destFile.write(&rawData[0], rawData.size());
+    if (rawData.size() > 0)
+        destFile.write(&rawData[0], rawData.size());
 	destFile.close();
-
 	return true;
+}
+
+wstring_t getFileName( const wstring_t& fileName )
+{
+    wstring_t nameOnly = fileName;
+    nameOnly.erase(nameOnly.find_last_of(L"."));
+    nameOnly.erase(0, nameOnly.find_last_of(L"\\") + 1);
+    return nameOnly;
+}
+
+wstring_t getFileExt( const wstring_t& fileName )
+{
+    wstring_t ext = fileName.substr(fileName.find_last_of('.') + 1);
+    return ext;
 }
 

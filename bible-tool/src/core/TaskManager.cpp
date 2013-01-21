@@ -8,6 +8,7 @@ TaskManager::TaskManager()
 {
 	cmds_.push_back( CmdFactory::createCommand(CMD_ENCODE));
 	cmds_.push_back( CmdFactory::createCommand(CMD_COMBINE));
+    cmds_.push_back( CmdFactory::createCommand(CMD_ANALYZE));
 }
 
 /// -----------------------------------------------------------------------
@@ -37,19 +38,22 @@ void TaskManager::doTask( int argc, _TCHAR* argv[] )
 		tCmdSp& spCmd = cmds_[i];
 		if ( spCmd && cmd == spCmd->getCmdName() ) {
 
+            DWORD now1 = GetTickCount();
 			/// measure time
-			namespace pt = boost::posix_time; 
-			pt::ptime now1 = pt::microsec_clock::universal_time(); 
+// 			namespace pt = boost::posix_time; 
+// 			pt::ptime now1 = pt::microsec_clock::universal_time(); 
 			
 			/// actual task execution
 			spCmd->initialize(cmdArgs);
 			spCmd->doCommand();
 
-			pt::ptime now2 = pt::microsec_clock::universal_time(); 
-			pt::time_duration dur = now2 - now1; 
+            DWORD now2 = GetTickCount();
+
+// 			pt::ptime now2 = pt::microsec_clock::universal_time(); 
+// 			pt::time_duration dur = now2 - now1; 
 
 			std::wcout << L"command " << spCmd->getCmdName() 
-				<< L" completed in " << dur.total_milliseconds()
+				<< L" completed in " << now2 - now1
 				<< L" mls" << std::endl;
 			break;
 		}

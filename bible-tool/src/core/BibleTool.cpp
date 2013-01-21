@@ -8,6 +8,8 @@
 /// -----------------------------------------------------------------------
 int _tmain(int argc, _TCHAR* argv[])
 {
+    DWORD now1 = GetTickCount();
+
 	try {
 		TaskManager taskMan;
 		taskMan.doTask(argc, argv);
@@ -18,6 +20,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	catch (...) {
 		std::cout << "unknown exception" << std::endl;
 	}
+
+    DWORD now2 = GetTickCount();
+    std::wcout << L"application run time " << now2 - now1
+        << L" mls" << std::endl;
 
 	return 0;
 }

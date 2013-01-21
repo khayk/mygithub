@@ -3,6 +3,7 @@
 
 #define CMD_ENCODE  L"--encode"
 #define CMD_COMBINE L"--combine"
+#define CMD_ANALYZE L"--analyze"
 
 /// -----------------------------------------------------------------------
 /// command factory

@@ -39,6 +39,9 @@
     <ClCompile Include="..\src\commands\Combine.cpp">
       <Filter>command</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\commands\Analyze.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\pch\Targetver.h">
@@ -66,6 +69,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\src\commands\Combine.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\commands\Analyze.h">
       <Filter>command</Filter>
     </ClInclude>
   </ItemGroup>

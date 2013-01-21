@@ -10,7 +10,6 @@ Combine::Combine( const wstring_t& cmdName )
 	: Cmd(cmdName)
 {
 	//temp();
-
 }
 
 void Combine::initialize( wstring_t& cmdArgs )
@@ -41,6 +40,7 @@ void Combine::initialize( wstring_t& cmdArgs )
 		if ( !name.empty() && !mapping.empty())
 			nameNapping_.insert( std::make_pair(name, mapping) );
 	}
+    inFile.close();
 }
 
 void Combine::doCommand()
@@ -74,26 +74,9 @@ void Combine::doCommand()
 					continue;
 				} 
 
-				/// open input file
-				std::ifstream srcFile(curFile.wstring(), std::ios::in | std::ios::binary);
-				if ( !srcFile ) {
-					std::wcout << L"failed to open input file: " << curFile.wstring() << std::endl;
-					continue;
-				}
-
-				srcFile.seekg(0, std::ios_base::end);
-				size_t size = static_cast<size_t>(srcFile.tellg());
-				srcFile.seekg(0, std::ios_base::beg);
-
-				string_t utf8Buff;
-				if ( size > 0 ) {
-					utf8Buff.resize(size);
-					srcFile.read(&utf8Buff[0], size);
-				}
-				else {
-					std::wcout << L"zero length file: " << curFile.wstring() << std::endl;
-					continue;
-				}
+                string_t utf8Buff;
+                if ( !readFileAsBinary(curFile.wstring(), utf8Buff) )
+                    continue;
 
 				wstring_t uniStr;
 				convertFormat(utf8Buff, uniStr, CP_UTF8);
@@ -101,8 +84,6 @@ void Combine::doCommand()
 				wstring_t tmp;
 				analyzeBook(uniStr, mapIt->second, tmp);
 				cmbResult += tmp;
-
-				srcFile.close();
 			}
 		}
 	}
@@ -165,23 +146,11 @@ void Combine::analyzeBook( const wstring_t& uniStr, const wstring_t& bookName, w
 
 void Combine::temp()
 {
-	wstring_t appDir = getAppDir();
-	std::ifstream srcFile(appDir + L"\\res\\kjv invest.txt", std::ios::in | std::ios::binary);
-	if ( !srcFile ) {
-		return;
-	}
+    string_t utf8Buff;
+    if ( !readFileAsBinary(L"res\\kjv invest.txt", utf8Buff) )
+        return;
 
-	srcFile.seekg(0, std::ios_base::end);
-	size_t size = static_cast<size_t>(srcFile.tellg());
-	srcFile.seekg(0, std::ios_base::beg);
-
-	string_t utf8Buff;
-	if ( size > 0 ) {
-		utf8Buff.resize(size);
-		srcFile.read(&utf8Buff[0], size);
-	}
-
-	wstring_t uniStr;
+    wstring_t uniStr;
 	convertFormat(utf8Buff, uniStr, CP_UTF8);
 
 	wstring_t res;
@@ -198,12 +167,7 @@ void Combine::temp()
 		res += 10;
 	}
 
-
 	string_t utf8Combined;
 	convertFormat(res, utf8Combined, CP_UTF8);
-
-	std::ofstream outFile(appDir + L"\\res\\xkjv.txt", std::ios::out | std::ios::binary);
-	outFile.write(utf8Combined.c_str(), utf8Combined.size());
-
-	outFile.close();
+    writeFileAsBinary(L"res\\xkjv.txt", utf8Combined);
 }

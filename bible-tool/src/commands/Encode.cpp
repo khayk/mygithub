@@ -62,27 +62,9 @@ void Encode::doCommand()
 				fs::path curFile = *dir_iter;
 
 				/// open input file
-				std::ifstream srcFile(curFile.wstring(), std::ios::in | std::ios::binary);
-				if ( !srcFile ) {
-					std::wcout << L"failed to open input file: " << curFile.wstring() << std::endl;
-					continue;
-				}
-
-				srcFile.seekg(0, std::ios_base::end);
-				size_t size = static_cast<size_t>(srcFile.tellg());
-				srcFile.seekg(0, std::ios_base::beg);
-
-				string_t asciiBuff;
-				string_t utf8Buff;
-
-				if ( size > 0 ) {
-					asciiBuff.resize(size);
-					srcFile.read(&asciiBuff[0], size);
-				}
-				else {
-					std::wcout << L"zero length file: " << curFile.wstring() << std::endl;
-					continue;
-				}
+                string_t asciiBuff, utf8Buff;
+                if ( !readFileAsBinary(curFile.wstring(), asciiBuff) )
+                    continue;
 
 				/// perform conversion
 				if ( cpNumber_ > 0 )
@@ -95,18 +77,8 @@ void Encode::doCommand()
 					/// construct destination file name
 					wstring_t newFile = dstDir + L"\\";
 					newFile += curFile.filename().wstring();
-					std::ofstream destFile(newFile, std::ios::out | std::ios::binary);
-					if ( !destFile ) {
-						std::wcout << L"failed to open destination file: " << *dir_iter << std::endl;
-						continue;
-					}
-
-					/// write into destination file
-					destFile.write(&utf8Buff[0], utf8Buff.size());
-					destFile.close();
+                    writeFileAsBinary(newFile, utf8Buff);
 				}
-
-				srcFile.close();
 			}
 		}
 	}

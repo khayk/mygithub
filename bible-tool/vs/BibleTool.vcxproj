@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\commands\Analyze.cpp" />
     <ClCompile Include="..\src\commands\Cmd.cpp" />
     <ClCompile Include="..\src\commands\CmdFactory.cpp" />
     <ClCompile Include="..\src\commands\Combine.cpp" />
@@ -24,6 +25,7 @@
     <ClCompile Include="..\src\utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\commands\Analyze.h" />
     <ClInclude Include="..\src\commands\Cmd.h" />
     <ClInclude Include="..\src\commands\CmdFactory.h" />
     <ClInclude Include="..\src\commands\Combine.h" />
@@ -64,12 +66,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\</OutDir>
-    <TargetName>$(ProjectName)-d</TargetName>
+    <TargetName>bible-tool-d</TargetName>
     <IntDir>..\build\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\</OutDir>
+    <TargetName>bible-tool</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

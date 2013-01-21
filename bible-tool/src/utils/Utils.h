@@ -32,3 +32,7 @@ wstring_t toUtf16(const string_t& source);
 /// read from specified file into buffer rawData
 bool readFileAsBinary(const wstring_t& fileName, string_t& rawData);
 bool writeFileAsBinary(const wstring_t& fileName, string_t& rawData);
+
+wstring_t getFileName(const wstring_t& fileName);
+wstring_t getFileExt(const wstring_t& fileName);
+
