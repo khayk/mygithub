@@ -1,10 +1,6 @@
 #include "StdAfx.h"
 #include "Combine.h"
 
-#define CMB_SRC_DIR      L"--src-dir"
-#define CMB_DST_FILE     L"--dst-file"
-#define CMB_NAME_MAP     L"--name-mapping"
-
 
 Combine::Combine( const wstring_t& cmdName )
 	: Cmd(cmdName)
@@ -14,17 +10,17 @@ Combine::Combine( const wstring_t& cmdName )
 
 void Combine::initialize( wstring_t& cmdArgs )
 {
-	tWStrVec argNames;
-	argNames.push_back(CMB_SRC_DIR);
-	argNames.push_back(CMB_DST_FILE);
-	argNames.push_back(CMB_NAME_MAP);
+	tWStrSet argNames;
+	argNames.insert(ARG_SRC_DIR);
+	argNames.insert(ARG_DST_FILE);
+	argNames.insert(ARG_NAME_MAP);
 
 	if ( !extractArgumets(cmdArgs, argNames) )
-		throw std::exception("command will not be executed");
+		throw std::exception("command line parsing error");
 
 	/// destination directory
 	wstring_t appDir = getAppDir();
-	wstring_t nameMap = getArgValue(CMB_NAME_MAP);
+	wstring_t nameMap = getArgValue(ARG_NAME_MAP);
 	if (!isAbsolutePath(nameMap))
 		nameMap = appDir + L"\\" + nameMap;
 
@@ -48,12 +44,12 @@ void Combine::doCommand()
 	wstring_t appDir = getAppDir();
 
 	/// source directory
-	wstring_t srcDir = getArgValue(CMB_SRC_DIR);
+	wstring_t srcDir = getArgValue(ARG_SRC_DIR);
 	if (!isAbsolutePath(srcDir))
 		srcDir = appDir + L"\\" + srcDir;
 
 	/// destination directory
-	wstring_t cmbFile = getArgValue(CMB_DST_FILE);
+	wstring_t cmbFile = getArgValue(ARG_DST_FILE);
 	if (!isAbsolutePath(cmbFile))
 		cmbFile = appDir + L"\\" + cmbFile;
 
@@ -100,10 +96,11 @@ void Combine::doCommand()
 void Combine::showHelp()
 {
 	std::wcout << L"usage: "
-		<< cmd_ << L" " << CMB_SRC_DIR << L"=1251 " 
-		<< CMB_SRC_DIR << L"=abs or relative directory "
-		<< CMB_DST_FILE << L"=resulting file name"
-		<< CMB_NAME_MAP << L"=mapping file name"
+		<< cmd_ << L" " 
+		<< FORM_ARG(ARG_SRC_DIR) << L"=1251 " 
+		<< FORM_ARG(ARG_SRC_DIR) << L"=abs or relative directory "
+		<< FORM_ARG(ARG_DST_FILE) << L"=resulting file name"
+		<< FORM_ARG(ARG_NAME_MAP) << L"=mapping file name"
 		<< std::endl;
 }
 

@@ -33,3 +33,4 @@
 
 #include "../Typedefs.h"
 #include "../utils/Utils.h"
+#include "../commands/AllCommands.h"

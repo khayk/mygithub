@@ -38,4 +38,7 @@ bool writeFileAsBinary(const wstring_t& fileName, string_t& rawData);
 wstring_t getFileName(const wstring_t& fileName);
 wstring_t getFileExt(const wstring_t& fileName);
 
+/// trim tailing and leading spaces from the string
+wstring_t trim(wstring_t& str);
+
 #endif // Utils_h__

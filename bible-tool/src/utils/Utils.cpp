@@ -126,6 +126,7 @@ bool writeFileAsBinary( const wstring_t& fileName, string_t& rawData )
 	return true;
 }
 
+/// ----------------------------------------------------------------------------
 wstring_t getFileName( const wstring_t& fileName )
 {
     wstring_t nameOnly = fileName;
@@ -134,9 +135,25 @@ wstring_t getFileName( const wstring_t& fileName )
     return nameOnly;
 }
 
+/// ----------------------------------------------------------------------------
 wstring_t getFileExt( const wstring_t& fileName )
 {
     wstring_t ext = fileName.substr(fileName.find_last_of('.') + 1);
     return ext;
+}
+
+/// ----------------------------------------------------------------------------
+wstring_t trim( wstring_t& str )
+{
+	int i = 0;
+	while (static_cast<size_t>(i) < str.size() && isspace(str[i]))
+		++i;
+	str.erase(0, i);
+
+	i = str.size() - 1;
+	while (i >= 0 && isspace(str[i]) )
+		--i;
+	str.erase(i + 1);
+	return str;
 }
 

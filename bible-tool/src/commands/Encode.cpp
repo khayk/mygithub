@@ -1,10 +1,6 @@
 #include "StdAfx.h"
 #include "Encode.h"
 
-#define ENC_SRC_ENCODING L"--src-encoding"
-#define ENC_SRC_DIR      L"--src-dir"
-#define ENC_DST_DIR      L"--dst-dir"
-
 /// -----------------------------------------------------------------------
 Encode::Encode( const wstring_t& cmdName )
 	: Cmd(cmdName)
@@ -16,13 +12,13 @@ Encode::Encode( const wstring_t& cmdName )
 /// -----------------------------------------------------------------------
 void Encode::initialize( wstring_t& cmdArgs )
 {
-	tWStrVec argNames;
-	argNames.push_back(ENC_SRC_ENCODING);
-	argNames.push_back(ENC_SRC_DIR);
-	argNames.push_back(ENC_DST_DIR);
+	tWStrSet argNames;
+	argNames.insert(ARG_SRC_ENCODING);
+	argNames.insert(ARG_SRC_DIR);
+	argNames.insert(ARG_DST_DIR);
 	
 	if ( !extractArgumets(cmdArgs, argNames) )
-		throw std::exception("command will not be executed");
+		throw std::exception("command line parsing error");
 }
 
 /// -----------------------------------------------------------------------
@@ -31,17 +27,17 @@ void Encode::doCommand()
     wstring_t appDir = getAppDir();
 
     /// source directory
-    wstring_t srcDir = getArgValue(ENC_SRC_DIR);
+    wstring_t srcDir = getArgValue(ARG_SRC_DIR);
     if (!isAbsolutePath(srcDir))
         srcDir = appDir + L"\\" + srcDir;
 
     /// destination directory
-    wstring_t dstDir = getArgValue(ENC_DST_DIR);
+    wstring_t dstDir = getArgValue(ARG_DST_DIR);
     if (!isAbsolutePath(dstDir))
         dstDir = appDir + L"\\" + dstDir;
 
     /// determine encoding
-    wstring_t srcEncoding = getArgValue(ENC_SRC_ENCODING);
+    wstring_t srcEncoding = getArgValue(ARG_SRC_ENCODING);
 	if ( isNumber(srcEncoding) ) {
 		cpNumber_ = toNumber<unsigned long>(srcEncoding);
 	}
@@ -88,9 +84,10 @@ void Encode::doCommand()
 void Encode::showHelp()
 {
 	std::wcout << L"usage: "
-		<< cmd_ << L" " << ENC_SRC_ENCODING << L"=1251 " 
-		<< ENC_SRC_DIR << L"=abs or relative directory "
-		<< ENC_DST_DIR << L"=abs or relative directory"
+		<< cmd_ << L" " 
+		<< FORM_ARG(ARG_SRC_ENCODING) << L"=1251 " 
+		<< FORM_ARG(ARG_SRC_DIR) << L"=source directory "
+		<< FORM_ARG(ARG_DST_DIR) << L"=destination directory"
 		<< std::endl;
 }
 

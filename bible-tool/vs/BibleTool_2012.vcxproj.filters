@@ -71,7 +71,9 @@
     <ClInclude Include="..\src\commands\Analyze.h">
       <Filter>command</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\CmdLineArgs.h" />
     <ClInclude Include="..\src\Typedefs.h" />
+    <ClInclude Include="..\src\commands\AllCommands.h">
+      <Filter>command</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

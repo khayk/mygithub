@@ -25,7 +25,7 @@
     <ClCompile Include="..\src\utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\CmdLineArgs.h" />
+    <ClInclude Include="..\src\commands\AllCommands.h" />
     <ClInclude Include="..\src\commands\Analyze.h" />
     <ClInclude Include="..\src\commands\Cmd.h" />
     <ClInclude Include="..\src\commands\CmdFactory.h" />

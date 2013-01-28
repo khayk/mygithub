@@ -30,6 +30,8 @@ void TaskManager::doTask( int argc, _TCHAR* argv[] )
 	
 	/// now let the command read its own arguments and do requested task
 	wstring_t cmd = argv[1];
+	cmd.erase(0, 2);
+
     tCmdSp spCmd = CmdFactory::createCommand(cmd);
 	if ( spCmd ) {
         DWORD now1 = GetTickCount();
@@ -53,10 +55,11 @@ void TaskManager::doTask( int argc, _TCHAR* argv[] )
 /// -----------------------------------------------------------------------
 void TaskManager::displayUsage()
 {
-	std::cout << "valid commands are:" << std::endl;
+	std::wcout << L"valid commands are:" << std::endl;
     wstring_t cmds(
-        L"\t" CMD_ENCODE L" perform data encoding\n"
-        L"\t" CMD_COMBINE L" combine input data into single place\n"
+        L"\t" CMD_ENCODE L" (perform data encoding)\n"
+        L"\t" CMD_COMBINE L" (combine input data into single place)\n"
+		L"\t" CMD_ANALYZE L" (analyze source based on selected criteria)\n"
     );
 
    	std::wcout << cmds << std::endl;

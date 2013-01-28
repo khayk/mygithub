@@ -29,11 +29,50 @@ wstring_t Cmd::getCmdName() const
 }
 
 /// -----------------------------------------------------------------------
-bool Cmd::extractArgumets( wstring_t& cmdArgs, const tWStrVec& argNames )
+bool Cmd::extractArgumets( wstring_t& cmdArgs, const tWStrSet& argNames )
 {
 	if ( argNames.size() == 0 )
 		return true;
 
+	wstring_t argStart(L"--");
+	wstring_t::size_type posA = 0, posB;
+
+	while (true) {
+		wstring_t cmdName;
+		posA = cmdArgs.find(argStart, posA);
+		if ( wstring_t::npos == posA ) {
+			/// no arguments remains anymore
+			break;
+		}
+
+		posB = cmdArgs.find(L"=", posA);
+		if ( wstring_t::npos == posB ) {
+			showHelp();
+			return false;
+		}
+
+		/// extract argument
+		cmdName = cmdArgs.substr(posA + argStart.size(), posB - (posA + argStart.size()));
+		trim(cmdName);
+		if ( argNames.find(cmdName) == argNames.end() ) {
+			std::wcout << cmdName << L" is an invalid argument." << std::endl;
+			showHelp();
+			return false;
+		}
+
+		posA = cmdArgs.find(argStart, posB);
+		wstring_t argValue;
+		if ( wstring_t::npos == posA )
+			argValue = cmdArgs.substr(posB + 1);
+		else {
+			argValue = cmdArgs.substr(posB + 1, posA - posB - 2);
+			posA = posB;
+		}
+			
+		trim(argValue);
+		args_.insert( std::make_pair(cmdName, argValue) );
+	}
+	/*
 	for ( size_t i = 0; i < argNames.size() - 1; ++i ) {
 		const wstring_t& x = argNames[i];
 		const wstring_t& y = argNames[i + 1];
@@ -64,6 +103,6 @@ bool Cmd::extractArgumets( wstring_t& cmdArgs, const tWStrVec& argNames )
 	}
 	cmdArgs.erase( xpos, x.size() + 1 );
 	args_.insert( std::make_pair(x, cmdArgs) );
-
+	*/
 	return true;
 }

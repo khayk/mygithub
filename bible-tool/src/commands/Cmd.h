@@ -17,7 +17,7 @@ public:
 	virtual void showHelp() = 0;
 
 protected:
-	bool extractArgumets( wstring_t& cmdArgs, const tWStrVec& argNames);
+	bool extractArgumets( wstring_t& cmdArgs, const tWStrSet& argNames);
 
 	wstring_t cmd_;
 	typedef std::map<wstring_t, wstring_t> tMapSS;

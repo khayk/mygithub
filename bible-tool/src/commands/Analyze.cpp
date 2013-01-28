@@ -1,10 +1,6 @@
 #include "StdAfx.h"
 #include "Analyze.h"
 
-#define ANALYZE_METHOD   L"--method"
-#define ANALYZE_WORD     L"--word"
-#define ANALYZE_SRC_FILE L"--src-file"
-
 Analyze::Analyze( const wstring_t& cmdName )
     : Cmd(cmdName)
 {
@@ -13,26 +9,26 @@ Analyze::Analyze( const wstring_t& cmdName )
 
 void Analyze::initialize( wstring_t& cmdArgs )
 {
-    tWStrVec argNames;
-    argNames.push_back(ANALYZE_METHOD);
-    argNames.push_back(ANALYZE_SRC_FILE);
-    argNames.push_back(ANALYZE_WORD);    
+    tWStrSet argNames;
+    argNames.insert(ARG_METHOD);
+    argNames.insert(ARG_SRC_FILE);
+    argNames.insert(ARG_WORD);    
 
     if ( !extractArgumets(cmdArgs, argNames) )
-        throw std::exception("command will not be executed");
+        throw std::exception("command line parsing error");
 }
 
 void Analyze::doCommand()
 {
     /// source file to analyze
-    wstring_t srcFile = getArgValue(ANALYZE_SRC_FILE);
+    wstring_t srcFile = getArgValue(ARG_SRC_FILE);
 
     /// determine analyze method
-    wstring_t method = getArgValue(ANALYZE_METHOD);
+    wstring_t method = getArgValue(ARG_METHOD);
 
     if ( method == L"word" ) {
         /// word to search
-        wstring_t word = getArgValue(ANALYZE_WORD);
+        wstring_t word = getArgValue(ARG_WORD);
 
         string_t rawData;
         if ( !readFileAsBinary(srcFile, rawData) )
