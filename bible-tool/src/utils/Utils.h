@@ -1,4 +1,6 @@
-#pragma once
+#ifndef Utils_h__
+#define Utils_h__
+
 
 /// returns application directory
 wstring_t getAppDir();
@@ -36,3 +38,4 @@ bool writeFileAsBinary(const wstring_t& fileName, string_t& rawData);
 wstring_t getFileName(const wstring_t& fileName);
 wstring_t getFileExt(const wstring_t& fileName);
 
+#endif // Utils_h__

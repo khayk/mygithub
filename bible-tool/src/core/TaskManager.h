@@ -1,7 +1,5 @@
-#ifndef __taskManager_h__
-#define __taskManager_h__
-
-
+#ifndef TaskManager_h__
+#define TaskManager_h__
 
 /// -----------------------------------------------------------------------
 class TaskManager {
@@ -13,9 +11,6 @@ public:
 
 private:
 	void displayUsage();
-	//string_t taskTodo_;
-
-	std::vector<tCmdSp> cmds_;
 };
 
-#endif
+#endif // TaskManager_h__

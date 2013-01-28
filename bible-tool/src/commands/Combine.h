@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Combine_h__
+#define Combine_h__
 
 #include "Cmd.h"
 
@@ -19,3 +20,5 @@ private:
 	void temp();
 	std::map<wstring_t, wstring_t> nameNapping_;
 };
+
+#endif // Combine_h__

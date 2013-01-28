@@ -1,5 +1,5 @@
-#ifndef __cmdFactory_h__
-#define __cmdFactory_h__
+#ifndef CmdFactory_h__
+#define CmdFactory_h__
 
 #define CMD_ENCODE  L"--encode"
 #define CMD_COMBINE L"--combine"
@@ -16,4 +16,4 @@ public:
 	static tCmdSp createCommand( const wstring_t& cmdString );
 };
 
-#endif
+#endif // CmdFactory_h__

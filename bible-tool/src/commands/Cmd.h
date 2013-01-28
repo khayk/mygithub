@@ -1,5 +1,5 @@
-#ifndef __cmdBase_h__
-#define __cmdBase_h__
+#ifndef Cmd_h__
+#define Cmd_h__
 
 /// -----------------------------------------------------------------------
 /// commands base class
@@ -24,4 +24,4 @@ protected:
 	tMapSS args_;
 };
 
-#endif
+#endif // Cmd_h__

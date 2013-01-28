@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Encode_h__
+#define Encode_h__
 
 #include "Cmd.h"
 
@@ -29,3 +30,5 @@ private:
 	std::map<wchar_t, wchar_t> charMappingMap_;
 	std::vector<wchar_t> charMapping_;
 };
+
+#endif // Encode_h__
