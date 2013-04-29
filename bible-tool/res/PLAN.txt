@@ -1,0 +1,55 @@
+Text decoding scheme from ASCII to Unicode
+
+-------------------------------------------------------------------------------
+	SOURCE -> INTERMEDIATE 
+		1. Identify source document format
+		2. Convert to INTERMEDIATE format
+
+	DECODE TASK (INTERMEDIATE format)
+		1. extract font info from the text
+		2. initialize {FONT_NAME} based on [Step 1]
+		3. if {FONT_NAME} was undefined after [Step 2] set it to "default"
+		4. {LANG} should be setup globally
+		5. use {LANG}-{FONT_NAME}-mapping.txt for mapping
+
+	INTERMEDIATE -> SOURCE
+
+-------------------------------------------------------------------------------
+valid value for {LANG}
+	"arm"
+	"rus"
+	"eng"
+
+-------------------------------------------------------------------------------
+{FONT_NAME} database based on {LANG} stored in file known-fonts.txt
+
+Arial Armenian|arm
+Arian AMU|arm
+
+Arial|eng
+Verdana|eng
+Tahoma|eng
+Calibri|eng
+
+-------------------------------------------------------------------------------
+Supported formats
+
+PDF
+DOC
+
+
+-------------------------------------------------------------------------------
+HELP
+
+!!!!!!!!!!!!!!!!!!!!!! Welcome to libOPC
+http://libopc.codeplex.com/
+
+(Using DocxToText to Extract Text from DOCX Files) 
+http://www.codeproject.com/Articles/20529/Using-DocxToText-to-Extract-Text-from-DOCX-Files
+
+(C++ Word automation Extract text)
+http://bytes.com/topic/c/answers/165672-c-word-automation-extract-text
+
+(Word Object Model Overview)
+http://msdn.microsoft.com/en-us/library/kw65a0we%28v=VS.80%29.aspx
+

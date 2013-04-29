@@ -116,16 +116,15 @@ void Encode::loadCharactersMapping( const wstring_t& fileName )
 		if ( chFrom != 0 || chTo != 0 ) {
 			if ( chFrom < 256 ) {
 				charMapping_[chFrom] = chTo;
-				if (charMappingMap_.find(chFrom) == charMappingMap_.end()) {
-					charMappingMap_.insert( std::make_pair(chFrom, chTo) );
-				}
-				else {
-					std::cout << "invalid mapping file, see symbol: " 
-						<< (int)chFrom << " - " << chFrom << std::endl;
-				}
+			}
+
+			if (charMappingMap_.find(chFrom) == charMappingMap_.end()) {
+				charMappingMap_.insert( std::make_pair(chFrom, chTo) );
 			}
 			else {
-				charMappingMap_.insert( std::make_pair(chFrom, chTo) );
+				std::cout << "invalid mapping file, see symbol: " 
+					<< (int)chFrom << " - " << chFrom << std::endl;
+				continue;
 			}
 		}
 	}
@@ -169,5 +168,4 @@ void Encode::performConvertion( const wstring_t& mappingFile,
 	}
 
 	convertFormat(uniStr, utf8Str, CP_UTF8);
-	//writeFileAsBinary()
 }
