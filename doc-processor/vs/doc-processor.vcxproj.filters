@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\stdafx.cpp" />
+    <ClCompile Include="..\src\utils\FileFinder.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\DocProcessor.cpp" />
+    <ClCompile Include="..\src\utils\Common.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\stdafx.h" />
+    <ClInclude Include="..\src\targetver.h" />
+    <ClInclude Include="..\src\utils\FileFinder.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\DocProcessor.h" />
+    <ClInclude Include="..\src\utils\Common.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="utils">
+      <UniqueIdentifier>{8bd356a0-295d-4d92-8583-85742db140f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{a64d28d2-b525-4eb5-85f3-c67469883ee2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
