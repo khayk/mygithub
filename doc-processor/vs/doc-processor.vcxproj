@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\automation\MSWord.cpp" />
+    <ClCompile Include="..\src\automation\OLEMethod.cpp" />
+    <ClCompile Include="..\src\core\DocFile.cpp" />
     <ClCompile Include="..\src\DocProcessor.cpp" />
     <ClCompile Include="..\src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -19,11 +22,15 @@
     <ClCompile Include="..\src\utils\FileFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\automation\MSWord.h" />
+    <ClInclude Include="..\src\automation\OLEMethod.h" />
+    <ClInclude Include="..\src\core\DocFile.h" />
     <ClInclude Include="..\src\DocProcessor.h" />
     <ClInclude Include="..\src\stdafx.h" />
     <ClInclude Include="..\src\targetver.h" />
     <ClInclude Include="..\src\utils\Common.h" />
     <ClInclude Include="..\src\utils\FileFinder.h" />
+    <ClInclude Include="..\src\utils\RefCounter.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{132C84A2-B112-4024-A0F3-87D1DA4A4DE6}</ProjectGuid>
@@ -34,7 +41,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "DocProcessor.h"
-
+#include "core/DocFile.h"
 #include <Poco/Util/HelpFormatter.h>
 
 using Poco::Util::OptionCallback;
@@ -59,9 +59,22 @@ int DocProcessor::main( const std::vector<std::string>& args )
     if (helpRequested_)
         return Application::EXIT_OK;
 
+    if (args.size() < 2) {
+        displayHelp();
+        return Application::EXIT_USAGE;
+    }
+
+    // Initialize COM for this thread...
+    CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+    // perform the main task
     for (int i = 0; i < args.size(); ++i)
         std::cout << args[i] << std::endl;
 
+    analyzeWordDocs(args[0], args[1]);
+
+    /// uninitialize COM
+    CoUninitialize();
     return Application::EXIT_OK;
 }
 

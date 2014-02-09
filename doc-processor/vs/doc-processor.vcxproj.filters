@@ -9,6 +9,15 @@
     <ClCompile Include="..\src\utils\Common.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\DocFile.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\automation\OLEMethod.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\automation\MSWord.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -20,6 +29,18 @@
     <ClInclude Include="..\src\utils\Common.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\core\DocFile.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\OLEMethod.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\MSWord.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\RefCounter.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
@@ -27,6 +48,9 @@
     </Filter>
     <Filter Include="core">
       <UniqueIdentifier>{a64d28d2-b525-4eb5-85f3-c67469883ee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="automation">
+      <UniqueIdentifier>{758466ed-8c6f-43ba-a4aa-b5c0d2316dcc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

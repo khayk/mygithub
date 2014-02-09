@@ -31,4 +31,7 @@ string_t buildRelativePath(const string_t& thisPath, const string_t& relativeTo)
 /// calculates an SHA-1 value for a given file
 void calculateSHA1(const string_t& file, string_t& sha1Value);
 
+/// report about problem which occurred during function call
+void reportFailure(const string_t& fnName, const string_t& params, HRESULT hr);
+
 #endif // PATCHER_COMMON_H__

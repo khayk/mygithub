@@ -121,3 +121,15 @@ void calculateSHA1( const string_t& file, string_t& sha1Value )
     dos.close();
     sha1Value = DigestEngine::digestToHex(sha.digest());
 }
+
+void reportFailure( const string_t& fnName, const string_t& params, HRESULT hr )
+{
+    char buf[256];
+
+    sprintf_s(buf, 
+        "%s(%s) failed. hr = 0x%08lx", fnName.c_str(), params.c_str(), hr);
+
+    // TODO: later use logging
+    ::MessageBox(NULL, buf,  "Error", 0x10010);
+    throw std::exception(buf);
+}

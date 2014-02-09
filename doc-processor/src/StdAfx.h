@@ -7,12 +7,15 @@
 
 #include "targetver.h"
 
+#include <afxdisp.h>        // MFC Automation classes
+
 #include <stdio.h>
 #include <tchar.h>
 
-
+#include <ObjBase.h>
 
 // TODO: reference additional headers your program requires here
+#include <iostream>
 #include <string>
 #include <set>
 
