@@ -5,6 +5,14 @@
 
 class  MSWord {
 public:
+    enum MoveDirection {
+        mdLeft = 1,
+        mdRight,
+        mdUp,
+        mdDown
+    };
+
+public:
     MSWord();
     ~MSWord();
 
@@ -21,10 +29,31 @@ public:
     /// set the font for the selected text
     void setFont(const wstring_t& faceName);
 
+    /// move the cursor forward/backward based on forward value
+    /// select text while moving if the 'selectWhileMoving' is true
+    void moveCursor(MoveDirection dir, bool selectWhileMoving = false);
+
+    /// return string from the current position with specified length by
+    /// selecting forward
+    wstring_t getString(int length);
+
+    /// get selected string
+    wstring_t getSelectedString();
+
+    /// select whole document
+    void selectAll();
 
 protected:
     HRESULT initialize(bool visible = true);
 
+    /// some helper functions and types
+    typedef boost::intrusive_ptr<IDispatch> tDispatchIp;
+    tDispatchIp getSelection();
+
+    tDispatchIp selection_;
+
+private:
+    /// internal data representation
     IDispatch* wordApp_;
     IDispatch* activeDoc_;
     IDispatch* docs_;

@@ -14,6 +14,8 @@
 
 #define Validation2(fnName, hr)    Validation3(fnName, string_t(""), hr)
 
+
+/// ----------------------------------------------------------------------------
 MSWord::MSWord()
 {
     wordApp_   = 0;
@@ -24,11 +26,13 @@ MSWord::MSWord()
     initialize(false);
 }
 
+/// ----------------------------------------------------------------------------
 MSWord::~MSWord()
 {
     quit();
 }
 
+/// ----------------------------------------------------------------------------
 HRESULT MSWord::initialize( bool visible /*= true*/ )
 {
     CLSID clsid;
@@ -43,6 +47,7 @@ HRESULT MSWord::initialize( bool visible /*= true*/ )
     return hr_;
 }
 
+/// ----------------------------------------------------------------------------
 void MSWord::setVisible( bool visible /*= true*/ )
 {
     VARIANT x;
@@ -51,6 +56,7 @@ void MSWord::setVisible( bool visible /*= true*/ )
     hr_ = OLEMethod(DISPATCH_PROPERTYPUT, NULL, wordApp_, L"Visible", 1, x);
 }
 
+/// ----------------------------------------------------------------------------
 void MSWord::open( const wstring_t& file, bool visible )
 {
     if (!wordApp_) {
@@ -77,6 +83,7 @@ void MSWord::open( const wstring_t& file, bool visible )
         activeDoc_ = result.pdispVal;
 
         SysFreeString(fname.bstrVal);
+        selection_.reset();
     }
 
     {
@@ -91,6 +98,7 @@ void MSWord::open( const wstring_t& file, bool visible )
     setVisible(visible);
 }
 
+/// ----------------------------------------------------------------------------
 void MSWord::closeActiveDocument( bool save /*= false*/ )
 {
     if (!wordApp_ || !activeDoc_)
@@ -98,26 +106,29 @@ void MSWord::closeActiveDocument( bool save /*= false*/ )
 
     VARIANT result;
     VariantInit(&result);
-    COleVariant varSave;
+    VARIANT varSave;
+    varSave.vt = VT_BOOL;
     varSave.boolVal = save;
-    hr_ = OLEMethod(DISPATCH_METHOD, NULL, activeDoc_, L"Close", 1, varSave.Detach());
+    hr_ = OLEMethod(DISPATCH_METHOD, NULL, activeDoc_, L"Close", 1, varSave);
     SafeRelease(activeDoc_);
 }
 
+/// ----------------------------------------------------------------------------
 void MSWord::closeAll(bool save)
 {
     if (!wordApp_ || !docs_)
         return;
 
-    SafeRelease(activeDoc_);
-
-    COleVariant varSave;
+    VARIANT varSave;
+    varSave.vt = VT_BOOL;
     varSave.boolVal = save;
-    hr_ = OLEMethod(DISPATCH_METHOD, NULL, docs_, L"Close", 1, varSave.Detach());
+
+    hr_ = OLEMethod(DISPATCH_METHOD, NULL, docs_, L"Close", 1, varSave);
+    SafeRelease(activeDoc_);
     SafeRelease(docs_);
 }
 
-
+/// ----------------------------------------------------------------------------
 void MSWord::quit()
 {
     if (!wordApp_)
@@ -126,13 +137,92 @@ void MSWord::quit()
     closeAll(false);
 
     hr_ = OLEMethod(DISPATCH_METHOD, NULL, wordApp_, L"Quit", 0);
-    if (wordApp_) {
-        wordApp_->Release();
-        wordApp_ = 0;
-    }
+    SafeRelease(wordApp_);
 }
 
+/// ----------------------------------------------------------------------------
 void MSWord::setFont( const wstring_t& faceName )
 {
 
+}
+
+/// ----------------------------------------------------------------------------
+void MSWord::moveCursor( MoveDirection md, bool selectWhileMoving /*= false*/ )
+{
+    tDispatchIp selection = getSelection();
+
+	VARIANT wdCharacter, wdExtend,Count;
+	wdCharacter.vt   = VT_I4;
+	wdCharacter.lVal = 1;
+	wdExtend.vt      = VT_I4;
+	wdExtend.lVal    = selectWhileMoving ? 1 : 0;
+	Count.vt         = VT_I4;
+	Count.lVal       = 1;
+	switch (md) {
+	case mdLeft:
+		OLEMethod(DISPATCH_METHOD, NULL, selection.get(), L"MoveLeft", 3, wdExtend, Count, wdCharacter);
+		break;
+	case mdRight:
+		OLEMethod(DISPATCH_METHOD, NULL, selection.get(), L"MoveRight", 3, wdExtend, Count, wdCharacter);
+		break;
+	case mdUp:
+		wdCharacter.lVal = 5;
+		OLEMethod(DISPATCH_METHOD, NULL, selection.get(), L"MoveUp", 3, wdExtend, Count, wdCharacter);
+		break;
+	case mdDown:
+		wdCharacter.lVal = 5;
+		OLEMethod(DISPATCH_METHOD, NULL, selection.get(), L"MoveDown", 3, wdExtend, Count, wdCharacter);
+		break;
+	}
+}
+
+/// ----------------------------------------------------------------------------
+wstring_t MSWord::getString( int length )
+{
+    return wstring_t();
+}
+
+/// ----------------------------------------------------------------------------
+wstring_t MSWord::getSelectedString()
+{
+    tDispatchIp selection = getSelection();
+    wstring_t text;
+	{
+        VARIANT result;
+        VariantInit(&result);
+        hr_ = OLEMethod(DISPATCH_PROPERTYGET, &result, selection.get(), L"Text", 0);
+        text = result.bstrVal;
+	}
+    return text;
+}
+
+/// ----------------------------------------------------------------------------
+void MSWord::selectAll()
+{
+    tDispatchIp selection = getSelection();
+    hr_ = OLEMethod(DISPATCH_METHOD, NULL, selection.get(), L"WholeStory", 0);
+}
+
+MSWord::tDispatchIp MSWord::getSelection()
+{
+    if (!wordApp_ || !activeDoc_)
+        return selection_;
+
+    if (selection_)
+        return selection_;
+
+    if (app_ == 0) {
+        VARIANT result;
+        VariantInit(&result);
+        OLEMethod(DISPATCH_PROPERTYGET, &result, activeDoc_, L"Application", 0);
+        SafeRelease(app_);
+        app_ = result.pdispVal;
+    }
+
+    VARIANT result;
+    VariantInit(&result);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, app_, L"Selection", 0);
+    selection_.reset(result.pdispVal);
+
+    return selection_;
 }

@@ -187,9 +187,11 @@ int analyzeDoc(const string_t& fileName)
 
     word.open(wideName);
 
-    wideName = L"c:\\dev\\mygithub\\doc-processor\\bin\\input\\nor_grabar.doc";
-    word.open(wideName);
-    word.closeActiveDocument(false);
+    word.selectAll();
+    wstring_t selectedStr = word.getSelectedString();
+
+
+    writeFileAsBinary("out.txt", toUtf8(selectedStr));
 
     return 0;
 }

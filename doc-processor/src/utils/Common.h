@@ -34,4 +34,8 @@ void calculateSHA1(const string_t& file, string_t& sha1Value);
 /// report about problem which occurred during function call
 void reportFailure(const string_t& fnName, const string_t& params, HRESULT hr);
 
+/// find characters with code '13' and convert it to '10'
+void replaceLineEndings(string_t& str);
+void replaceLineEndings(wstring_t& str);
+
 #endif // PATCHER_COMMON_H__

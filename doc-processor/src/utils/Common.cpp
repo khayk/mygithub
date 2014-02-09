@@ -133,3 +133,17 @@ void reportFailure( const string_t& fnName, const string_t& params, HRESULT hr )
     ::MessageBox(NULL, buf,  "Error", 0x10010);
     throw std::exception(buf);
 }
+
+void replaceLineEndings( string_t& str )
+{
+    for (size_t i = 0; i < str.size(); ++i)
+        if (str[i] == (char)13)
+            str[i] = (char)10;
+}
+
+void replaceLineEndings( wstring_t& str )
+{
+    for (size_t i = 0; i < str.size(); ++i)
+        if (str[i] == (char)13)
+            str[i] = (char)10;
+}
