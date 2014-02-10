@@ -7,8 +7,6 @@
 
 #include "targetver.h"
 
-#include <afxdisp.h>        // MFC Automation classes
-
 #include <stdio.h>
 #include <tchar.h>
 

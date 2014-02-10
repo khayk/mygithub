@@ -11,8 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\automation\MSWord.cpp" />
+    <ClCompile Include="..\src\automation\Document.cpp" />
+    <ClCompile Include="..\src\automation\Documents.cpp" />
+    <ClCompile Include="..\src\automation\Font.cpp" />
     <ClCompile Include="..\src\automation\OLEMethod.cpp" />
+    <ClCompile Include="..\src\automation\Selection.cpp" />
+    <ClCompile Include="..\src\automation\WordApp.cpp" />
     <ClCompile Include="..\src\core\DocFile.cpp" />
     <ClCompile Include="..\src\DocProcessor.cpp" />
     <ClCompile Include="..\src\stdafx.cpp">
@@ -22,8 +26,13 @@
     <ClCompile Include="..\src\utils\FileFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\automation\MSWord.h" />
+    <ClInclude Include="..\src\automation\Document.h" />
+    <ClInclude Include="..\src\automation\Documents.h" />
+    <ClInclude Include="..\src\automation\Font.h" />
     <ClInclude Include="..\src\automation\OLEMethod.h" />
+    <ClInclude Include="..\src\automation\Selection.h" />
+    <ClInclude Include="..\src\automation\Typedefs.h" />
+    <ClInclude Include="..\src\automation\WordApp.h" />
     <ClInclude Include="..\src\core\DocFile.h" />
     <ClInclude Include="..\src\DocProcessor.h" />
     <ClInclude Include="..\src\stdafx.h" />
@@ -42,7 +51,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

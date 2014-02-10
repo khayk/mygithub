@@ -2,7 +2,8 @@
 #include "DocFile.h"
 #include "../utils/FileFinder.h"
 #include "../utils/Common.h"
-#include "../automation/MSWord.h"
+#include "../automation/OfficeInteropWord.h"
+#include "../automation/Selection.h"
 
 #include <Poco/Path.h>
 
@@ -178,31 +179,54 @@
     // Uninitialize COM for this thread...
     CoUninitialize();*/
 
-int analyzeDoc(const string_t& fileName)
+int analyzeDoc(WordApp& word, const string_t& fileName)
 {
     Poco::Path p(fileName);
     p.makeAbsolute();
     wstring_t wideName = toUtf16(p.toString());
-    MSWord word;
 
-    word.open(wideName);
+    tDocumentsSp docs = word.getDocuments();
+    tDocumentSp doc = docs->open(wideName);
 
-    word.selectAll();
-    wstring_t selectedStr = word.getSelectedString();
+    tSelectionSp s = word.getSelection();
+    std::cout << s->getCharactersQty() << std::endl;
 
+//     s->setStartPos(5);
+//     s->setEndPos(15);
 
-    writeFileAsBinary("out.txt", toUtf8(selectedStr));
+//     std::cout << "start pos: " << s->getStartPos() 
+//         << "\n, end pos: " << s->getEndPos() << std::endl;
 
+    tFontSp fnt = s->getFont();
+    std::cout << fnt->getFaceName() << std::endl;
+
+    word.setVisible(true);
+
+/*    tDocumentSp doc  = word.getDocuments()->open(wideName);
+    tWordAppSp  app  = doc->wordApp();
+    tSelectionSp sel = app->getSelection();
+
+    sel->selectAll();
+    wstring_t selectedStr = sel->getSelectedString();
+
+    int charsQty = sel->getCharactersQty();
+    int stPos = sel->getStartPos();
+    int enPos = sel->getEndPos();
+
+    //writeFileAsBinary("out.txt", toUtf8(selectedStr));
+    */
     return 0;
 }
 
 void analyzeWordDocs( const string_t& inputFolder, const string_t& outputFolder )
 {
+    WordApp word;
+
     FileFinder ff(false, inputFolder, "docx");
 
     auto files = ff.getFiles();
     for (auto it = files.begin(); it != files.end(); ++it) {
-        std::cout << analyzeDoc(ff.getRootPath() + *it);
+        std::cout << analyzeDoc(word, ff.getRootPath() + *it);
         break;
     }
 }

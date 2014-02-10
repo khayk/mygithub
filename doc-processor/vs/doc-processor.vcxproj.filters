@@ -15,7 +15,19 @@
     <ClCompile Include="..\src\automation\OLEMethod.cpp">
       <Filter>automation</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\automation\MSWord.cpp">
+    <ClCompile Include="..\src\automation\Document.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\automation\Documents.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\automation\Selection.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\automation\WordApp.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\automation\Font.cpp">
       <Filter>automation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,11 +47,26 @@
     <ClInclude Include="..\src\automation\OLEMethod.h">
       <Filter>automation</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\automation\MSWord.h">
-      <Filter>automation</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\utils\RefCounter.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\Document.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\Documents.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\Selection.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\WordApp.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\Typedefs.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\Font.h">
+      <Filter>automation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

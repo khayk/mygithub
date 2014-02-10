@@ -68,3 +68,49 @@ HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *pDisp,
     return hr;
 
 }
+
+int getPropertyInt( IDispatch* pDisp, LPOLESTR propName )
+{
+    VARIANT result;
+    VariantInit(&result);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
+    return result.intVal;
+}
+
+int setPropertyInt( IDispatch* pDisp, LPOLESTR propName, int value )
+{
+    VARIANT variant;
+    VARIANT result;
+
+    VariantInit(&variant);
+    VariantInit(&result);
+
+    variant.vt =VT_I4;
+    variant.lVal = value;
+    OLEMethod(DISPATCH_PROPERTYPUT, &result, pDisp, propName, 1, variant);
+    return result.intVal;
+}
+
+IDispatch* getPropertyDispatch( IDispatch* pDisp, LPOLESTR propName )
+{
+    VARIANT result;
+    VariantInit(&result);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
+    return result.pdispVal;
+}
+
+string_t getPropStr( IDispatch* pDisp, LPOLESTR propName )
+{
+    VARIANT result;
+    VariantInit(&result);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
+    return toUtf8(result.bstrVal);
+}
+
+wstring_t getPropWStr( IDispatch* pDisp, LPOLESTR propName )
+{
+    VARIANT result;
+    VariantInit(&result);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
+    return result.bstrVal;
+}
