@@ -23,7 +23,15 @@ tDocumentSp Documents::open( const wstring_t& docName )
     fname.vt = VT_BSTR;
     fname.bstrVal = ::SysAllocString(docName.c_str());
 
-    OLEMethod(DISPATCH_METHOD, &result, docs_, L"Open", 1, fname);
+    try {
+        OLEMethod(DISPATCH_METHOD, &result, docs_, L"Open", 1, fname);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "error: " << e.what() << std::endl;
+        SysFreeString(fname.bstrVal);
+        return tDocumentSp();
+    }
+    
 
     tDocumentSp doc(new Document(result.pdispVal));
     docsList.push_back(doc);

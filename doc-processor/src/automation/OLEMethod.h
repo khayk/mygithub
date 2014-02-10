@@ -3,14 +3,15 @@
 
 #include "Typedefs.h"
 
-int getPropertyInt(IDispatch* pDisp, LPOLESTR propName);
-int setPropertyInt(IDispatch* pDisp, LPOLESTR propName, int value);
+int getPropertyInt(IDispatch* disp, LPOLESTR propName);
+int setPropertyInt(IDispatch* disp, LPOLESTR propName, int val);
 
-string_t   getPropStr(IDispatch* pDisp, LPOLESTR propName);
-wstring_t  getPropWStr(IDispatch* pDisp, LPOLESTR propName);
-IDispatch* getPropertyDispatch(IDispatch* pDisp, LPOLESTR propName);
+wstring_t  getPropStr(IDispatch* disp, LPOLESTR propName);
+void       setPropStr(IDispatch* disp, LPOLESTR propName, const wstring_t& val);
 
-HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *pDisp, 
+IDispatch* getPropertyDispatch(IDispatch* disp, LPOLESTR propName);
+
+HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *disp, 
     LPOLESTR ptName, int cArgs...);
 
 #endif

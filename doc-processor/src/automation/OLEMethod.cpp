@@ -5,14 +5,14 @@
 #include <boost/scoped_array.hpp>
 #include <boost/lexical_cast.hpp>
 
-HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *pDisp, 
+HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *disp, 
     LPOLESTR ptName, int cArgs...) 
 {
     // Begin variable-argument list...
     va_list marker;
     va_start(marker, cArgs);
 
-    if (!pDisp) {
+    if (!disp) {
         reportFailure("OLEMethod", "NULL IDispatch", E_FAIL);
         return E_FAIL;
     }
@@ -29,7 +29,7 @@ HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *pDisp,
     WideCharToMultiByte(CP_ACP, 0, ptName, -1, szName, 256, NULL, NULL);
 
     // Get DISPID for name passed...
-    hr = pDisp->GetIDsOfNames(IID_NULL, &ptName, 1, LOCALE_USER_DEFAULT, 
+    hr = disp->GetIDsOfNames(IID_NULL, &ptName, 1, LOCALE_USER_DEFAULT, 
         &dispID);
     if (FAILED(hr)) {
         reportFailure("IDispatch::GetIDsOfNames", szName, hr);
@@ -55,7 +55,7 @@ HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *pDisp,
     }
 
     // Make the call!
-    hr = pDisp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT, autoType, 
+    hr = disp->Invoke(dispID, IID_NULL, LOCALE_SYSTEM_DEFAULT, autoType, 
         &dp, pvResult, NULL, NULL);
     if (FAILED(hr)) {
         reportFailure("IDispatch::Invoke", string_t("Name:") + szName 
@@ -69,15 +69,15 @@ HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *pDisp,
 
 }
 
-int getPropertyInt( IDispatch* pDisp, LPOLESTR propName )
+int getPropertyInt( IDispatch* disp, LPOLESTR propName )
 {
     VARIANT result;
     VariantInit(&result);
-    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
     return result.intVal;
 }
 
-int setPropertyInt( IDispatch* pDisp, LPOLESTR propName, int value )
+int setPropertyInt( IDispatch* disp, LPOLESTR propName, int value )
 {
     VARIANT variant;
     VARIANT result;
@@ -87,30 +87,36 @@ int setPropertyInt( IDispatch* pDisp, LPOLESTR propName, int value )
 
     variant.vt =VT_I4;
     variant.lVal = value;
-    OLEMethod(DISPATCH_PROPERTYPUT, &result, pDisp, propName, 1, variant);
+    OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, variant);
     return result.intVal;
 }
 
-IDispatch* getPropertyDispatch( IDispatch* pDisp, LPOLESTR propName )
+IDispatch* getPropertyDispatch( IDispatch* disp, LPOLESTR propName )
 {
     VARIANT result;
     VariantInit(&result);
-    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
     return result.pdispVal;
 }
 
-string_t getPropStr( IDispatch* pDisp, LPOLESTR propName )
+wstring_t getPropStr( IDispatch* disp, LPOLESTR propName )
 {
     VARIANT result;
     VariantInit(&result);
-    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
-    return toUtf8(result.bstrVal);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
+    return result.bstrVal;
 }
 
-wstring_t getPropWStr( IDispatch* pDisp, LPOLESTR propName )
+void setPropStr( IDispatch* disp, LPOLESTR propName, const wstring_t& val )
 {
-    VARIANT result;
+    VARIANT result, variant;
     VariantInit(&result);
-    OLEMethod(DISPATCH_PROPERTYGET, &result, pDisp, propName, 0);
-    return result.bstrVal;
+    VariantInit(&variant);
+
+    variant.vt = VT_BSTR;
+    variant.bstrVal = ::SysAllocString(val.c_str());
+
+    OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, variant);
+
+    SysFreeString(variant.bstrVal);
 }

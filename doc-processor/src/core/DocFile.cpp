@@ -2,10 +2,11 @@
 #include "DocFile.h"
 #include "../utils/FileFinder.h"
 #include "../utils/Common.h"
-#include "../automation/OfficeInteropWord.h"
 #include "../automation/Selection.h"
+#include "../automation/WordApp.h"
 
 #include <Poco/Path.h>
+#include <sstream>
 
 /*
     // Get CLSID for Word.Application...
@@ -179,54 +180,72 @@
     // Uninitialize COM for this thread...
     CoUninitialize();*/
 
-int analyzeDoc(WordApp& word, const string_t& fileName)
+bool performUnicodeConversion(const string_t& textFont, const wstring_t& text,
+    wstring_t& textUnicode)
+{
+    if (textFont == "Arial Armenian") {
+        textUnicode = L"Abrakadabra";
+        return true;
+    }
+
+    return false;
+}
+
+int analyzeDoc(WordApp& word, const string_t& fileName, const string_t& outputFolder)
 {
     Poco::Path p(fileName);
     p.makeAbsolute();
     wstring_t wideName = toUtf16(p.toString());
 
     tDocumentsSp docs = word.getDocuments();
-    tDocumentSp doc = docs->open(wideName);
+    tDocumentSp doc   = docs->open(wideName);
+    if (!doc)
+        return 0;
 
     tSelectionSp s = word.getSelection();
-    std::cout << s->getCharactersQty() << std::endl;
+    int totalCharsQty = s->allCharactersCount(), endPos = 0;
 
-//     s->setStartPos(5);
-//     s->setEndPos(15);
+    std::set<string_t> usedFonts;
+    std::stringstream ss;
 
-//     std::cout << "start pos: " << s->getStartPos() 
-//         << "\n, end pos: " << s->getEndPos() << std::endl;
+    do {
+        s->selectCurrentFont();
+        tFontSp fnt = s->getFont();
 
-    tFontSp fnt = s->getFont();
-    std::cout << fnt->getFaceName() << std::endl;
+        string_t textFont = fnt->getFaceName();
+        wstring_t text = s->getSelectionText(), textUnicode;
 
-    word.setVisible(true);
+        if ( performUnicodeConversion(textFont, text, textUnicode) )
+            s->setSelectionText(textUnicode);
 
-/*    tDocumentSp doc  = word.getDocuments()->open(wideName);
-    tWordAppSp  app  = doc->wordApp();
-    tSelectionSp sel = app->getSelection();
+        ///fnt->setFaceName("Ubuntu Mono");
 
-    sel->selectAll();
-    wstring_t selectedStr = sel->getSelectedString();
+        endPos = s->getEndPos();
+        s->setStartPos(endPos);
 
-    int charsQty = sel->getCharactersQty();
-    int stPos = sel->getStartPos();
-    int enPos = sel->getEndPos();
+        usedFonts.insert(textFont);
+    } while ( endPos < totalCharsQty - 1 );
 
-    //writeFileAsBinary("out.txt", toUtf8(selectedStr));
-    */
+    doc->saveAs(Poco::Path(outputFolder).makeAbsolute().makeDirectory().toString() 
+        + p.getFileName());
+
+    ss << "Fonts inside '" << fileName << "' are: \n";
+    for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it)
+        ss << *it << std::endl;
+    writeFileAsBinary("fonts_" + p.getBaseName() + ".txt", ss.str());
+
     return 0;
 }
 
 void analyzeWordDocs( const string_t& inputFolder, const string_t& outputFolder )
 {
     WordApp word;
+    word.setVisible(true);
 
     FileFinder ff(false, inputFolder, "docx");
 
     auto files = ff.getFiles();
     for (auto it = files.begin(); it != files.end(); ++it) {
-        std::cout << analyzeDoc(word, ff.getRootPath() + *it);
-        break;
+        std::cout << analyzeDoc(word, ff.getRootPath() + *it, outputFolder);
     }
 }

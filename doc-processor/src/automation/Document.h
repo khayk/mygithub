@@ -12,6 +12,7 @@ public:
 
     void close();
     void save();
+    void saveAs(const string_t& fullPath);
 
 private:
     IDispatch* doc_;

@@ -9,6 +9,7 @@ public:
     Font(IDispatch* font);
     ~Font();
     
+    void setFaceName(const string_t& faceName);
     string_t getFaceName() const;
 private:
     IDispatch* font_;

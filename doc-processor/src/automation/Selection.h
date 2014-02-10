@@ -19,38 +19,33 @@ public:
 
 public: /// methods
 
+    /// return the number of all characters
+    int  allCharactersCount() const;
+
     /// move the cursor forward/backward based on forward value
     /// select text while moving if the 'selectWhileMoving' is true
     /// returns the number of units it's been moved
-    int moveCursor(MoveDirection dir, bool selectWhileMoving = false);
+    int  moveCursor(MoveDirection dir, bool selectWhileMoving = false);
+    int  setStartPos(int newPos);
+    int  setEndPos(int newPos);
+    int  getStartPos() const;
+    int  getEndPos() const;
 
     /// return string from the current position with specified length by
     /// selecting forward
     wstring_t getString(int length);
 
     /// get selected string
-    wstring_t getSelectedString();
+    wstring_t getSelectionText();
 
-    /// return the quantity of characters
-    int getCharactersQty() const;
+    /// change the text of current selection, no formatting will be changed
+    void setSelectionText(const wstring_t& text);
 
     /// select whole document
     void selectAll();
     void selectCurrentFont();
 
-    void setStartPos(int newPos);
-    void setEndPos(int newPos);
-
-    int  getStartPos() const;
-    int  getEndPos() const;
-
     tFontSp getFont();
-
-    //void closeActiveDocument(bool save = true);
-    //void closeAll(bool save = true);
-
-    /// set the font for the selected text
-    //void setFont(const wstring_t& faceName);
 
 public: /// properties
 

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Document.h"
 #include "OLEMethod.h"
+#include "../utils/Common.h"
 
 Document::Document(IDispatch* doc)
     : doc_(doc)
@@ -24,4 +25,17 @@ void Document::save()
 {
     if (doc_) 
         OLEMethod(DISPATCH_METHOD, NULL, doc_, L"Save", 0);
+}
+
+void Document::saveAs( const string_t& fullPath )
+{
+    if (doc_) {
+        VARIANT fname;
+        VariantInit(&fname);
+        fname.vt = VT_BSTR;
+        fname.bstrVal = ::SysAllocString(toUtf16(fullPath).c_str());
+
+        OLEMethod(DISPATCH_METHOD, NULL, doc_, L"SaveAs", 1, fname);
+        SysFreeString(fname.bstrVal);
+    }
 }
