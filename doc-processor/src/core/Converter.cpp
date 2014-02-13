@@ -10,14 +10,32 @@
 #include <sstream>
 #include <fstream>
 
+#include <T2embapi.h>
+
 CharMapping::CharMapping( const string_t& mapFile )
     : LogSource("charMapping")
 {
     memset(quickMap_, 0, sizeof(quickMap_));
+    initDefaultMappings();
 }
 
 CharMapping::~CharMapping()
 {
+}
+
+void CharMapping::initDefaultMappings()
+{
+    for (wchar_t i = 1; i < 32; ++i)
+        quickMap_[i] = (wchar_t) i;
+
+    for (wchar_t i = '0'; i < '9'; ++i)
+        quickMap_[i] = i;
+
+    for (wchar_t i = 'a'; i <= 'z'; ++i)
+        quickMap_[i] = i;
+
+    for (wchar_t i = 'A'; i <= 'Z'; ++i)
+        quickMap_[i] = i;
 }
 
 wchar_t CharMapping::lookUp( wchar_t ch )
@@ -120,6 +138,46 @@ void Converter::initialize(
         to   = Poco::trim(to);
         fontNameMap_.insert(std::make_pair(from, to));
     }
+
+    loadFonts();
+}
+
+void Converter::loadFonts()
+{
+    FileFinder ff(false, mappingFolder_, "ttf");
+    auto files = ff.getFiles();
+
+    HDC hdc = CreateCompatibleDC(NULL);
+
+    for (auto it = files.begin(); it != files.end(); ++it) {
+        string_t rawData;
+        readFileAsBinary(ff.getRootPath() + *it, rawData);
+
+        DWORD dwNumFonts = 0;
+        void* fontData = (void*)&rawData[0];
+        DWORD fontSize = rawData.size();
+        HANDLE fontHandle = ::AddFontMemResourceEx(fontData, fontSize, NULL, &dwNumFonts);
+
+        /*
+        ULONG ulStatus;
+        LONG retVal = TTLoadEmbeddedFont(fontHandle, 0, EMBED_PREVIEWPRINT, LICENSE_DEFAULT, &ulStatus, );*/
+
+        //HANDLE font = CreateFont();
+        //SelectFont()
+        //GetTextFace
+        
+        // GCP_DBCS      
+        // GCP_DIACRITIC 
+        // FLI_GLYPHS    
+        // GCP_GLYPHSHAPE
+        // GCP_KASHIDA   
+        // GCP_LIGATE    
+        // GCP_USEKERNING
+        // GCP_REORDER   
+        GetFontLanguageInfo(hdc);
+    }
+
+    DeleteDC(hdc);
 }
 
 void Converter::start()
@@ -216,9 +274,10 @@ void Converter::convertSingleDoc( const string_t& fileName )
 
     std::stringstream ss;
     ss << "Fonts found in the document '" << fileName << "' are: \n";
-    for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it)
-        ss << *it;
+    for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it) {
+        ss << *it << std::endl;
+    }
     
-    writeFileAsBinary( outputDir + "fonts_" + p.getBaseName() + ".txt", ss.str());
+    writeFileAsBinary( outputDir + "Fonts_" + p.getBaseName() + ".txt", ss.str());
     logInfo(logger(), ss.str());
 }

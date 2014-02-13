@@ -4,6 +4,7 @@
 #include "../Utils/Common.h"
 
 #include <Poco/Path.h>
+#include <Poco/String.h>
 #include <Poco/StringTokenizer.h>
 #include <boost/filesystem.hpp>
 
@@ -16,6 +17,7 @@ namespace fs = boost::filesystem;
 bool isExtensionMatches(const fs::directory_iterator& itr, const std::set<string_t>& exts)
 {
     string_t e = itr->path().extension().string();
+    e = Poco::toLower(e);
     if (!e.empty())
         e = e.substr(1);
     return (exts.empty() || exts.find( e ) != exts.end());

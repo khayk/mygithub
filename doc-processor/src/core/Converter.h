@@ -14,6 +14,7 @@ public:
     void doConversion(const wstring_t& asciiText, wstring_t& unicodeText);
 
 private:
+    void initDefaultMappings();
     wchar_t lookUp(wchar_t ch);
 
     std::map<wchar_t, wchar_t> mapping_;
@@ -39,6 +40,7 @@ public:
 
 private:
     void convertSingleDoc(const string_t& fileName);
+    void loadFonts();
 
     std::map<string_t, tCharMappingSp> fontMaps_;
     tWordAppSp word_;

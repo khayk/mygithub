@@ -1,2 +1,6 @@
-Arial Armenian  | Tahoma
-Arial LatArm    | Verdana
+Default         | Sylfaen
+Arial AM        | Arial Unicode
+Arial Armenian  | Arial Unicode
+Arial LatArm    | Arial Unicode
+Courier LatArm  | Courier Unicode
+Times LatArm    | Times Unicode

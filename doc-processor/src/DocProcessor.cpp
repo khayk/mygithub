@@ -5,10 +5,24 @@
 #include "DocProcessor.h"
 #include "core/Converter.h"
 #include <Poco/Util/HelpFormatter.h>
+#include <Poco/File.h>
+
 #include <boost/lexical_cast.hpp>
 
 using Poco::Util::OptionCallback;
 using Poco::Util::HelpFormatter;
+
+class ChangeLoggerLevel {
+public:
+    ChangeLoggerLevel(DocProcessor* dp) : dp_(dp) {}
+    ~ChangeLoggerLevel() {
+        if (dp_)
+            dp_->logger().setLevel(Poco::Message::PRIO_FATAL);
+    }
+
+private:
+    DocProcessor* dp_;
+};
 
 DocProcessor::DocProcessor()
     : helpRequested_(false)
@@ -22,6 +36,11 @@ void DocProcessor::initialize( Application& self )
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
     loadConfiguration();   // load default configuration files, if present
+
+    Poco::Path logFile(config().getString("logging.channels.fc.path", ""));
+    Poco::File logPath(logFile.parent().makeDirectory());
+    if ( !logPath.exists() )
+        logPath.createDirectories();
     Application::initialize(self);
 }
 
@@ -60,76 +79,17 @@ void DocProcessor::displayHelp()
     helpFormatter.format(std::cout);
 }
 
-/// [i, j)
-bool singleGroup(const string_t& a, int i, int j) {
-    if (j > a.size())
-        return false;
-
-    for (int k = i; k < j; ++k)
-        if (a[k] != a[i])
-            return false;
-    return true;
-}
-
-/// return an index where the group is finished
-int extractGroup(const string_t& a, int st) {
-    size_t n = 1;
-    size_t end = st + n, lastEnd;
-    
-    bool skipCheck = false;
-    while (true) {
-        while ( skipCheck || singleGroup(a, st, end) ) {
-            lastEnd = end;
-            end += n;
-            n *= 2;
-            skipCheck = false;
-        }
-
-        if ( singleGroup(a, st, end - 1) )
-            return end - 1;
-
-        end -= (n / 2);
-        n /= 4;
-        if ( n == 0 )
-            n = 1;
-        skipCheck = true;
-    }
-}
-
-int extractGroup1(const string_t& a, int st) {
-    int en = st + 1;
-    while (en < a.size() && a[en] == a[st]) {
-        ++en;
-    }
-    return en;
-}
 
 int DocProcessor::main( const std::vector<std::string>& args )
 {
-/*    string_t a("111111111112222222223333333300100111299999977757100");
-    //string_t a("122444455555555");
-    for (int i = 0; i < 150000; ++i) {
-        char ch = '0' + rand() % 10;
-        string_t s(1 + rand() % 3, ch);
-        a += s;
-    }
+    ChangeLoggerLevel cll(this);
 
-    std::cout << "generated\n";
-    int st = 0;
-    //int en1 = extractGroup(49);
+/*    HDC hdc = CreateCompatibleDC(NULL);
+    HFONT font;
+    CreateFont();
 
-    while (st != a.size()) {
-        int en  = extractGroup1(a, st);
-        int en1 = extractGroup(a, st);
-
-        if (en != en1) {
-            std::cout << "fail" << std::endl;
-            break;
-        }
-        //std::cout << a.substr(st, en - st) << std::endl;
-        st = en;
-    }
-    return 0;*/
+    SelectFont(hdc, font);
+    GetFontUnicodeRanges();*/
 
     if (helpRequested_)
         return Application::EXIT_OK;
@@ -147,7 +107,6 @@ int DocProcessor::main( const std::vector<std::string>& args )
     converter.initialize(args[0], args[1], args[2]);
     converter.start();
 
-    logger().setLevel(Poco::Message::PRIO_FATAL);
     return Application::EXIT_OK;
 }
 
