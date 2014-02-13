@@ -26,6 +26,7 @@ public: /// methods
     /// select text while moving if the 'selectWhileMoving' is true
     /// returns the number of units it's been moved
     int  moveCursor(MoveDirection dir, bool selectWhileMoving = false);
+
     int  setStartPos(int newPos);
     int  setEndPos(int newPos);
     int  getStartPos() const;

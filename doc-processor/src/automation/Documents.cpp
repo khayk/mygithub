@@ -2,6 +2,7 @@
 #include "Documents.h"
 #include "Document.h"
 #include "OLEMethod.h"
+#include "../RootLogger.h"
 
 Documents::Documents(IDispatch* docs)
     : docs_(docs)
@@ -27,7 +28,7 @@ tDocumentSp Documents::open( const wstring_t& docName )
         OLEMethod(DISPATCH_METHOD, &result, docs_, L"Open", 1, fname);
     }
     catch (const std::exception& e) {
-        std::cerr << "error: " << e.what() << std::endl;
+        logError(Poco::Logger::root(), string_t("error: ") + e.what());
         SysFreeString(fname.bstrVal);
         return tDocumentSp();
     }

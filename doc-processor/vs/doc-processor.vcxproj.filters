@@ -9,9 +9,6 @@
     <ClCompile Include="..\src\utils\Common.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\core\DocFile.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\automation\OLEMethod.cpp">
       <Filter>automation</Filter>
     </ClCompile>
@@ -30,6 +27,9 @@
     <ClCompile Include="..\src\automation\Font.cpp">
       <Filter>automation</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\Converter.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -40,9 +40,6 @@
     <ClInclude Include="..\src\DocProcessor.h" />
     <ClInclude Include="..\src\utils\Common.h">
       <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\core\DocFile.h">
-      <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\automation\OLEMethod.h">
       <Filter>automation</Filter>
@@ -68,6 +65,10 @@
     <ClInclude Include="..\src\automation\Font.h">
       <Filter>automation</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\core\Converter.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\RootLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
