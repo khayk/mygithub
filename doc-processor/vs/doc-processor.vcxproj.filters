@@ -30,6 +30,9 @@
     <ClCompile Include="..\src\core\Converter.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\mapping\ASCII_Chars_Unicode.cpp">
+      <Filter>mapping</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -69,6 +72,9 @@
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\src\RootLogger.h" />
+    <ClInclude Include="..\src\mapping\ASCII_Chars_Unicode.h">
+      <Filter>mapping</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
@@ -79,6 +85,9 @@
     </Filter>
     <Filter Include="automation">
       <UniqueIdentifier>{758466ed-8c6f-43ba-a4aa-b5c0d2316dcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mapping">
+      <UniqueIdentifier>{0f12b967-7602-4d58-a37c-60eb93c1ee6b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -19,6 +19,7 @@
     <ClCompile Include="..\src\automation\WordApp.cpp" />
     <ClCompile Include="..\src\core\Converter.cpp" />
     <ClCompile Include="..\src\DocProcessor.cpp" />
+    <ClCompile Include="..\src\mapping\ASCII_Chars_Unicode.cpp" />
     <ClCompile Include="..\src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -35,6 +36,7 @@
     <ClInclude Include="..\src\automation\WordApp.h" />
     <ClInclude Include="..\src\core\Converter.h" />
     <ClInclude Include="..\src\DocProcessor.h" />
+    <ClInclude Include="..\src\mapping\ASCII_Chars_Unicode.h" />
     <ClInclude Include="..\src\RootLogger.h" />
     <ClInclude Include="..\src\stdafx.h" />
     <ClInclude Include="..\src\targetver.h" />

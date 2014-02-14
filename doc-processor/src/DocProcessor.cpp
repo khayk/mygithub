@@ -8,6 +8,7 @@
 #include <Poco/File.h>
 
 #include <boost/lexical_cast.hpp>
+#include "mapping/ASCII_Chars_Unicode.h"
 
 using Poco::Util::OptionCallback;
 using Poco::Util::HelpFormatter;
@@ -84,6 +85,8 @@ int DocProcessor::main( const std::vector<std::string>& args )
 {
     ChangeLoggerLevel cll(this);
 
+    AsciiToUniMapping::exportArmenianASCII_Unicode("../config/mapping/armenian/char-mapping-default.txt");
+    return Application::EXIT_OK;
 /*    HDC hdc = CreateCompatibleDC(NULL);
     HFONT font;
     CreateFont();

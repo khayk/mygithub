@@ -1,4 +1,4 @@
-Default         | Sylfaen
+                | Sylfaen
 Arial AM        | Arial Unicode
 Arial Armenian  | Arial Unicode
 Arial LatArm    | Arial Unicode
