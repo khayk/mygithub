@@ -4,6 +4,12 @@
 
 #include <sstream>
 
+struct MappingRaw {
+    wchar_t        from;
+    wchar_t        to;
+    const wchar_t* desc;
+};
+
 void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
 {
     wchar_t map[][2] = {
@@ -48,13 +54,24 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00FC   ,  0x0556 }, // Ֆ ARMENIAN CAPITAL LETTER FEH
 
 
-        { 0x00    ,  0x0559 }, // ՙ ARMENIAN MODIFIER LETTER LEFT HALF RING
-        { 0x00    ,  0x055A }, // ՚ ARMENIAN APOSTROPHE
-        { 0x00    ,  0x055B }, // ՛ ARMENIAN EMPHASIS MARK
-        { 0x00    ,  0x055C }, // ՜ ARMENIAN EXCLAMATION MARK
-        { 0x00    ,  0x055D }, // ՝ ARMENIAN COMMA
-        { 0x00    ,  0x055E }, // ՞ ARMENIAN QUESTION MARK
-        { 0x00    ,  0x055F }, // ՟ ARMENIAN ABBREVIATION MARK
+        { 0x00A1   ,  0x00A9 }, // © COPYRIGHT SIGN
+        { 0x00A2   ,  0x00A7 }, // § SECTION SIGN
+        { 0x00A4   ,  0x0029 }, // ) RIGHT PARENTHESIS
+        { 0x00A5   ,  0x0028 }, // ( LEFT PARENTHESIS
+        { 0x00A6   ,  0x00BB }, // » RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        { 0x00A7   ,  0x00AB }, // « LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+
+        { 0x00A9   ,  0x002E }, // . FULL STOP
+        { 0x00AB   ,  0x002C }, // , COMMA
+        { 0x00AC   ,  0x002D }, // - HYPHEN-MINUS
+        { 0x00AE   ,  0x2026 }, // … HORIZONTAL ELLIPSIS
+
+
+        { 0x00B0   ,  0x055B }, // ՛ ARMENIAN EMPHASIS MARK
+        { 0x00AF   ,  0x055C }, // ՜ ARMENIAN EXCLAMATION MARK
+        { 0x00AA   ,  0x055D }, // ՝ ARMENIAN COMMA
+        { 0x00B1   ,  0x055E }, // ՞ ARMENIAN QUESTION MARK
+        
 
 
         { 0x00B3   ,  0x0561 }, // ա ARMENIAN SMALL LETTER AYB
@@ -98,9 +115,13 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00A8   ,  0x0587 }, // և ARMENIAN SMALL LIGATURE ECH YIWN
 
 
-        { 0x00   , 0x0589 }, // ։ ARMENIAN FULL STOP
-        { 0x00   , 0x058A }, // ֊ ARMENIAN HYPHEN
-        { 0x00   , 0x058F }, // ֏ ARMENIAN DRAM SIGN
+        { 0x00A3   ,  0x0589 }, // ։ ARMENIAN FULL STOP
+
+        //{ 0x00   , 0x058A }, // ֊ ARMENIAN HYPHEN
+        //{ 0x00   , 0x058F }, // ֏ ARMENIAN DRAM SIGN
+        //{ 0x00    ,  0x0559 }, // ՙ ARMENIAN MODIFIER LETTER LEFT HALF RING
+        //{ 0x00    ,  0x055A }, // ՚ ARMENIAN APOSTROPHE
+        //{ 0x00    ,  0x055F }, // ՟ ARMENIAN ABBREVIATION MARK
 
     };
 
