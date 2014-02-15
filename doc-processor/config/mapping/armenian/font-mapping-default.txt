@@ -1,6 +1,6 @@
-                | Sylfaen
-Arial AM        | Arial Unicode
-Arial Armenian  | Arial Unicode
-Arial LatArm    | Arial Unicode
+Default         | Sylfaen
+Arial AM        | Tahoma
+Arial Armenian  | Sylfaen
+Arial LatArm    | Sylfaen
 Courier LatArm  | Courier Unicode
-Times LatArm    | Times Unicode
+Times LatArm    | Times New Roman

@@ -46,8 +46,10 @@ void WordApp::quit()
     if (!wordApp_)
         return;
 
-    docs_->closeAll();
-    docs_.reset();
+    if (docs_) {
+        docs_->closeAll();
+        docs_.reset();
+    }
 
     hr_ = OLEMethod(DISPATCH_METHOD, NULL, wordApp_, L"Quit", 0);
     SafeRelease(wordApp_);

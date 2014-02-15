@@ -130,7 +130,7 @@ void reportFailure( const string_t& fnName, const string_t& params, HRESULT hr )
         "%s(%s) failed. hr = 0x%08lx", fnName.c_str(), params.c_str(), hr);
 
     // TODO: later use logging
-    ::MessageBox(NULL, buf,  "Error", 0x10010);
+    ::MessageBoxA(NULL, buf,  "Error", 0x10010);
     throw std::exception(buf);
 }
 

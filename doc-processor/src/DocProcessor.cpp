@@ -18,7 +18,7 @@ public:
     ChangeLoggerLevel(DocProcessor* dp) : dp_(dp) {}
     ~ChangeLoggerLevel() {
         if (dp_)
-            dp_->logger().setLevel(Poco::Message::PRIO_FATAL);
+            dp_->logger().setLevel(Poco::Message::PRIO_WARNING);
     }
 
 private:
@@ -85,8 +85,9 @@ int DocProcessor::main( const std::vector<std::string>& args )
 {
     ChangeLoggerLevel cll(this);
 
-    AsciiToUniMapping::exportArmenianASCII_Unicode("../config/mapping/armenian/char-mapping-default.txt");
-    return Application::EXIT_OK;
+//     AsciiToUniMapping::exportArmenianASCII_Unicode("../config/mapping/armenian/char-mapping-default.txt");
+//     return Application::EXIT_OK;
+
 /*    HDC hdc = CreateCompatibleDC(NULL);
     HFONT font;
     CreateFont();
