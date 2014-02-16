@@ -281,25 +281,35 @@ bool Converter::isIgnoredFont( const string_t& name ) const
 
 void Converter::start()
 {
-    FileFinder ff(false, inputFolder_, "docx;doc");
+    FileFinder ff(true, inputFolder_, "docx;doc");
 
     auto files = ff.getFiles();
     for (auto it = files.begin(); it != files.end(); ++it) {
-        convertSingleDoc(ff.getRootPath() + *it);
+        try {
+            convertSingleDoc(*it);
+        }
+        catch (const Poco::Exception& pe) {
+            logError(logger(), pe.displayText());
+        }
+        catch (const std::exception& e) {
+            logError(logger(), e.what());
+        }
     }
 }
 
 void Converter::convertSingleDoc( const string_t& fileName )
 {
-    logInfo(logger(), "Processing document: " + fileName);
-    Poco::Path p(fileName);
+    string_t fullPath = inputFolder_ + fileName;
+
+    logInfo(logger(), "Processing document: " + fullPath);
+    Poco::Path p(fullPath);
     p.makeAbsolute();
     wstring_t wideName = toUtf16(p.toString());
 
     tDocumentsSp docs = word_->getDocuments();
     tDocumentSp doc   = docs->open(wideName);
     if (!doc) {
-        logError(logger(), "Error while opening document: " + fileName);
+        logError(logger(), "Error while opening document: " + fullPath);
         return;
     }
 
@@ -390,20 +400,23 @@ void Converter::convertSingleDoc( const string_t& fileName )
         s->setStartPos(endPos);
     } while ( endPos < totalCharsQty - 1 );
 
-    string_t outputDir = Poco::Path(outputFolder_).makeAbsolute().makeDirectory().toString();
+    string_t outputDir = Poco::Path(outputFolder_)
+        .append( Poco::Path(fileName).parent() )
+        .makeAbsolute()
+        .makeDirectory()
+        .toString();
+
+    Poco::File(outputDir).createDirectories();
+
     doc->saveAs( outputDir + p.getBaseName() + "_Unicode." + p.getExtension() );
+    doc->close();
     writeFileAsBinary( outputDir + p.getBaseName() + ".txt", docAsText);
 
     std::stringstream ss;
-    ss << "Fonts found in the document '" << fileName << "' are: ";
+    ss << "Fonts found in the document '" << fullPath << "' are: ";
     for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it) {
         ss << "[" << *it << "] ";
     }
-    
-    /// create control file until we make sure that all font are mapped correctly
-
-
-    //writeFileAsBinary( outputDir + "Fonts_" + p.getBaseName() + "_Unicode.txt", ss.str());
     logInfo(logger(), ss.str());
 }
 
