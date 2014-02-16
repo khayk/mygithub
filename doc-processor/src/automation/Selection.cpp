@@ -113,4 +113,19 @@ tFontSp Selection::getFont()
     return tFontSp(new Font(getPropertyDispatch(s_, L"Font")) );
 }
 
+// tRangeSp Selection::getRange()
+// {
+//     return tRangeSp(new Range(getPropertyDispatch(s_, L"ParagraphFormat")) );
+// }
+
+void Selection::copyFormat()
+{
+    OLEMethod(DISPATCH_METHOD, NULL, s_, L"CopyFormat", 0);
+}
+
+void Selection::pasteFormat()
+{
+    OLEMethod(DISPATCH_METHOD, NULL, s_, L"PasteFormat", 0);
+}
+
 

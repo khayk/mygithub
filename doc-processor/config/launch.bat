@@ -1,0 +1,1 @@
+@call ascii-to-unicode.exe  ./input ./output ./mapping

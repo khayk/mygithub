@@ -3,6 +3,7 @@
 
 #include "Typedefs.h"
 #include "Font.h"
+#include "Range.h"
 
 class Selection {
 public:
@@ -26,7 +27,7 @@ public: /// methods
     /// select text while moving if the 'selectWhileMoving' is true
     /// returns the number of units it's been moved
     int  moveCursor(MoveDirection dir, bool selectWhileMoving = false);
-
+    
     int  setStartPos(int newPos);
     int  setEndPos(int newPos);
     int  getStartPos() const;
@@ -46,7 +47,12 @@ public: /// methods
     void selectAll();
     void selectCurrentFont();
 
+    void copyFormat();
+    void pasteFormat();
+
     tFontSp getFont();
+//     tRangeSp getRange();
+//     void setRange(int startPos, int endPos);
 
 public: /// properties
 

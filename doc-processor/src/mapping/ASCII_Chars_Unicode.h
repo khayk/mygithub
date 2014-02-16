@@ -4,6 +4,7 @@
 class AsciiToUniMapping {
 public:
     static void exportArmenianASCII_Unicode(const string_t& mapFile);
+    static void exportRussianASCII_Unicode(const string_t& mapFile);
 };
 
 #endif

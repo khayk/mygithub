@@ -14,13 +14,28 @@ Font::~Font()
     SafeRelease(font_);
 }
 
-string_t Font::getFaceName() const
+string_t Font::getName() const
 {
     return toUtf8(getPropStr(font_, L"Name"));
 }
 
-void Font::setFaceName( const string_t& faceName )
+void Font::setName( const string_t& faceName )
 {
     setPropStr(font_, L"Name", toUtf16(faceName));
+}
+
+void Font::setNameAscii( const string_t& faceName )
+{
+    setPropStr(font_, L"NameAscii", toUtf16(faceName));
+}
+
+string_t Font::getNameAscii() const
+{
+    return toUtf8(getPropStr(font_, L"NameAscii"));
+}
+
+void Font::reset()
+{
+    OLEMethod(DISPATCH_METHOD, NULL, font_, L"Reset", 0);
 }
 

@@ -33,6 +33,9 @@
     <ClCompile Include="..\src\mapping\ASCII_Chars_Unicode.cpp">
       <Filter>mapping</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\automation\Range.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -75,6 +78,15 @@
     <ClInclude Include="..\src\mapping\ASCII_Chars_Unicode.h">
       <Filter>mapping</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\automation\Range.h">
+      <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\resources\resource.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\resources\version.h">
+      <Filter>resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
@@ -89,5 +101,13 @@
     <Filter Include="mapping">
       <UniqueIdentifier>{0f12b967-7602-4d58-a37c-60eb93c1ee6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{7f4832b7-a1ea-4380-b4d5-ddc11b60d5f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\resources\doc-proc.rc">
+      <Filter>resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

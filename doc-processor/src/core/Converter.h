@@ -8,10 +8,17 @@
 
 class CharMapping : public LogSource {
 public:
+    CharMapping();
     CharMapping(const string_t& mapFile);
     ~CharMapping();
 
     void doConversion(const wstring_t& asciiText, wstring_t& unicodeText);
+
+    /// update the mapping of the characters
+    void updateCharMapping(const string_t& mapFile); 
+
+    string_t getLanguage() const;
+    void setLanguage(const string_t& language);
 
 private:
     void initDefaultMappings();
@@ -20,7 +27,7 @@ private:
     wchar_t lookUp(wchar_t ch);
 
     std::map<wchar_t, wchar_t> mapping_;
-    string_t replacingFont_;
+    string_t language_;
 
     static const int QUICK_MAP = 256;
     wchar_t quickMap_[QUICK_MAP];
@@ -43,8 +50,10 @@ public:
 private:
     void convertSingleDoc(const string_t& fileName);
     
-    void loadKnownAsciiFonts(const string_t& languageDir);
-    void loadNamesMapping(const string_t& fileName, bool optional = false);
+    void loadKnownAsciiFonts(const string_t& languageDir, const string_t& language);
+    void loadNamesMapping(const string_t& fileName, 
+                          const string_t& language, 
+                          bool optional = false);
     void loadFontList(const string_t& fileName, std::set<string_t>& cnt);
 
     bool isUnicodeFont(const string_t& name) const;
@@ -60,9 +69,8 @@ private:
 
     /// if font does not found in the fonts name list this one
     /// will be used for substitution
-    string_t defaultFont_;
+    std::map<string_t, string_t> defaultFonts_;
 
-    //std::map<string_t, string_t> fontMaps_;
     tWordAppSp word_;
 
     string_t inputFolder_;

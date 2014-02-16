@@ -14,6 +14,11 @@
 
 #include <T2embapi.h>
 
+CharMapping::CharMapping()
+    : LogSource("charMapping")
+{
+}
+
 CharMapping::CharMapping( const string_t& mapFile )
     : LogSource("charMapping")
 {
@@ -63,6 +68,11 @@ void CharMapping::doConversion( const wstring_t& asciiText, wstring_t& unicodeTe
     }
 }
 
+void CharMapping::updateCharMapping( const string_t& mapFile )
+{
+    loadMappingFile(mapFile);
+}
+
 void CharMapping::loadMappingFile( const string_t& mapFile )
 {
     Poco::FileInputStream fis(mapFile);
@@ -88,6 +98,16 @@ void CharMapping::loadMappingFile( const string_t& mapFile )
         else
             mapping_[from] = to;
     }
+}
+
+string_t CharMapping::getLanguage() const
+{
+    return language_;
+}
+
+void CharMapping::setLanguage( const string_t& language )
+{
+    language_ = language;
 }
 
 
@@ -143,37 +163,63 @@ void Converter::initialize(
             .pushDirectory(*itd)
             .makeDirectory();
 
-        loadKnownAsciiFonts(langDir.toString());
-        loadNamesMapping(langDir.toString() + "font-mapping-default.txt", false);
-        loadNamesMapping(langDir.toString() + "font-mapping-user.txt", true);
+        loadKnownAsciiFonts(langDir.toString(), *itd);
+        loadNamesMapping(langDir.toString() + "font-mapping-default.txt", *itd, false);
+        loadNamesMapping(langDir.toString() + "font-mapping-user.txt", *itd, true);
     }
 }
 
 
-void Converter::loadKnownAsciiFonts( const string_t& languageDir )
+void Converter::loadKnownAsciiFonts( const string_t& languageDir,
+    const string_t& language)
 {
     string_t fontsKnow = languageDir + "font-known-ascii.txt";
     string_t charDefMapping = languageDir + "char-mapping-default.txt";
 
     tCharMappingSp defMapping(new CharMapping(charDefMapping));
+    defMapping->setLanguage(language);
 
-    /// open know fonts file and create mapping for each font
+    /// open known fonts file and create mapping for each font
     Poco::FileInputStream fis(fontsKnow);
 
     while (!fis.eof()) {
+        string_t sl;
         string_t fontName;
-        std::getline(fis, fontName);
+        string_t customMapFile;
 
-        fontName = Poco::trim(fontName);
+        std::getline(fis, sl);
+
+        /// check if there is custom mapping file specified current font
+        string_t::size_type p = sl.find('|');
+        fontName = sl.substr(0, p);
+        sl = Poco::trim(sl);
+
+        if (p != string_t::npos)
+            customMapFile = sl.substr(p + 1);
+
+        fontName = Poco::trimRight(fontName);
+        customMapFile = Poco::trimLeft(customMapFile);
+
         if (fontName.empty())
             continue;
 
-        fontCharMaps_.insert( std::make_pair(fontName,
-            defMapping) );
+        if (customMapFile.empty()) {
+            fontCharMaps_.insert( std::make_pair(fontName,
+                defMapping) );
+        }
+        else {
+            tCharMappingSp cm(new CharMapping);
+            *cm = *defMapping;
+            cm->updateCharMapping(languageDir + customMapFile);
+            fontCharMaps_[fontName] = cm;
+        }
     }
 }
 
-void Converter::loadNamesMapping( const string_t& fileName, bool optional )
+void Converter::loadNamesMapping( 
+    const string_t& fileName, 
+    const string_t& language, 
+    bool optional )
 {
     if ( optional ) {
         if ( !Poco::File(fileName).exists() ) {
@@ -188,18 +234,19 @@ void Converter::loadNamesMapping( const string_t& fileName, bool optional )
         string_t singleLine;
         std::getline(fis, singleLine);
 
+        singleLine = Poco::trim(singleLine);
         if (singleLine.empty())
-            break;
+            continue;
 
         string_t::size_type pos = singleLine.find('|');
         string_t from = singleLine.substr(0, pos);
         string_t to   = singleLine.substr(pos + 1);
 
-        from = Poco::trim(from);
-        to   = Poco::trim(to);
+        from = Poco::trimRight(from);
+        to   = Poco::trimLeft(to);
 
         if (from == "Default") {
-            defaultFont_ = to;
+            defaultFonts_[language] = to;
             continue;
         }
 
@@ -266,8 +313,11 @@ void Converter::convertSingleDoc( const string_t& fileName )
     do {
         /// select current font
         s->selectCurrentFont();
-        string_t fontName = s->getFont()->getFaceName();
+        //tRangeSp range = s->getRange();
+
+        string_t fontName = s->getFont()->getName();
         wstring_t text = s->getSelectionText(), textUnicode;
+        //wstring_t rtext = range->getText();
 
         startPos = s->getStartPos();
         endPos = s->getEndPos();
@@ -281,7 +331,7 @@ void Converter::convertSingleDoc( const string_t& fileName )
             int midPos = (tmpStartPos + tmpEndPos) / 2;
             s->setStartPos(midPos);
             s->moveCursor(Selection::mdRight, false);
-            fontName = s->getFont()->getFaceName();
+            fontName = s->getFont()->getName();
             restoreSelection = true;
         }
 
@@ -314,7 +364,7 @@ void Converter::convertSingleDoc( const string_t& fileName )
             string_t newFaceName;
             auto fit = fontNameMap_.find(fontName);
             if (fit == fontNameMap_.end()) {
-                newFaceName = defaultFont_;
+                newFaceName = defaultFonts_[cm->getLanguage()];
             }
             else {
                 newFaceName = fit->second;
@@ -323,8 +373,17 @@ void Converter::convertSingleDoc( const string_t& fileName )
             /// extract text from the document as well
             docAsText += toUtf8(textUnicode);
 
+            s->copyFormat();
             s->setSelectionText(textUnicode);
-            s->getFont()->setFaceName(newFaceName);
+            s->pasteFormat();
+            s->getFont()->setName(newFaceName);
+
+            tFontSp fnt = s->getFont();
+            string_t newName = fnt->getName();
+            if (newName != newFaceName) {
+                newName = fnt->getNameAscii();
+                fnt->setName(newFaceName);
+            }
         }
 
         //std::cout << percentageStr(endPos, totalCharsQty);
@@ -336,11 +395,14 @@ void Converter::convertSingleDoc( const string_t& fileName )
     writeFileAsBinary( outputDir + p.getBaseName() + ".txt", docAsText);
 
     std::stringstream ss;
-    ss << "Fonts found in the document '" << fileName << "' are: \n";
+    ss << "Fonts found in the document '" << fileName << "' are: ";
     for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it) {
-        ss << *it << std::endl;
+        ss << "[" << *it << "] ";
     }
     
+    /// create control file until we make sure that all font are mapped correctly
+
+
     //writeFileAsBinary( outputDir + "Fonts_" + p.getBaseName() + "_Unicode.txt", ss.str());
     logInfo(logger(), ss.str());
 }
