@@ -88,7 +88,9 @@ void DocProcessor::displayHelp()
 int DocProcessor::main( const std::vector<std::string>& args )
 {
     ChangeLoggerLevel cll(this);
-
+    wstring_t appVersion;
+    getFileVersion(toUtf16(config().getString("application.path")), appVersion);
+    logInfo(logger(), "Application version: " + toUtf8(appVersion));
 //     AsciiToUniMapping::exportArmenianASCII_Unicode("../config/mapping/armenian/char-mapping-default.txt");
 //     AsciiToUniMapping::exportRussianASCII_Unicode("../config/mapping/russian/char-mapping-default.txt");
 //     return Application::EXIT_OK;

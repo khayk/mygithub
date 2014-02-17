@@ -10,6 +10,8 @@
 #include <Windows.h>
 #include <fstream>
 
+#include <boost/scoped_array.hpp>
+
 using Poco::SHA1Engine;
 using Poco::DigestEngine;
 using Poco::StreamCopier;
@@ -27,6 +29,61 @@ wstring_t toUtf16( const string_t& source )
     wstring_t result;
     Poco::UnicodeConverter::toUTF16(source, result);
     return result;
+}
+
+unsigned long getFileVersion( const wstring_t& fileName, wstring_t& fileVersion )
+{
+    DWORD handle;
+    DWORD sz = GetFileVersionInfoSizeW(fileName.c_str(), &handle);
+
+    int major1 = 0;
+    int minor1 = 0;
+    int major2 = 0;
+    int minor2 = 0;
+
+    if (sz) {
+        boost::scoped_array<char> dataBuffer(new char[sz+1]);
+        memset(dataBuffer.get(), 0, sz + 1);
+        UINT itemLength = 0;
+        LPBYTE tempBuffer = 0;
+
+        if (!GetFileVersionInfoW(fileName.c_str(), handle, sz, dataBuffer.get()))
+            return GetLastError();
+
+        if (!VerQueryValueW(dataBuffer.get(), L"\\", (VOID FAR* FAR*)&tempBuffer,
+            &itemLength))
+            return GetLastError();
+
+        if (itemLength == 0)
+            return GetLastError();
+
+        VS_FIXEDFILEINFO *verInfo = (VS_FIXEDFILEINFO *)tempBuffer;
+        if (verInfo->dwSignature != 0xfeef04bd)
+            return GetLastError();
+
+        /// now everything is ok, we can extract version information
+        major1 = HIWORD(verInfo->dwFileVersionMS);
+        minor1 = LOWORD(verInfo->dwFileVersionMS);
+        major2 = HIWORD(verInfo->dwFileVersionLS);
+        minor2 = LOWORD(verInfo->dwFileVersionLS);
+    }
+    else {
+        return GetLastError();
+    }
+
+    wchar_t intBuffer[11] = {0};
+    _itow_s(major1, intBuffer, 10);
+    fileVersion += intBuffer;
+    fileVersion += L".";
+    _itow_s(minor1, intBuffer, 10);
+    fileVersion += intBuffer;
+    fileVersion += L".";
+    _itow_s(major2, intBuffer, 10);
+    fileVersion += intBuffer;
+    fileVersion += L".";
+    _itow_s(minor2, intBuffer, 10);
+    fileVersion += intBuffer;
+    return 0;
 }
 
 string_t makeCentralizedNote( const std::string& note, const char ch, size_t len )

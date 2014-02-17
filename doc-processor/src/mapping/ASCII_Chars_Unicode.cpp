@@ -127,8 +127,9 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00FB ,  0x0585, "օ ARMENIAN SMALL LETTER OH"                   },
         { 0x00FD ,  0x0586, "ֆ ARMENIAN SMALL LETTER FEH"                  },
         { 0x00A8 ,  0x0587, "և ARMENIAN SMALL LIGATURE ECH YIWN"           },
-        { 0x00A3 ,  0x0589, "։ ARMENIAN FULL STOP"                         }
+        { 0x00A3 ,  0x0589, "։ ARMENIAN FULL STOP"                         },
 
+        { 0x2013 ,  0x2013, "– EN DASH"                                    },
         // { 0x0000 ,  0x058A, L"֊ ARMENIAN HYPHEN"                            },
         // { 0x0000 ,  0x058F, L"֏ ARMENIAN DRAM SIGN"                         },
         // { 0x0000 ,  0x0559, L"ՙ ARMENIAN MODIFIER LETTER LEFT HALF RING"    },

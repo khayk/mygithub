@@ -52,8 +52,8 @@ wchar_t CharMapping::lookUp( wchar_t ch )
     auto it = mapping_.find(ch);
     if (it == mapping_.end()) {
         std::stringstream ss;
-        ss << "No mapping for symbol: CHAR (" << ch << ") INTCODE: ("
-            << (int) ch << ")";
+        ss << "No mapping for symbol: INTCODE (" << (int) ch << ") CHAR ("
+            << toUtf8(wstring_t(1, ch)) << ")";
         logError(logger(), ss.str());
         it = mapping_.insert(std::make_pair(ch, ch)).first;
     }
@@ -118,7 +118,7 @@ Converter::Converter()
     : LogSource("converter")
 {
     word_.reset(new WordApp());
-    word_->setVisible(false);
+    word_->setVisible(true);
 }
 
 

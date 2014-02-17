@@ -4,6 +4,12 @@
 string_t  toUtf8(const wstring_t& source);
 wstring_t toUtf16(const string_t& source);
 
+/// if function succeeded the fileVersion will contain version number of the
+/// specified input file and return value will be 0
+/// in case of failure returns the result of GetLastError function call,
+unsigned long getFileVersion(const wstring_t& fileName,
+    wstring_t& fileVersion);
+
 /// form a string like this :  [XXX...X note XXX...X]
 /// where
 /// @param ch   [in]  see X above
