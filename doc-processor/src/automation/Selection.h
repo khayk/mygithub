@@ -3,7 +3,9 @@
 
 #include "Typedefs.h"
 #include "Font.h"
-#include "Range.h"
+
+class Range;
+typedef boost::shared_ptr<Range> tRangeSp;
 
 class Selection {
 public:
@@ -39,24 +41,28 @@ public: /// methods
 
     /// get selected string
     wstring_t getSelectionText();
+    tRangeSp  getFormattedText();
 
     /// change the text of current selection, no formatting will be changed
     void setSelectionText(const wstring_t& text);
 
     /// select whole document
+    void select();
     void selectAll();
+    
+    void selectCurrentColor();
     void selectCurrentFont();
+    void selectCurrentTabs();
 
     void copyFormat();
     void pasteFormat();
 
     tFontSp getFont();
-//     tRangeSp getRange();
 //     void setRange(int startPos, int endPos);
 
 public: /// properties
 
-private:
+protected:
     IDispatch* s_;
 };
 

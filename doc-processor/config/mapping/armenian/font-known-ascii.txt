@@ -1,2 +1,6 @@
 Arial Armenian
+Arial AMU       | cm-courieram.txt
+ArmArial        | cm-armarial.txt
+Courier AM      | cm-courieram.txt
 Mk_Parzi   
+Times Armenian

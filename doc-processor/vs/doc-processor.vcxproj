@@ -84,7 +84,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\</OutDir>
     <IntDir>..\build\$(Configuration)\</IntDir>
-    <TargetName>ascii-to-unicode</TargetName>
+    <TargetName>ascii-to-unicode-d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

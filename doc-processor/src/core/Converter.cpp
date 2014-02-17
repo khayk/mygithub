@@ -3,6 +3,7 @@
 #include "../utils/FileFinder.h"
 #include "../utils/Common.h"
 #include "../automation/Selection.h"
+#include "../automation/Range.h"
 #include "../automation/WordApp.h"
 
 #include <Poco/FileStream.h>
@@ -13,6 +14,7 @@
 #include <fstream>
 
 #include <T2embapi.h>
+
 
 CharMapping::CharMapping()
     : LogSource("charMapping")
@@ -62,13 +64,13 @@ wchar_t CharMapping::lookUp( wchar_t ch )
 
 bool CharMapping::doConversion( const wstring_t& asciiText, wstring_t& unicodeText )
 {
-    bool spacingOnly = false;
+    bool spacingOnly = true;
 
     unicodeText.resize(asciiText.size());
     for (size_t i = 0; i < asciiText.size(); ++i) {
         unicodeText[i] = lookUp(asciiText[i]);
-        //spacingOnly = (spacingOnly && 
-        //    (iswspace(unicodeText[i]) || unicodeText[i] == 1));
+        spacingOnly = (spacingOnly && 
+            (iswspace(unicodeText[i]) || unicodeText[i] == 1));
     }
     return spacingOnly;
 }
@@ -123,7 +125,7 @@ Converter::Converter()
     : LogSource("converter")
 {
     word_.reset(new WordApp());
-    word_->setVisible(false);
+    word_->setVisible(true);
 }
 
 
@@ -324,12 +326,49 @@ void Converter::convertSingleDoc( const string_t& fileName )
 
     std::set<string_t> usedFonts;
     string_t docAsText;
+    string_t fontName;
 
     do {
-        /// select current font
         s->selectCurrentFont();
 
-        string_t fontName = s->getFont()->getName();
+
+        tRangeSp rr = s->getFormattedText();
+        fontName = rr->getFont()->getName();
+        startPos = rr->getStartPos();
+        endPos = rr->getEndPos();
+        wstring_t text = rr->getSelectionText(), textUnicode;
+        startPos = s->getEndPos();
+
+        tCharMappingSp cm;
+        auto it = fontCharMaps_.find(fontName);
+        if (it == fontCharMaps_.end()) {
+            if ( !isUnicodeFont(fontName) && !isIgnoredFont(fontName) ) {
+                logError(logger(), "Font '" + fontName + "' is not found in mapping folder");
+                /// create empty mapping to avoid repeated errors
+                it = fontCharMaps_.insert(std::make_pair(fontName, tCharMappingSp())).first;
+            }
+        }
+        else
+            cm = it->second;
+        cm->doConversion(text, textUnicode);
+        rr->setSelectionText(textUnicode);
+        s->setStartPos(startPos);
+        /*startPos = s->getStartPos();
+        s->setStartPos(startPos);
+        s->setEndPos(startPos + 1);
+        fontName = s->getFont()->getName();
+
+        if ( isUnicodeFont(fontName) || isIgnoredFont(fontName) ) {
+            /// select current font
+            s->selectCurrentFont();
+            fontName = s->getFont()->getName();
+            if (!fontName.empty()) {
+                s->setStartPos(s->getEndPos());
+                usedFonts.insert(fontName);
+                continue;
+            }
+        }
+
         wstring_t text = s->getSelectionText(), textUnicode;
 
         startPos = s->getStartPos();
@@ -386,7 +425,11 @@ void Converter::convertSingleDoc( const string_t& fileName )
             /// extract text from the document as well
             docAsText += toUtf8(textUnicode);
 
-            s->setSelectionText(textUnicode);
+            if ( !spacingOnly ) {
+                s->copyFormat();
+                s->setSelectionText(textUnicode);
+                s->pasteFormat();
+            }
             s->getFont()->setName(newFaceName);
 
             tFontSp fnt = s->getFont();
@@ -397,8 +440,8 @@ void Converter::convertSingleDoc( const string_t& fileName )
             }
         }
 
-        //std::cout << percentageStr(endPos, totalCharsQty);
-        s->setStartPos(endPos);
+        std::cout << "\r" << percentageStr(endPos, totalCharsQty);
+        s->setStartPos(endPos);*/
     } while ( endPos < totalCharsQty - 1 );
 
     string_t outputDir = Poco::Path(outputFolder_)
@@ -424,7 +467,7 @@ void Converter::convertSingleDoc( const string_t& fileName )
 string_t Converter::percentageStr( int current, int total )
 {
     std::stringstream ss;
-    ss << 100 * (int)((double) current / (double) total) << " % completed.";
+    ss <<  (int)(100.0 * (double) (current + 1) / (double) total) << " % completed.";
     return ss.str();
 }
 

@@ -104,7 +104,10 @@ wstring_t getPropStr( IDispatch* disp, LPOLESTR propName )
     VARIANT result;
     VariantInit(&result);
     OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
-    return result.bstrVal;
+
+    if (result.bstrVal)
+        return result.bstrVal;
+    return wstring_t();
 }
 
 void setPropStr( IDispatch* disp, LPOLESTR propName, const wstring_t& val )

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Selection.h"
 #include "OLEMethod.h"
+#include "Range.h"
 
 /// ----------------------------------------------------------------------------
 Selection::Selection( IDispatch* selection )
@@ -61,15 +62,33 @@ wstring_t Selection::getSelectionText()
     return getPropStr(s_, L"Text");
 }
 
+/// ----------------------------------------------------------------------------
+tRangeSp Selection::getFormattedText()
+{
+    return tRangeSp(new Range(getPropertyDispatch(s_, L"FormattedText")) );
+}
+
 void Selection::setSelectionText( const wstring_t& text )
 {
     setPropStr(s_, L"Text", text);
 }
 
 /// ----------------------------------------------------------------------------
+void Selection::select()
+{
+    OLEMethod(DISPATCH_METHOD, NULL, s_, L"Select", 0);
+}
+
+/// ----------------------------------------------------------------------------
 void Selection::selectAll()
 {
     OLEMethod(DISPATCH_METHOD, NULL, s_, L"WholeStory", 0);
+}
+
+/// ----------------------------------------------------------------------------
+void Selection::selectCurrentColor()
+{
+    OLEMethod(DISPATCH_METHOD, NULL, s_, L"SelectCurrentColor", 0);
 }
 
 /// ----------------------------------------------------------------------------
