@@ -12,7 +12,8 @@ public:
     CharMapping(const string_t& mapFile);
     ~CharMapping();
 
-    void doConversion(const wstring_t& asciiText, wstring_t& unicodeText);
+    /// returns true if there are only spacing symbols in the text
+    bool doConversion(const wstring_t& asciiText, wstring_t& unicodeText);
 
     /// update the mapping of the characters
     void updateCharMapping(const string_t& mapFile); 

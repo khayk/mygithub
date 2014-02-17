@@ -60,12 +60,17 @@ wchar_t CharMapping::lookUp( wchar_t ch )
     return it->second;
 }
 
-void CharMapping::doConversion( const wstring_t& asciiText, wstring_t& unicodeText )
+bool CharMapping::doConversion( const wstring_t& asciiText, wstring_t& unicodeText )
 {
+    bool spacingOnly = false;
+
     unicodeText.resize(asciiText.size());
     for (size_t i = 0; i < asciiText.size(); ++i) {
         unicodeText[i] = lookUp(asciiText[i]);
+        //spacingOnly = (spacingOnly && 
+        //    (iswspace(unicodeText[i]) || unicodeText[i] == 1));
     }
+    return spacingOnly;
 }
 
 void CharMapping::updateCharMapping( const string_t& mapFile )
@@ -118,7 +123,7 @@ Converter::Converter()
     : LogSource("converter")
 {
     word_.reset(new WordApp());
-    word_->setVisible(true);
+    word_->setVisible(false);
 }
 
 
@@ -323,11 +328,9 @@ void Converter::convertSingleDoc( const string_t& fileName )
     do {
         /// select current font
         s->selectCurrentFont();
-        //tRangeSp range = s->getRange();
 
         string_t fontName = s->getFont()->getName();
         wstring_t text = s->getSelectionText(), textUnicode;
-        //wstring_t rtext = range->getText();
 
         startPos = s->getStartPos();
         endPos = s->getEndPos();
@@ -363,7 +366,7 @@ void Converter::convertSingleDoc( const string_t& fileName )
         usedFonts.insert(fontName);
 
         if (cm) {
-            cm->doConversion(text, textUnicode);
+            bool spacingOnly = cm->doConversion(text, textUnicode);
             
             /// if we need to restore selection
             if (restoreSelection) {
@@ -383,9 +386,7 @@ void Converter::convertSingleDoc( const string_t& fileName )
             /// extract text from the document as well
             docAsText += toUtf8(textUnicode);
 
-            s->copyFormat();
             s->setSelectionText(textUnicode);
-            s->pasteFormat();
             s->getFont()->setName(newFaceName);
 
             tFontSp fnt = s->getFont();
