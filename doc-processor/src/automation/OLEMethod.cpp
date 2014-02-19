@@ -99,6 +99,19 @@ IDispatch* getPropertyDispatch( IDispatch* disp, LPOLESTR propName )
     return result.pdispVal;
 }
 
+void setPropertyDispatch( IDispatch* dispFor, 
+    IDispatch* dispFrom, LPOLESTR propName )
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT value;
+    VariantInit(&value);
+    value.vt = VT_DISPATCH;
+    value.pdispVal = dispFrom;
+    OLEMethod(DISPATCH_PROPERTYPUT, &result, dispFor, propName, 1, value);
+}
+
 wstring_t getPropStr( IDispatch* disp, LPOLESTR propName )
 {
     VARIANT result;
@@ -118,8 +131,6 @@ void setPropStr( IDispatch* disp, LPOLESTR propName, const wstring_t& val )
 
     variant.vt = VT_BSTR;
     variant.bstrVal = ::SysAllocString(val.c_str());
-
     OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, variant);
-
     SysFreeString(variant.bstrVal);
 }

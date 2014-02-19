@@ -37,6 +37,18 @@ void CharMapping::initDefaultMappings()
 {
     for (wchar_t i = 0; i <= 0x007E; ++i)
         quickMap_[i] = i;
+
+    wchar_t identicalMappings[] = {
+        0x2018,
+        0x2019,
+        0x201C,
+        0x201D,
+        0x2026
+    };
+
+    int count = sizeof(identicalMappings) / sizeof(wchar_t);
+    for (int i = 0; i < count; ++i)
+        mapping_[identicalMappings[i]] = identicalMappings[i];
 }
 
 wchar_t CharMapping::lookUp( wchar_t ch )
@@ -54,7 +66,8 @@ wchar_t CharMapping::lookUp( wchar_t ch )
     auto it = mapping_.find(ch);
     if (it == mapping_.end()) {
         std::stringstream ss;
-        ss << "No mapping for symbol: INTCODE (" << (int) ch << ") CHAR ("
+        ss << "Language: " << language_ 
+            << ". No mapping for symbol: INTCODE (" << (int) ch << ") CHAR ("
             << toUtf8(wstring_t(1, ch)) << ")";
         logError(logger(), ss.str());
         it = mapping_.insert(std::make_pair(ch, ch)).first;
@@ -121,11 +134,22 @@ void CharMapping::setLanguage( const string_t& language )
 /// ----------------------------------------------------------------------------
 ///                               CONVERTER
 /// ----------------------------------------------------------------------------
-Converter::Converter()
+Converter::Converter(const tConfigPtr& config)
     : LogSource("converter")
+    , config_(config)
+    , quickMode_(true)
 {
     word_.reset(new WordApp());
-    word_->setVisible(true);
+    word_->setVisible(config->getBool("winword.visible", false));
+
+    if ( config->getString("working.mode", "") == "precise" )
+        quickMode_ = false;
+
+    initialize(
+        config_->getString("input.folder", ""),
+        config_->getString("output.folder", ""),
+        config_->getString("mapping.folder", "")
+    );
 }
 
 
@@ -314,7 +338,7 @@ void Converter::convertSingleDoc( const string_t& fileName )
     wstring_t wideName = toUtf16(p.toString());
 
     tDocumentsSp docs = word_->getDocuments();
-    tDocumentSp doc   = docs->open(wideName);
+    tDocumentSp  doc  = docs->open(wideName);
     if (!doc) {
         logError(logger(), "Error while opening document: " + fullPath);
         return;
@@ -324,126 +348,66 @@ void Converter::convertSingleDoc( const string_t& fileName )
     int endPos = 0, startPos = 0;
     int totalCharsQty = s->allCharactersCount();
 
-    std::set<string_t> usedFonts;
-    string_t docAsText;
-    string_t fontName;
+    ///std::set<string_t> usedFonts;
+    string_t  fontName, substFont;
+    wstring_t text, textUnicode, docAsText;
+    tCharMappingSp cm;
 
     do {
+        startPos = s->getStart();
+        s->setEnd(startPos + 1);
         s->selectCurrentFont();
-
-
-        tRangeSp rr = s->getFormattedText();
-        fontName = rr->getFont()->getName();
-        startPos = rr->getStartPos();
-        endPos = rr->getEndPos();
-        wstring_t text = rr->getSelectionText(), textUnicode;
-        startPos = s->getEndPos();
-
-        tCharMappingSp cm;
-        auto it = fontCharMaps_.find(fontName);
-        if (it == fontCharMaps_.end()) {
-            if ( !isUnicodeFont(fontName) && !isIgnoredFont(fontName) ) {
-                logError(logger(), "Font '" + fontName + "' is not found in mapping folder");
-                /// create empty mapping to avoid repeated errors
-                it = fontCharMaps_.insert(std::make_pair(fontName, tCharMappingSp())).first;
-            }
-        }
-        else
-            cm = it->second;
-        cm->doConversion(text, textUnicode);
-        rr->setSelectionText(textUnicode);
-        s->setStartPos(startPos);
-        /*startPos = s->getStartPos();
-        s->setStartPos(startPos);
-        s->setEndPos(startPos + 1);
         fontName = s->getFont()->getName();
 
-        if ( isUnicodeFont(fontName) || isIgnoredFont(fontName) ) {
-            /// select current font
-            s->selectCurrentFont();
-            fontName = s->getFont()->getName();
-            if (!fontName.empty()) {
-                s->setStartPos(s->getEndPos());
-                usedFonts.insert(fontName);
+        if ( canSkipFont(fontName) ) {
+            s->setStart(s->getEnd());
+            docAsText += s->getSelectionText();
+        }
+
+        text = s->getSelectionText();
+        if ( fontName.empty() ) {
+            saveSelection(s);
+            fontName = makeGuess(s);            
+            restoreSelection(s);
+
+            /// if after all we have empty font name, log about that event
+            /// and go forward
+            if (fontName.empty()) {
+                logError(logger(), "EMPTY FONT NAME: Investigate");
+                s->setStart(s->getEnd());
                 continue;
             }
         }
 
-        wstring_t text = s->getSelectionText(), textUnicode;
-
-        startPos = s->getStartPos();
-        endPos = s->getEndPos();
-
-        bool restoreSelection = false;
-        if (fontName.empty()) {
-            /// try to do guess
-            /// select the font at the middle of the selected text
-            int tmpStartPos = s->getStartPos();
-            int tmpEndPos   = s->getEndPos();
-            int midPos = (tmpStartPos + tmpEndPos) / 2;
-            s->setStartPos(midPos);
-            s->moveCursor(Selection::mdRight, false);
-            fontName = s->getFont()->getName();
-            restoreSelection = true;
-        }
-
-        tCharMappingSp cm;
-        auto it = fontCharMaps_.find(fontName);
-        if (it == fontCharMaps_.end()) {
-            if ( !isUnicodeFont(fontName) && !isIgnoredFont(fontName) ) {
-                logError(logger(), "Font '" + fontName + "' is not found in mapping folder");
-                /// create empty mapping to avoid repeated errors
-                it = fontCharMaps_.insert(std::make_pair(fontName, tCharMappingSp())).first;
-            }
-        }
-        else
-            cm = it->second;
-
-        if (fontName.empty()) {
-            logError(logger(), "EMPTY FONT NAME: Investigate");
-        }
-        usedFonts.insert(fontName);
-
+        /// use mapping
+        textUnicode.clear();
+        cm = getCM(s, fontName);
         if (cm) {
             bool spacingOnly = cm->doConversion(text, textUnicode);
-            
-            /// if we need to restore selection
-            if (restoreSelection) {
-                s->setStartPos(startPos);
-                s->selectCurrentFont();
-            }
-
-            string_t newFaceName;
-            auto fit = fontNameMap_.find(fontName);
-            if (fit == fontNameMap_.end()) {
-                newFaceName = defaultFonts_[cm->getLanguage()];
-            }
-            else {
-                newFaceName = fit->second;
-            }
-
-            /// extract text from the document as well
-            docAsText += toUtf8(textUnicode);
-
-            if ( !spacingOnly ) {
-                s->copyFormat();
-                s->setSelectionText(textUnicode);
-                s->pasteFormat();
-            }
-            s->getFont()->setName(newFaceName);
-
-            tFontSp fnt = s->getFont();
-            string_t newName = fnt->getName();
-            if (newName != newFaceName) {
-                newName = fnt->getNameAscii();
-                fnt->setName(newFaceName);
-            }
+            substFont = getFontSubstitution(cm, fontName);
+            tFontSp fontDup = s->getFont()->duplicate();
+            //s->setSelectionText(textUnicode);
+            s->getFont()->setName(substFont);
+            s->setFont(fontDup);
         }
 
+        /// extract text from the document as well
+        docAsText += textUnicode;
         std::cout << "\r" << percentageStr(endPos, totalCharsQty);
-        s->setStartPos(endPos);*/
-    } while ( endPos < totalCharsQty - 1 );
+        s->setStart(s->getEnd());
+    } while ( s->getEnd() < totalCharsQty - 1 );
 
+//     if ( !spacingOnly ) {
+//         if (!quickMode_)   
+//             s->copyFormat();
+// 
+//         s->setSelectionText(textUnicode);
+// 
+//         if (!quickMode_)   
+//             s->pasteFormat();
+//     }
+
+    /// now save result in the appropriate folder
     string_t outputDir = Poco::Path(outputFolder_)
         .append( Poco::Path(fileName).parent() )
         .makeAbsolute()
@@ -451,16 +415,15 @@ void Converter::convertSingleDoc( const string_t& fileName )
         .toString();
 
     Poco::File(outputDir).createDirectories();
-
     doc->saveAs( outputDir + p.getBaseName() + "_Unicode." + p.getExtension() );
     doc->close();
-    writeFileAsBinary( outputDir + p.getBaseName() + ".txt", docAsText);
+    writeFileAsBinary( outputDir + p.getBaseName() + ".txt", toUtf8(docAsText));
 
     std::stringstream ss;
     ss << "Fonts found in the document '" << fullPath << "' are: ";
-    for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it) {
-        ss << "[" << *it << "] ";
-    }
+//     for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it) {
+//         ss << "[" << *it << "] ";
+//     }
     logInfo(logger(), ss.str());
 }
 
@@ -469,6 +432,70 @@ string_t Converter::percentageStr( int current, int total )
     std::stringstream ss;
     ss <<  (int)(100.0 * (double) (current + 1) / (double) total) << " % completed.";
     return ss.str();
+}
+
+bool Converter::canSkipFont( const string_t& name ) const
+{
+    return (isUnicodeFont(name) || isIgnoredFont(name));
+}
+
+tCharMappingSp& Converter::getCM( tSelectionSp& s, const string_t& font )
+{
+    /// select mapping
+    auto it = fontCharMaps_.find(font);
+    if (it == fontCharMaps_.end()) {
+        if ( !canSkipFont(font) ) {
+            logError(logger(), "Font '" + font + "' is not found in mapping folder");
+
+            /// create empty mapping to avoid repeated errors
+            fontCharMaps_.insert(std::make_pair(font, noMapping));
+        }
+        return noMapping;
+    }
+
+    return it->second;
+}
+
+void Converter::saveSelection(tSelectionSp& s)
+{
+    savedStart_ = s->getStart();
+    savedEnd_   = s->getEnd();
+    hasSavedSelection_ = true;
+}
+
+void Converter::restoreSelection(tSelectionSp& s)
+{
+    if (hasSavedSelection_) {
+        s->setStart(savedStart_);
+        s->setEnd(savedEnd_);
+        hasSavedSelection_ = false;
+    }
+}
+
+void Converter::resetSavedSelection()
+{
+    hasSavedSelection_ = false;
+}
+
+string_t Converter::makeGuess( tSelectionSp& s )
+{
+    /// try to do guess
+    /// select the font at the middle of the selected text
+    int tmpStartPos = s->getStart();
+    int tmpEndPos   = s->getEnd();
+    int midPos = (tmpStartPos + tmpEndPos) / 2;
+    s->setStart(midPos);
+    s->moveCursor(Selection::mdRight, false);
+    return s->getFont()->getName();
+}
+
+string_t Converter::getFontSubstitution( const tCharMappingSp& cm, const string_t& fontName )
+{
+    auto fit = fontNameMap_.find(fontName);
+    if (fit == fontNameMap_.end()) {
+        return defaultFonts_[cm->getLanguage()];
+    }
+    return fit->second;
 }
 
 

@@ -98,25 +98,25 @@ void Selection::selectCurrentFont()
 }
 
 /// ----------------------------------------------------------------------------
-int Selection::setStartPos( int newPos )
+int Selection::setStart( int newPos )
 {
     return setPropertyInt(s_, L"Start", newPos);
 }
 
 /// ----------------------------------------------------------------------------
-int Selection::setEndPos( int newPos )
+int Selection::setEnd( int newPos )
 {
     return setPropertyInt(s_, L"End", newPos);
 }
 
 /// ----------------------------------------------------------------------------
-int Selection::getStartPos() const
+int Selection::getStart() const
 {
     return getPropertyInt(s_, L"Start");
 }
 
 /// ----------------------------------------------------------------------------
-int Selection::getEndPos() const
+int Selection::getEnd() const
 {
     return getPropertyInt(s_, L"End");
 }
@@ -132,6 +132,10 @@ tFontSp Selection::getFont()
     return tFontSp(new Font(getPropertyDispatch(s_, L"Font")) );
 }
 
+void Selection::setFont(const tFontSp& font)
+{
+    setPropertyDispatch(s_, font->getIDispatch(), L"Font");
+}
 // tRangeSp Selection::getRange()
 // {
 //     return tRangeSp(new Range(getPropertyDispatch(s_, L"ParagraphFormat")) );
@@ -146,5 +150,6 @@ void Selection::pasteFormat()
 {
     OLEMethod(DISPATCH_METHOD, NULL, s_, L"PasteFormat", 0);
 }
+
 
 

@@ -220,7 +220,9 @@ void AsciiToUniMapping::exportRussianASCII_Unicode( const string_t& mapFile )
         { 0x00A1   , 0x0401,  "Ё CYRILLIC CAPITAL LETTER IO"            },
         { 0x00BF   , 0x0451,  "ё CYRILLIC SMALL LETTER IO"              },
 
-        { 0x00A8   , 0x2116,  "№ NUMERO SIGN"                           }
+        { 0x00A8   , 0x2116,  "№ NUMERO SIGN"                           },
+        { 0x201C   , 0x201C,  "“ LEFT DOUBLE QUATATION SIGN"            },
+        { 0x201D   , 0x201D,  "” RIGHT DOUBLE QUATATION SIGN"           }
         
     };
 

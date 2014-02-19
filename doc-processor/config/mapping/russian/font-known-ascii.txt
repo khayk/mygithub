@@ -1,1 +1,4 @@
 Times LatRus
+TimesET          | cm-timeset.txt
+Russian TimesET  | cm-timeset.txt
+Russian Times    | cm-timeset.txt

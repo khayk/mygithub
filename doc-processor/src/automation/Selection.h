@@ -30,10 +30,10 @@ public: /// methods
     /// returns the number of units it's been moved
     int  moveCursor(MoveDirection dir, bool selectWhileMoving = false);
     
-    int  setStartPos(int newPos);
-    int  setEndPos(int newPos);
-    int  getStartPos() const;
-    int  getEndPos() const;
+    int  setStart(int newPos);
+    int  setEnd(int newPos);
+    int  getStart() const;
+    int  getEnd() const;
 
     /// return string from the current position with specified length by
     /// selecting forward
@@ -58,6 +58,7 @@ public: /// methods
     void pasteFormat();
 
     tFontSp getFont();
+    void setFont(const tFontSp& font);
 //     void setRange(int startPos, int endPos);
 
 public: /// properties

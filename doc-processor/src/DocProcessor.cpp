@@ -66,6 +66,33 @@ void DocProcessor::defineOptions( OptionSet& options )
         .repeatable(false)
         .callback(OptionCallback<DocProcessor>(this, &DocProcessor::handleHelp)));
 
+    options.addOption(
+        Option("input", "i", "bind option value to input.folder")
+        .required(true)
+        .repeatable(false)
+        .argument("value")
+        .binding("input.folder"));
+
+    options.addOption(
+        Option("output", "o", "bind option value to output.folder")
+        .required(true)
+        .repeatable(false)
+        .argument("value")
+        .binding("output.folder"));
+
+    options.addOption(
+        Option("mapping", "m", "bind option value to mapping.folder")
+        .required(true)
+        .repeatable(false)
+        .argument("value")
+        .binding("mapping.folder"));
+
+    options.addOption(
+        Option("working-mode", "w", "bind option value to working.mode")
+        .required(true)
+        .repeatable(false)
+        .argument("value")
+        .binding("working.mode"));
 }
 
 void DocProcessor::handleHelp( const std::string& name, const std::string& value )
@@ -91,6 +118,18 @@ int DocProcessor::main( const std::vector<std::string>& args )
     wstring_t appVersion;
     getFileVersion(toUtf16(config().getString("application.path")), appVersion);
     logInfo(logger(), "Application version: " + toUtf8(appVersion));
+
+//     wstring_t tt(L"Time New Roman");
+//     string_t t;
+//     int j = 0;
+//     for (int i = 0; i < 5000000; ++i) {
+//         t = toUtf8(tt);
+//         if (t.size() > 0)
+//             ++j;
+//     }
+// 
+//     std::cout << j << std::endl;
+//     return 0;
 //    AsciiToUniMapping::exportArmenianASCII_Unicode("../config/mapping/armenian/char-mapping-default.txt");
 //     AsciiToUniMapping::exportRussianASCII_Unicode("../config/mapping/russian/char-mapping-default.txt");
 //    return Application::EXIT_OK;
@@ -105,17 +144,21 @@ int DocProcessor::main( const std::vector<std::string>& args )
     if (helpRequested_)
         return Application::EXIT_OK;
 
-    if (args.size() < 3) {
-        displayHelp();
-        return Application::EXIT_USAGE;
-    }
+//     if (args.size() < 3) {
+//         displayHelp();
+//         return Application::EXIT_USAGE;
+//     }
+
+    logInfo(logger(), "input.folder   = " + config().getString("input.folder", ""));
+    logInfo(logger(), "output.folder  = " + config().getString("output.folder", ""));
+    logInfo(logger(), "mapping.folder = " + config().getString("mapping.folder", ""));
+    logInfo(logger(), "working.mode   = " + config().getString("working.mode", "quick"));
 
     // perform the main task
-    for (int i = 0; i < args.size(); ++i)
-        logInfo(logger(), "args[" + boost::lexical_cast<string_t>(i) + "] = " + args[i]);
+//     for (int i = 0; i < args.size(); ++i)
+//         logInfo(logger(), "args[" + boost::lexical_cast<string_t>(i) + "] = " + args[i]);
 
-    Converter converter;
-    converter.initialize(args[0], args[1], args[2]);
+    Converter converter(tConfigPtr(&config(), true));
     converter.start();
 
     return Application::EXIT_OK;

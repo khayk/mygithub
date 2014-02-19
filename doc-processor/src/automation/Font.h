@@ -3,19 +3,35 @@
 
 #include "Typedefs.h"
 
+class Font;
+typedef boost::shared_ptr<Font> tFontSp;
+
 class Font
 {
 public:
     Font(IDispatch* font);
     ~Font();
     
-    void reset();
+    void       reset();
+    tFontSp    duplicate();
+    IDispatch* getIDispatch();
 
-    void setNameAscii(const string_t& faceName);
-    string_t getNameAscii() const;
+    void     setName(const string_t& faceName);
+    void     setSize(int sz);
+    void     setColor(COLORREF clr);
+    void     setBold(int bold);
+    void     setUnderlineColor(COLORREF clr);
+    void     setUnderline(int underline);
+    void     setItalic(bool italic);
 
-    void setName(const string_t& faceName);
     string_t getName() const;
+    int      getSize() const;
+    COLORREF getColor() const;
+    int      getBold() const;
+    COLORREF getUnderlineColor() const;
+    int      getUnderline() const;
+    bool     getItalic() const;
+
 private:
     IDispatch* font_;
 };
