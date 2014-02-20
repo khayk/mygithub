@@ -1,1 +1,1 @@
-@call ascii-to-unicode.exe  ./input ./output ./mapping
+@call ascii-to-unicode.exe --input=./input --output=./output --mapping=./mapping --working-mode=quick
