@@ -61,7 +61,7 @@ void Font::setItalic( bool italic )
 
 int Font::getSize() const
 {
-    return getPropertyInt(font_, L"Size");
+    return (int) getPropertyFloat(font_, L"Size");
 }
 
 COLORREF Font::getColor() const
@@ -97,5 +97,19 @@ IDispatch* Font::getIDispatch()
 tFontSp Font::duplicate()
 {
     return tFontSp(new Font(getPropertyDispatch(font_, L"Duplicate")) );
+}
+
+bool Font::haveCommonAttributes()
+{
+    string_t nn = getName();
+    int     sz  = getSize();
+    COLORREF c  = getColor();
+    int rval = GetRValue(c), gVal = GetGValue(c), bVal = GetBValue(c);
+
+    int      b  = getBold();
+    COLORREF uc = getUnderlineColor();
+    int      u  = getUnderline();
+    bool     i  = getItalic();
+    return true;
 }
 

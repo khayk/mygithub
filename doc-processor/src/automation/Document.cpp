@@ -39,3 +39,13 @@ void Document::saveAs( const string_t& fullPath )
         SysFreeString(fname.bstrVal);
     }
 }
+
+tRangeSp Document::getContent()
+{
+    return tRangeSp(new Range(getPropertyDispatch(doc_, L"Content")) );
+}
+
+tStoryRangesSp Document::getStoryRanges()
+{
+    return tStoryRangesSp(new StoryRanges(getPropertyDispatch(doc_, L"StoryRanges")) );
+}

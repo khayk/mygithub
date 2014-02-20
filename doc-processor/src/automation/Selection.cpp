@@ -1,19 +1,12 @@
 #include "StdAfx.h"
 #include "Selection.h"
 #include "OLEMethod.h"
-#include "Range.h"
 
 /// ----------------------------------------------------------------------------
 Selection::Selection( IDispatch* selection )
-    : s_(selection)
+    : BaseRS(selection)
 {
 
-}
-
-/// ----------------------------------------------------------------------------
-Selection::~Selection()
-{
-    SafeRelease(s_);
 }
 
 /// ----------------------------------------------------------------------------
@@ -32,18 +25,18 @@ int Selection::moveCursor( MoveDirection md, bool selectWhileMoving )
 
     switch (md) {
     case mdLeft:
-        OLEMethod(DISPATCH_METHOD, &result, s_, L"MoveLeft",  3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveLeft",  3, wdExtend, Count, wdCharacter);
         break;
     case mdRight:
-        OLEMethod(DISPATCH_METHOD, &result, s_, L"MoveRight", 3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveRight", 3, wdExtend, Count, wdCharacter);
         break;
     case mdUp:
         wdCharacter.lVal = 5;
-        OLEMethod(DISPATCH_METHOD, &result, s_, L"MoveUp",    3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveUp",    3, wdExtend, Count, wdCharacter);
         break;
     case mdDown:
         wdCharacter.lVal = 5;
-        OLEMethod(DISPATCH_METHOD, &result, s_, L"MoveDown",  3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveDown",  3, wdExtend, Count, wdCharacter);
         break;
     }
 
@@ -51,104 +44,37 @@ int Selection::moveCursor( MoveDirection md, bool selectWhileMoving )
 }
 
 /// ----------------------------------------------------------------------------
-wstring_t Selection::getString( int length )
-{
-    return wstring_t();
-}
-
-/// ----------------------------------------------------------------------------
-wstring_t Selection::getSelectionText()
-{
-    return getPropStr(s_, L"Text");
-}
-
-/// ----------------------------------------------------------------------------
-tRangeSp Selection::getFormattedText()
-{
-    return tRangeSp(new Range(getPropertyDispatch(s_, L"FormattedText")) );
-}
-
-void Selection::setSelectionText( const wstring_t& text )
-{
-    setPropStr(s_, L"Text", text);
-}
-
-/// ----------------------------------------------------------------------------
-void Selection::select()
-{
-    OLEMethod(DISPATCH_METHOD, NULL, s_, L"Select", 0);
-}
-
-/// ----------------------------------------------------------------------------
-void Selection::selectAll()
-{
-    OLEMethod(DISPATCH_METHOD, NULL, s_, L"WholeStory", 0);
-}
+// wstring_t Selection::getString( int length )
+// {
+//     return wstring_t();
+// }
 
 /// ----------------------------------------------------------------------------
 void Selection::selectCurrentColor()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, s_, L"SelectCurrentColor", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, base_, L"SelectCurrentColor", 0);
 }
 
 /// ----------------------------------------------------------------------------
 void Selection::selectCurrentFont()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, s_, L"SelectCurrentFont", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, base_, L"SelectCurrentFont", 0);
 }
 
-/// ----------------------------------------------------------------------------
-int Selection::setStart( int newPos )
-{
-    return setPropertyInt(s_, L"Start", newPos);
-}
 
-/// ----------------------------------------------------------------------------
-int Selection::setEnd( int newPos )
-{
-    return setPropertyInt(s_, L"End", newPos);
-}
-
-/// ----------------------------------------------------------------------------
-int Selection::getStart() const
-{
-    return getPropertyInt(s_, L"Start");
-}
-
-/// ----------------------------------------------------------------------------
-int Selection::getEnd() const
-{
-    return getPropertyInt(s_, L"End");
-}
-
-/// ----------------------------------------------------------------------------
-int Selection::allCharactersCount() const
-{
-    return getPropertyInt(s_, L"StoryLength");
-}
-
-tFontSp Selection::getFont()
-{
-    return tFontSp(new Font(getPropertyDispatch(s_, L"Font")) );
-}
-
-void Selection::setFont(const tFontSp& font)
-{
-    setPropertyDispatch(s_, font->getIDispatch(), L"Font");
-}
 // tRangeSp Selection::getRange()
 // {
-//     return tRangeSp(new Range(getPropertyDispatch(s_, L"ParagraphFormat")) );
+//     return tRangeSp(new Range(getPropertyDispatch(base_, L"ParagraphFormat")) );
 // }
 
 void Selection::copyFormat()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, s_, L"CopyFormat", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, base_, L"CopyFormat", 0);
 }
 
 void Selection::pasteFormat()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, s_, L"PasteFormat", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, base_, L"PasteFormat", 0);
 }
 
 

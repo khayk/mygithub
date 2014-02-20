@@ -72,6 +72,7 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00FA ,  0x0555, "Օ ARMENIAN CAPITAL LETTER OH"                 },
         { 0x00FC ,  0x0556, "Ֆ ARMENIAN CAPITAL LETTER FEH"                },
 
+        { 0x00A0 ,  0x00A0, "  NO-BREAK SPACE"                             },
         { 0x00A1 ,  0x00A9, "© COPYRIGHT SIGN"                             },
         { 0x00A2 ,  0x00A7, "§ SECTION SIGN"                               },
         { 0x00A4 ,  0x0029, ") RIGHT PARENTHESIS"                          },

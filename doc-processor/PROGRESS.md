@@ -1,3 +1,7 @@
+# Word Contants
+
+http://msdn.microsoft.com/en-us/library/office/dn353221.aspx
+
 # Solution
 (Microsoft.Office.Interop.Word Namespace) http://msdn.microsoft.com/en-us/library/microsoft.office.interop.word(v=office.14).aspx
 

@@ -3,6 +3,7 @@
 
 #include "Typedefs.h"
 #include <boost/weak_ptr.hpp>
+#include "Range.h"
 
 class Document
 {
@@ -13,6 +14,9 @@ public:
     void close();
     void save();
     void saveAs(const string_t& fullPath);
+
+    tRangeSp getContent();
+    tStoryRangesSp getStoryRanges();
 
 private:
     IDispatch* doc_;

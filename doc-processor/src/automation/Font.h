@@ -15,27 +15,28 @@ public:
     void       reset();
     tFontSp    duplicate();
     IDispatch* getIDispatch();
+    bool       haveCommonAttributes();
 
-    void     setName(const string_t& faceName);
-    void     setSize(int sz);
-    void     setColor(COLORREF clr);
-    void     setBold(int bold);
-    void     setUnderlineColor(COLORREF clr);
-    void     setUnderline(int underline);
-    void     setItalic(bool italic);
+    void       setName(const string_t& faceName);
+    void       setSize(int sz);
+    void       setColor(COLORREF clr);
 
-    string_t getName() const;
-    int      getSize() const;
-    COLORREF getColor() const;
-    int      getBold() const;
-    COLORREF getUnderlineColor() const;
-    int      getUnderline() const;
-    bool     getItalic() const;
+    /// -1 to set bold, 0 to remove bold, 1 to toggle
+    void       setBold(int bold);
+    void       setUnderlineColor(COLORREF clr);
+    void       setUnderline(int underline);
+    void       setItalic(bool italic);
+
+    string_t   getName() const;
+    int        getSize() const;
+    COLORREF   getColor() const;
+    int        getBold() const;
+    COLORREF   getUnderlineColor() const;
+    int        getUnderline() const;
+    bool       getItalic() const;
 
 private:
     IDispatch* font_;
 };
-
-typedef boost::shared_ptr<Font> tFontSp;
 
 #endif

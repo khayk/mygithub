@@ -5,6 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/intrusive_ptr.hpp>
 #include "../utils/RefCounter.h"
+#include "Enums.h"
 
 typedef boost::intrusive_ptr<IDispatch> tDispatchIp;
 

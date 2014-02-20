@@ -92,7 +92,7 @@ private:
     bool isUnicodeFont(const string_t& name) const;
     bool isIgnoredFont(const string_t& name) const;
     bool canSkipFont(const string_t& name) const;
-    tCharMappingSp& getCM(tSelectionSp& s, const string_t& font);
+    tCharMappingSp& getCM(const string_t& font);
     void saveSelection(tSelectionSp& s);
     void restoreSelection(tSelectionSp& s);
     void resetSavedSelection();

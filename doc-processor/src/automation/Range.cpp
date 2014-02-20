@@ -4,22 +4,28 @@
 #include "Selection.h"
 
 Range::Range( IDispatch* range )
-    : Selection(range) //range_(range)
+    : BaseRS(range)
+{
+}
+
+tRangeSp Range::getNextStoryRange()
+{
+    return tRangeSp(new Range(getPropertyDispatch(base_, L"NextStoryRange")) );
+}
+
+
+StoryRanges::StoryRanges( IDispatch* range )
+    : range_(range)
 {
 
 }
 
-Range::~Range()
+StoryRanges::~StoryRanges()
 {
-
+    SafeRelease(range_);
 }
 
-// wstring_t Range::getText() const
-// {
-//     return getPropStr(s_, L"Text");
-// }
-// 
-// void Range::setText( const wstring_t& text )
-// {
-//     setPropStr(s_, L"Text", text);
-// }
+int StoryRanges::getCount()
+{
+    return getPropertyInt(range_, L"Count");
+}

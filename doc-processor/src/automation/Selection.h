@@ -1,70 +1,28 @@
 #ifndef WINDWORD_SELECTION_H__
 #define WINDWORD_SELECTION_H__
 
-#include "Typedefs.h"
-#include "Font.h"
+#include "BaseRS.h"
 
-class Range;
-typedef boost::shared_ptr<Range> tRangeSp;
-
-class Selection {
-public:
-    enum MoveDirection {
-        mdLeft = 1,
-        mdRight,
-        mdUp,
-        mdDown
-    };
-
+class Selection : public BaseRS {
 public:
     Selection(IDispatch* selection);
-    ~Selection();
 
 public: /// methods
-
-    /// return the number of all characters
-    int  allCharactersCount() const;
 
     /// move the cursor forward/backward based on forward value
     /// select text while moving if the 'selectWhileMoving' is true
     /// returns the number of units it's been moved
     int  moveCursor(MoveDirection dir, bool selectWhileMoving = false);
     
-    int  setStart(int newPos);
-    int  setEnd(int newPos);
-    int  getStart() const;
-    int  getEnd() const;
-
     /// return string from the current position with specified length by
     /// selecting forward
-    wstring_t getString(int length);
-
-    /// get selected string
-    wstring_t getSelectionText();
-    tRangeSp  getFormattedText();
-
-    /// change the text of current selection, no formatting will be changed
-    void setSelectionText(const wstring_t& text);
-
-    /// select whole document
-    void select();
-    void selectAll();
+    /// wstring_t getString(int length); 
     
     void selectCurrentColor();
     void selectCurrentFont();
-    void selectCurrentTabs();
 
     void copyFormat();
     void pasteFormat();
-
-    tFontSp getFont();
-    void setFont(const tFontSp& font);
-//     void setRange(int startPos, int endPos);
-
-public: /// properties
-
-protected:
-    IDispatch* s_;
 };
 
 typedef boost::shared_ptr<Selection> tSelectionSp;

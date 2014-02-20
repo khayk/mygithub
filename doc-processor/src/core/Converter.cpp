@@ -344,27 +344,65 @@ void Converter::convertSingleDoc( const string_t& fileName )
         return;
     }
 
-    tSelectionSp s = word_->getSelection();
+    //tRangeSp r = doc->getContent();
+
+    tSelectionSp r = word_->getSelection();
     int endPos = 0, startPos = 0;
-    int totalCharsQty = s->allCharactersCount();
+    int totalCharsQty = r->getStoryLength();
+
 
     ///std::set<string_t> usedFonts;
     string_t  fontName, substFont;
     wstring_t text, textUnicode, docAsText;
     tCharMappingSp cm;
 
+    int CHUNK_SIZE = 256;
+    if (totalCharsQty < CHUNK_SIZE)
+        CHUNK_SIZE = totalCharsQty;
+
+    int pos = 0;
     do {
-        startPos = s->getStart();
-        s->setEnd(startPos + 1);
-        s->selectCurrentFont();
+        int chunk = CHUNK_SIZE;
+        r->setStart(pos);
+        r->setEnd(pos + chunk);
+        //r->select();
+
+        fontName = r->getFont()->getName();
+        while (fontName.empty() && chunk > 1) {
+            chunk /= 2;
+            r->setEnd(pos + chunk);
+            //r->select();
+            fontName = r->getFont()->getName();
+        }
+        
+        if ( !canSkipFont(fontName) ) {
+            text = r->getText();
+            cm = getCM(fontName);
+            if (cm) {
+                textUnicode.clear();
+                cm->doConversion(text, textUnicode);
+                substFont = getFontSubstitution(cm, fontName);
+
+                r->setText(textUnicode);
+                r->getFont()->setName(substFont);
+            }
+        }
+        pos = r->getEnd();
+        //r->setStart(r->getEnd());
+
+/*        startPos = s->getStart();
+        s->setStart(startPos + 1);
+        //s->setEnd(startPos + 1);
+        //s->selectCurrentFont();
         fontName = s->getFont()->getName();
 
         if ( canSkipFont(fontName) ) {
+            s->getFont()->haveCommonAttributes();
             s->setStart(s->getEnd());
-            docAsText += s->getSelectionText();
+            docAsText += s->getText();
         }
 
-        text = s->getSelectionText();
+        text = s->getText();
         if ( fontName.empty() ) {
             saveSelection(s);
             fontName = makeGuess(s);            
@@ -385,17 +423,18 @@ void Converter::convertSingleDoc( const string_t& fileName )
         if (cm) {
             bool spacingOnly = cm->doConversion(text, textUnicode);
             substFont = getFontSubstitution(cm, fontName);
-            tFontSp fontDup = s->getFont()->duplicate();
-            //s->setSelectionText(textUnicode);
+            //tFontSp fontDup = s->getFont()->duplicate();
+            s->setText(textUnicode);
+            //s->getFont()->haveCommonAttributes();
             s->getFont()->setName(substFont);
-            s->setFont(fontDup);
+            //s->setFont(fontDup);
         }
 
         /// extract text from the document as well
         docAsText += textUnicode;
         std::cout << "\r" << percentageStr(endPos, totalCharsQty);
-        s->setStart(s->getEnd());
-    } while ( s->getEnd() < totalCharsQty - 1 );
+        s->setStart(s->getEnd());*/
+    } while ( pos < totalCharsQty - 1 );
 
 //     if ( !spacingOnly ) {
 //         if (!quickMode_)   
@@ -439,7 +478,7 @@ bool Converter::canSkipFont( const string_t& name ) const
     return (isUnicodeFont(name) || isIgnoredFont(name));
 }
 
-tCharMappingSp& Converter::getCM( tSelectionSp& s, const string_t& font )
+tCharMappingSp& Converter::getCM( const string_t& font )
 {
     /// select mapping
     auto it = fontCharMaps_.find(font);
@@ -485,7 +524,7 @@ string_t Converter::makeGuess( tSelectionSp& s )
     int tmpEndPos   = s->getEnd();
     int midPos = (tmpStartPos + tmpEndPos) / 2;
     s->setStart(midPos);
-    s->moveCursor(Selection::mdRight, false);
+    s->moveCursor(mdRight, false);
     return s->getFont()->getName();
 }
 

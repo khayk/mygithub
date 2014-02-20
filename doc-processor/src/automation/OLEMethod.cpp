@@ -74,6 +74,8 @@ int getPropertyInt( IDispatch* disp, LPOLESTR propName )
     VARIANT result;
     VariantInit(&result);
     OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
+    if (result.vt != VT_I4)
+        throw std::exception("Unexpected result type for VARIANT");
     return result.intVal;
 }
 
@@ -86,9 +88,19 @@ int setPropertyInt( IDispatch* disp, LPOLESTR propName, int value )
     VariantInit(&result);
 
     variant.vt =VT_I4;
-    variant.lVal = value;
+    variant.intVal = value;
     OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, variant);
     return result.intVal;
+}
+
+float getPropertyFloat( IDispatch* disp, LPOLESTR propName )
+{
+    VARIANT result;
+    VariantInit(&result);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
+    if (result.vt != VT_R4)
+        throw std::exception("Unexpected result type for VARIANT");
+    return result.fltVal;
 }
 
 IDispatch* getPropertyDispatch( IDispatch* disp, LPOLESTR propName )

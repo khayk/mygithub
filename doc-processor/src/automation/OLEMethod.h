@@ -3,6 +3,8 @@
 
 #include "Typedefs.h"
 
+float getPropertyFloat(IDispatch* disp, LPOLESTR propName);
+
 int getPropertyInt(IDispatch* disp, LPOLESTR propName);
 int setPropertyInt(IDispatch* disp, LPOLESTR propName, int val);
 

@@ -1,20 +1,25 @@
 #pragma once
 
-#include "Typedefs.h"
-#include "Selection.h"
+#include "BaseRS.h"
 
-class Range : public Selection
+class Range : public BaseRS
 {
 public:
     Range(IDispatch* range);
-    ~Range();
 
-    /// get selected string
-//     wstring_t getText() const;
-//     void setText(const wstring_t& text);
+    tRangeSp getNextStoryRange();
+};
 
-private:
-    //IDispatch* range_;
+
+class StoryRanges {
+public:
+    StoryRanges(IDispatch* range);
+    ~StoryRanges();
+
+    int getCount();
+protected:
+    IDispatch* range_;
 };
 
 typedef boost::shared_ptr<Range> tRangeSp;
+typedef boost::shared_ptr<StoryRanges> tStoryRangesSp;

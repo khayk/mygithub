@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\automation\BaseRS.cpp" />
     <ClCompile Include="..\src\automation\Document.cpp" />
     <ClCompile Include="..\src\automation\Documents.cpp" />
     <ClCompile Include="..\src\automation\Font.cpp" />
@@ -29,8 +30,10 @@
     <ClCompile Include="..\src\utils\FileFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\automation\BaseRS.h" />
     <ClInclude Include="..\src\automation\Document.h" />
     <ClInclude Include="..\src\automation\Documents.h" />
+    <ClInclude Include="..\src\automation\Enums.h" />
     <ClInclude Include="..\src\automation\Font.h" />
     <ClInclude Include="..\src\automation\OLEMethod.h" />
     <ClInclude Include="..\src\automation\Range.h" />

@@ -50,4 +50,5 @@ void Documents::closeAll()
     }
     docsList.clear();
 }
-  
+
+
