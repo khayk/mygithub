@@ -17,6 +17,7 @@ public:
 
     tRangeSp getContent();
     tStoryRangesSp getStoryRanges();
+    tCharactersSp  getCharacters();
 
 private:
     IDispatch* doc_;

@@ -21,5 +21,20 @@ protected:
     IDispatch* range_;
 };
 
-typedef boost::shared_ptr<Range> tRangeSp;
+
+class Characters {
+public:
+    Characters(IDispatch* chars);
+    ~Characters();
+
+    int getCount();
+    tRangeSp getItem(int index);
+    tRangeSp getFirst();
+
+private:
+    IDispatch* chars_;
+};
+
+typedef boost::shared_ptr<Range>       tRangeSp;
+typedef boost::shared_ptr<Characters>  tCharactersSp;
 typedef boost::shared_ptr<StoryRanges> tStoryRangesSp;
