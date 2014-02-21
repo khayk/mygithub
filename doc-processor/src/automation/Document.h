@@ -15,9 +15,10 @@ public:
     void save();
     void saveAs(const string_t& fullPath);
 
-    tRangeSp getContent();
+    tRangeSp       getContent();
     tStoryRangesSp getStoryRanges();
     tCharactersSp  getCharacters();
+    tParagraphsSp  getParagraphs();
 
 private:
     IDispatch* doc_;

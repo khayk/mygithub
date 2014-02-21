@@ -344,17 +344,55 @@ void Converter::convertSingleDoc( const string_t& fileName )
         return;
     }
 
-    //tRangeSp r = doc->getContent();
+    tCharMappingSp cm;
+    string_t       fontName, newFontName;
+    wstring_t      text, textUnicode, docAsText;
+    int            c = 0;
+    
 
+    //tParagraphsSp pars = doc->getParagraphs();
+
+    //tParagraphSp itr = pars->getFirst();
+    tCharactersSp chars = doc->getCharacters();
+    int totalCharsQty = chars->getCount();
+    tRangeSp itr = chars->getFirst();
+
+    while (itr) {
+        tRangeSp& r = itr;
+        r->select();
+        text = r->getText();
+        fontName = r->getFont()->getName();
+        if (!fontName.empty()) {
+            if ( !canSkipFont(fontName) ) {
+                text = r->getText();
+                cm = getCM(fontName);
+                if (cm) {
+                    textUnicode.clear();
+                    bool spacingOnly = cm->doConversion(text, textUnicode);
+                    newFontName = getFontSubstitution(cm, fontName);
+
+                    if ( !spacingOnly )
+                        r->setText(textUnicode);
+                    r->getFont()->setName(newFontName);
+                }
+            }
+        }
+        else {
+            logError(logger(), "FOUND EMPTY FONT");
+        }
+
+        std::cout << "\r" << percentageStr(c, totalCharsQty);
+        ++c;
+        itr = itr->getNext();
+    }
+    //tRangeSp r = doc->getContent();
+/*
     tSelectionSp r = word_->getSelection();
     int endPos = 0, startPos = 0;
     int totalCharsQty = r->getStoryLength();
 
 
     ///std::set<string_t> usedFonts;
-    string_t  fontName, substFont;
-    wstring_t text, textUnicode, docAsText;
-    tCharMappingSp cm;
 
     int CHUNK_SIZE = 256;
     if (totalCharsQty < CHUNK_SIZE)
@@ -433,8 +471,8 @@ void Converter::convertSingleDoc( const string_t& fileName )
         /// extract text from the document as well
         docAsText += textUnicode;
         std::cout << "\r" << percentageStr(endPos, totalCharsQty);
-        s->setStart(s->getEnd());*/
-    } while ( pos < totalCharsQty - 1 );
+        s->setStart(s->getEnd());
+    } while ( pos < totalCharsQty - 1 );*/
 
 //     if ( !spacingOnly ) {
 //         if (!quickMode_)   

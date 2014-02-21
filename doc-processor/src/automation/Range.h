@@ -8,6 +8,7 @@ public:
     Range(IDispatch* range);
 
     tRangeSp getNextStoryRange();
+    tRangeSp getNext();
 };
 
 
@@ -35,6 +36,40 @@ private:
     IDispatch* chars_;
 };
 
+
+class Paragraph;
+typedef boost::shared_ptr<Paragraph>  tParagraphSp;
+
+class Paragraph {
+public:
+    Paragraph(IDispatch* paragraph);
+    ~Paragraph();
+
+    IDispatch*   getIDispatch() const;
+    tParagraphSp getNext();
+    tRangeSp     getRange();
+
+private:
+    IDispatch* paragraph_;
+};
+
+
+/// ----------------------------------------------------------------------------
+class Paragraphs {
+public:
+    Paragraphs(IDispatch* paragraphs);
+    ~Paragraphs();
+
+    int getCount();
+    tParagraphSp getItem(int index);
+    tParagraphSp getFirst();
+
+private:
+    IDispatch* paragraphs_;
+};
+
+
 typedef boost::shared_ptr<Range>       tRangeSp;
 typedef boost::shared_ptr<Characters>  tCharactersSp;
+typedef boost::shared_ptr<Paragraphs>  tParagraphsSp;
 typedef boost::shared_ptr<StoryRanges> tStoryRangesSp;

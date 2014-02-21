@@ -55,3 +55,8 @@ tCharactersSp Document::getCharacters()
 {
     return tCharactersSp(new Characters(getPropertyDispatch(doc_, L"Characters")) );
 }
+
+tParagraphsSp Document::getParagraphs()
+{
+    return tParagraphsSp(new Paragraphs(getPropertyDispatch(doc_, L"Paragraphs")) );
+}
