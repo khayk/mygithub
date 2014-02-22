@@ -3,6 +3,23 @@
 #include "OLEMethod.h"
 #include "Range.h"
 
+
+BaseObject::BaseObject( IDispatch* disp )
+    : disp_(disp)
+{
+}
+
+BaseObject::~BaseObject()
+{
+    SafeRelease(disp_);
+}
+
+IDispatch* BaseObject::getIDispatch() const
+{
+    return disp_;
+}
+
+
 BaseRS::BaseRS( IDispatch* base )
     : base_(base)
 {

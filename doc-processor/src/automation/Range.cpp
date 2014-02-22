@@ -24,6 +24,25 @@ tRangeSp Range::getNext()
     return tRangeSp();
 }
 
+// tBaseObjectSp Range::getParagraphFormat()
+// {
+//     return tBaseObjectSp(new BaseObject(getPropertyDispatch(base_, L"ParagraphFormat")) );
+// }
+// 
+// tBaseObjectSp Range::getStyle()
+// {
+//     return tBaseObjectSp(new BaseObject(getPropertyDispatch(base_, L"Style")) );
+// }
+
+void Range::autoFormat()
+{
+    OLEMethod(DISPATCH_METHOD, NULL, base_, L"AutoFormat", 0);
+}
+
+int Range::getHighlightColorIndex()
+{
+    return getPropertyInt(base_, L"HighlightColorIndex");
+}
 
 StoryRanges::StoryRanges( IDispatch* range )
     : range_(range)
@@ -109,6 +128,26 @@ IDispatch* Paragraph::getIDispatch() const
 tRangeSp Paragraph::getRange()
 {
     return tRangeSp(new Range(getPropertyDispatch(paragraph_, L"Range")) );
+}
+
+tBaseObjectSp Paragraph::getStyle()
+{
+    return tBaseObjectSp(new BaseObject(getPropertyDispatch(paragraph_, L"Style")) );
+}
+
+tBaseObjectSp Paragraph::getFormat()
+{
+    return tBaseObjectSp(new BaseObject(getPropertyDispatch(paragraph_, L"Format")) );
+}
+
+void Paragraph::setStyle( const tBaseObjectSp& obj )
+{
+    setPropertyDispatch(paragraph_, obj->getIDispatch(), L"Style");
+}
+
+void Paragraph::setFormat( const tBaseObjectSp& obj )
+{
+    setPropertyDispatch(paragraph_, obj->getIDispatch(), L"Format");
 }
 
 Paragraphs::Paragraphs( IDispatch* paragraph )

@@ -7,6 +7,12 @@ class Range : public BaseRS
 public:
     Range(IDispatch* range);
 
+    void autoFormat();
+    int  getHighlightColorIndex();
+
+//     tBaseObjectSp getStyle();
+//     tBaseObjectSp getParagraphFormat();
+    
     tRangeSp getNextStoryRange();
     tRangeSp getNext();
 };
@@ -45,9 +51,14 @@ public:
     Paragraph(IDispatch* paragraph);
     ~Paragraph();
 
-    IDispatch*   getIDispatch() const;
-    tParagraphSp getNext();
-    tRangeSp     getRange();
+    IDispatch*    getIDispatch() const;
+    tParagraphSp  getNext();
+    tRangeSp      getRange();
+
+    tBaseObjectSp getStyle();
+    void setStyle(const tBaseObjectSp& obj);
+    tBaseObjectSp getFormat();
+    void setFormat(const tBaseObjectSp& obj);
 
 private:
     IDispatch* paragraph_;

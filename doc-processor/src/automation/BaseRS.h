@@ -6,6 +6,19 @@
 class Range;
 typedef boost::shared_ptr<Range> tRangeSp;
 
+class BaseObject {
+public:
+    BaseObject(IDispatch* disp);
+    ~BaseObject();
+
+    IDispatch* getIDispatch() const;
+
+protected:
+    IDispatch* disp_;
+};
+
+typedef boost::shared_ptr<BaseObject> tBaseObjectSp;
+
 class BaseRS {
 public:
     BaseRS(IDispatch* base);

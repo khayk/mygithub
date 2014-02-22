@@ -25,15 +25,15 @@ public:
     void       setBold(int bold);
     void       setUnderlineColor(COLORREF clr);
     void       setUnderline(int underline);
-    void       setItalic(bool italic);
+    void       setItalic(int italic);
 
     string_t   getName() const;
     int        getSize() const;
-    COLORREF   getColor() const;
+    int        getColor() const;
     int        getBold() const;
-    COLORREF   getUnderlineColor() const;
+    int        getUnderlineColor() const;
     int        getUnderline() const;
-    bool       getItalic() const;
+    int        getItalic() const;
 
 private:
     IDispatch* font_;

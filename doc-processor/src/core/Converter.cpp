@@ -317,7 +317,8 @@ void Converter::start()
     auto files = ff.getFiles();
     for (auto it = files.begin(); it != files.end(); ++it) {
         try {
-            convertSingleDoc(*it);
+            logInfo(logger(), "Processing document: " + *it);
+            convertSingleDocQuick(*it);
         }
         catch (const Poco::Exception& pe) {
             logError(logger(), pe.displayText());
@@ -359,7 +360,8 @@ void Converter::convertSingleDoc( const string_t& fileName )
 
     while (itr) {
         tRangeSp& r = itr;
-        r->select();
+
+        //r->select();
         text = r->getText();
         fontName = r->getFont()->getName();
         if (!fontName.empty()) {
@@ -371,8 +373,12 @@ void Converter::convertSingleDoc( const string_t& fileName )
                     bool spacingOnly = cm->doConversion(text, textUnicode);
                     newFontName = getFontSubstitution(cm, fontName);
 
-                    if ( !spacingOnly )
+                    if ( !spacingOnly ) {
+                        //r->getFont()->reset();
+                        int ci = r->getHighlightColorIndex();
                         r->setText(textUnicode);
+                        r->autoFormat();
+                    }
                     r->getFont()->setName(newFontName);
                 }
             }
@@ -575,45 +581,215 @@ string_t Converter::getFontSubstitution( const tCharMappingSp& cm, const string_
     return fit->second;
 }
 
-
-
-
-/*
-void Converter::loadFonts()
+void Converter::logUsedFonts( const string_t& name, std::set<string_t>& usedFonts )
 {
-    FileFinder ff(false, mappingFolder_, "ttf");
-    auto files = ff.getFiles();
+    std::stringstream ss;
+    ss << "Fonts found in the document '" << name << "' are: ";
+    for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it) {
+        ss << "[" << *it << "] ";
+    }
+    logInfo(logger(), ss.str());
+}
 
-    HDC hdc = CreateCompatibleDC(NULL);
-
-    for (auto it = files.begin(); it != files.end(); ++it) {
-        string_t rawData;
-        readFileAsBinary(ff.getRootPath() + *it, rawData);
-
-        DWORD dwNumFonts = 0;
-        void* fontData = (void*)&rawData[0];
-        DWORD fontSize = rawData.size();
-        HANDLE fontHandle = ::AddFontMemResourceEx(fontData, fontSize, NULL, &dwNumFonts);
-
-        /*
-        ULONG ulStatus;
-        LONG retVal = TTLoadEmbeddedFont(fontHandle, 0, EMBED_PREVIEWPRINT, LICENSE_DEFAULT, &ulStatus, );
-
-        //HANDLE font = CreateFont();
-        //SelectFont()
-        //GetTextFace
-        
-        // GCP_DBCS      
-        // GCP_DIACRITIC 
-        // FLI_GLYPHS    
-        // GCP_GLYPHSHAPE
-        // GCP_KASHIDA   
-        // GCP_LIGATE    
-        // GCP_USEKERNING
-        // GCP_REORDER   
-        GetFontLanguageInfo(hdc);
+void Converter::convertSingleDocQuick( const string_t& fileName )
+{
+    tDocumentsSp docs = word_->getDocuments();
+    tDocumentSp  doc  = docs->open(toUtf16(getInputAbsPath(fileName)));
+    if (!doc) {
+        logError(logger(), "Error while opening document: " + fileName);
+        return;
     }
 
-    DeleteDC(hdc);
+    //tParagraphsSp  allParagraphs = doc->getParagraphs();
+    //tParagraphSp   pgrph = allParagraphs->getFirst();
+    //int            totalParagraphs = allParagraphs->getCount();
+
+    usedFonts_.clear();
+    wstring_t docAsText;
+
+    docAsText += processRangeQuick(doc->getContent());
+
+//     while (pgrph) {
+//         tRangeSp r = pgrph->getRange();
+//         pgrph = pgrph->getNext();
+//     }
+
+    /*
+
+
+/*        startPos = s->getStart();
+        s->setStart(startPos + 1);
+        //s->setEnd(startPos + 1);
+        //s->selectCurrentFont();
+        fontName = s->getFont()->getName();
+
+        if ( canSkipFont(fontName) ) {
+            s->getFont()->haveCommonAttributes();
+            s->setStart(s->getEnd());
+            docAsText += s->getText();
+        }
+
+        text = s->getText();
+        if ( fontName.empty() ) {
+            saveSelection(s);
+            fontName = makeGuess(s);            
+            restoreSelection(s);
+
+            /// if after all we have empty font name, log about that event
+            /// and go forward
+            if (fontName.empty()) {
+                logError(logger(), "EMPTY FONT NAME: Investigate");
+                s->setStart(s->getEnd());
+                continue;
+            }
+        }
+
+        /// use mapping
+        textUnicode.clear();
+        cm = getCM(s, fontName);
+        if (cm) {
+            bool spacingOnly = cm->doConversion(text, textUnicode);
+            substFont = getFontSubstitution(cm, fontName);
+            //tFontSp fontDup = s->getFont()->duplicate();
+            s->setText(textUnicode);
+            //s->getFont()->haveCommonAttributes();
+            s->getFont()->setName(substFont);
+            //s->setFont(fontDup);
+        }
+
+        /// extract text from the document as well
+        docAsText += textUnicode;
+        std::cout << "\r" << percentageStr(endPos, totalCharsQty);
+        s->setStart(s->getEnd());
+    */
+
+//     if ( !spacingOnly ) {
+//         if (!quickMode_)   
+//             s->copyFormat();
+// 
+//         s->setSelectionText(textUnicode);
+// 
+//         if (!quickMode_)   
+//             s->pasteFormat();
+//     }
+
+    /// now save result in the appropriate folder
+    string_t outputDir = getOutputAbsPath(fileName);
+    Poco::File(outputDir).createDirectories();
+    Poco::Path p(fileName);
+    doc->saveAs( outputDir + p.getBaseName() + " UNICODE." + p.getExtension() );
+    doc->close();
+
+    if ( config_->getBool("app.saveAlsoAsUTF8", false) )
+        writeFileAsBinary( outputDir + p.getBaseName() + " UTF8.txt", toUtf8(docAsText));
 }
-*/
+
+string_t Converter::getInputAbsPath( const string_t& name )
+{
+    string_t fullPath = inputFolder_ + name;
+    Poco::Path p(fullPath);
+    p.makeAbsolute();
+    return p.toString();
+}
+
+string_t Converter::getOutputAbsPath( const string_t& name )
+{
+    return Poco::Path(outputFolder_)
+        .append( Poco::Path(name).parent() )
+        .makeAbsolute()
+        .makeDirectory()
+        .toString();
+}
+
+wstring_t Converter::processRangeQuick( tRangeSp& r )
+{
+    string_t defaultFont = "Sylfaen";
+    wstring_t       specialChars;
+    specialChars += (wchar_t)2;     /// footnote
+    specialChars += (wchar_t)7;     /// table indicators
+    specialChars += (wchar_t)13;    /// paragraph ending
+
+    tCharMappingSp cm;
+    string_t       fontName, newFontName;
+    wstring_t      text, textUnicode, docAsText;
+    int            endPos = r->getEnd(), startPos = r->getStart();
+    int            totalCharsQty = r->getStoryLength();
+
+    int CHUNK_SIZE = 256;
+    if (totalCharsQty < CHUNK_SIZE)
+        CHUNK_SIZE = totalCharsQty;
+
+    int pos = r->getStart();
+    do {
+        int chunk = CHUNK_SIZE;
+        r->setStart(pos);
+        r->setEnd(pos + chunk);
+        r->select();
+
+        /// try to find a text that can be skipped, that is a text with the
+        /// unicode font name
+        tFontSp font = r->getFont();
+        while (font->getName().empty() && chunk > 1) {
+            chunk /= 2;
+            r->setEnd(pos + chunk);
+            r->select();
+            font = r->getFont();
+        }
+        if (canSkipFont(font->getName())) {
+            docAsText += r->getText();
+            pos = r->getEnd();
+            continue;
+        }
+
+        /// skip invalid characters
+        text     = r->getText();
+        string_t::size_type xpos = text.find_first_of(specialChars);
+        if (xpos != string_t::npos) {
+            if (xpos == 0) {
+                ++pos;
+                r->setEnd(pos);
+                r->getFont()->setName(defaultFont);
+                continue;
+            }
+            chunk = xpos;
+            r->setEnd(pos + chunk);
+            r->select();
+        }
+
+        /// the font we found cannot be skipped, deal with it properly
+        while (!font->haveCommonAttributes() && chunk > 1) {
+            chunk /= 2;
+            r->setEnd(pos + chunk);
+            r->select();
+            font = r->getFont();
+        }
+
+        fontName = font->getName();
+        text     = r->getText();
+        if ( !canSkipFont(fontName) ) {
+            cm = getCM(fontName);
+            if (cm) {
+                textUnicode.clear();
+                bool spaceOnly = cm->doConversion(text, textUnicode);
+                newFontName = getFontSubstitution(cm, fontName);
+
+                font = r->getFont();
+                font->setName(newFontName);
+                font->setSize(font->getSize());
+
+                if (!spaceOnly)
+                    r->setText(textUnicode);
+                docAsText += textUnicode;
+            }
+        }
+        else {
+            docAsText += text;
+        }
+
+        pos = r->getEnd();
+
+        std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
+    } while ( pos < totalCharsQty - 1 );
+
+    return docAsText;
+}

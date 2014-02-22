@@ -17,7 +17,7 @@ public:
 
     /// returns true if there are only spacing symbols in the text
     bool doConversion(const wstring_t& asciiText, wstring_t& unicodeText);
-
+    
     /// update the mapping of the characters
     void updateCharMapping(const string_t& mapFile); 
 
@@ -61,7 +61,8 @@ private:
         const string_t& mappingFolder);
 
     void convertSingleDoc(const string_t& fileName);
-    
+    void convertSingleDocQuick(const string_t& fileName);
+
     void loadKnownAsciiFonts(const string_t& languageDir, const string_t& language);
     void loadNamesMapping(const string_t& fileName, 
                           const string_t& language, 
@@ -98,6 +99,15 @@ private:
     void resetSavedSelection();
     string_t makeGuess(tSelectionSp& s);
     string_t getFontSubstitution(const tCharMappingSp& cm, const string_t& fontName);
+
+    string_t getInputAbsPath(const string_t& name);
+    string_t getOutputAbsPath(const string_t& name);
+    void     logUsedFonts(const string_t& name, std::set<string_t>& usedFonts);
+
+    wstring_t processRangeQuick(tRangeSp& r); /// This is one solution
+
+    /// used font list
+    std::set<string_t> usedFonts_;
 
     /// used to return reference of empty mapping
     tCharMappingSp noMapping;
