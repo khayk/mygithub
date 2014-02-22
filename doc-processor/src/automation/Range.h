@@ -10,7 +10,6 @@ public:
     void autoFormat();
     int  getHighlightColorIndex();
 
-//     tBaseObjectSp getStyle();
 //     tBaseObjectSp getParagraphFormat();
     
     tRangeSp getNextStoryRange();

@@ -2,6 +2,7 @@
 #include "Font.h"
 #include "OLEMethod.h"
 #include "../utils/Common.h"
+#include "Range.h"
 
 Font::Font( IDispatch* font )
     : font_(font)
@@ -99,12 +100,8 @@ tFontSp Font::duplicate()
     return tFontSp(new Font(getPropertyDispatch(font_, L"Duplicate")) );
 }
 
-bool Font::haveCommonAttributes()
+bool Font::haveCommonAttributes(const tRangeSp& r)
 {
-    string_t nn = getName();
-    if (nn.empty())
-        return false;
-
     int sz  = getSize();
     if (sz == wdUndefined)
         return false;
@@ -116,6 +113,23 @@ bool Font::haveCommonAttributes()
     int i = getItalic();
     if (i == wdUndefined)
         return false;
+
+    int u = getUnderline();
+    if (u == wdUndefined)
+        return false;
+
+    int c = getColor();
+    if (c == wdUndefined)
+        return false;
+
+    int hci = r->getHighlightColorIndex();
+    if (hci == wdUndefined)
+        return false;
+
+    string_t nn = getName();
+    if (nn.empty())
+        return false;
+
 //     COLORREF c  = getColor();
 //     int rval = GetRValue(c), gVal = GetGValue(c), bVal = GetBValue(c);
 // 

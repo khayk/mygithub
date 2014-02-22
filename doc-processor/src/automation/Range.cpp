@@ -29,10 +29,6 @@ tRangeSp Range::getNext()
 //     return tBaseObjectSp(new BaseObject(getPropertyDispatch(base_, L"ParagraphFormat")) );
 // }
 // 
-// tBaseObjectSp Range::getStyle()
-// {
-//     return tBaseObjectSp(new BaseObject(getPropertyDispatch(base_, L"Style")) );
-// }
 
 void Range::autoFormat()
 {

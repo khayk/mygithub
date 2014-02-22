@@ -512,8 +512,11 @@ void Converter::convertSingleDoc( const string_t& fileName )
 
 string_t Converter::percentageStr( int current, int total )
 {
+    if (current > total)
+        current = total;
+
     std::stringstream ss;
-    ss <<  (int)(100.0 * (double) (current + 1) / (double) total) << " % completed.";
+    ss <<  (int)(100.0 * (double) (current) / (double) total) << " % completed.";
     return ss.str();
 }
 
@@ -724,7 +727,7 @@ wstring_t Converter::processRangeQuick( tRangeSp& r )
         int chunk = CHUNK_SIZE;
         r->setStart(pos);
         r->setEnd(pos + chunk);
-        r->select();
+        //r->select();
 
         /// try to find a text that can be skipped, that is a text with the
         /// unicode font name
@@ -732,12 +735,13 @@ wstring_t Converter::processRangeQuick( tRangeSp& r )
         while (font->getName().empty() && chunk > 1) {
             chunk /= 2;
             r->setEnd(pos + chunk);
-            r->select();
+            //r->select();
             font = r->getFont();
         }
         if (canSkipFont(font->getName())) {
             docAsText += r->getText();
             pos = r->getEnd();
+            std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
             continue;
         }
 
@@ -749,18 +753,19 @@ wstring_t Converter::processRangeQuick( tRangeSp& r )
                 ++pos;
                 r->setEnd(pos);
                 r->getFont()->setName(defaultFont);
+                std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
                 continue;
             }
             chunk = xpos;
             r->setEnd(pos + chunk);
-            r->select();
+            //r->select();
         }
 
         /// the font we found cannot be skipped, deal with it properly
-        while (!font->haveCommonAttributes() && chunk > 1) {
+        while (!font->haveCommonAttributes(r) && chunk > 1) {
             chunk /= 2;
             r->setEnd(pos + chunk);
-            r->select();
+            //r->select();
             font = r->getFont();
         }
 
@@ -773,12 +778,18 @@ wstring_t Converter::processRangeQuick( tRangeSp& r )
                 bool spaceOnly = cm->doConversion(text, textUnicode);
                 newFontName = getFontSubstitution(cm, fontName);
 
-                font = r->getFont();
                 font->setName(newFontName);
-                font->setSize(font->getSize());
 
-                if (!spaceOnly)
+                if (!spaceOnly) {
+                    font->setSize(font->getSize());
+                    font->setBold(font->getBold());
+                    font->setItalic(font->getItalic());
+                    font->setUnderline(font->getUnderline());
+                    font->setColor(font->getColor());
+                    font->setUnderlineColor(font->getUnderlineColor());
+
                     r->setText(textUnicode);
+                }
                 docAsText += textUnicode;
             }
         }
@@ -787,9 +798,9 @@ wstring_t Converter::processRangeQuick( tRangeSp& r )
         }
 
         pos = r->getEnd();
-
         std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
     } while ( pos < totalCharsQty - 1 );
 
+    std::cout << std::endl;
     return docAsText;
 }

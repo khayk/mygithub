@@ -4,7 +4,9 @@
 #include "Typedefs.h"
 
 class Font;
+class Range;
 typedef boost::shared_ptr<Font> tFontSp;
+typedef boost::shared_ptr<Range> tRangeSp;
 
 class Font
 {
@@ -15,7 +17,7 @@ public:
     void       reset();
     tFontSp    duplicate();
     IDispatch* getIDispatch();
-    bool       haveCommonAttributes();
+    bool       haveCommonAttributes(const tRangeSp& r);
 
     void       setName(const string_t& faceName);
     void       setSize(int sz);
