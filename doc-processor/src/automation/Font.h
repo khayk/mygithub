@@ -17,7 +17,7 @@ public:
     void       reset();
     tFontSp    duplicate();
     IDispatch* getIDispatch();
-    bool       haveCommonAttributes(const tRangeSp& r);
+    bool       haveCommonAttributes(const tRangeSp& r, int& failedCheckIndex);
 
     void       setName(const string_t& faceName);
     void       setSize(int sz);

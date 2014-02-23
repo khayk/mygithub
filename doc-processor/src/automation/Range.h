@@ -2,6 +2,30 @@
 
 #include "BaseRS.h"
 
+class Range;
+typedef boost::shared_ptr<Range> tRangeSp;
+
+#define BEGIN_OBJECT_FROM_IDISP(NEW_CLASS, BASE_CLASS)   \
+class NEW_CLASS : BASE_CLASS{                            \
+public:                                                  \
+    NEW_CLASS(IDispatch* disp) : BASE_CLASS(disp) {}     \
+
+#define END_OBJECT(NEW_CLASS)                            \
+};                                                       \
+    typedef boost::shared_ptr<NEW_CLASS> t##NEW_CLASS##Sp;
+
+///-----------------------------------------------------------------------------
+BEGIN_OBJECT_FROM_IDISP(Note, BaseObject)
+END_OBJECT(Note)
+
+///-----------------------------------------------------------------------------
+BEGIN_OBJECT_FROM_IDISP(Notes, BaseObject)
+END_OBJECT(Notes)
+
+///-----------------------------------------------------------------------------
+BEGIN_OBJECT_FROM_IDISP(Footnotes, Notes)
+END_OBJECT(Footnotes)
+
 class Range : public BaseRS
 {
 public:
@@ -10,7 +34,7 @@ public:
     void autoFormat();
     int  getHighlightColorIndex();
 
-//     tBaseObjectSp getParagraphFormat();
+    tFootnotesSp getFootnotes();
     
     tRangeSp getNextStoryRange();
     tRangeSp getNext();

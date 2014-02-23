@@ -100,44 +100,19 @@ tFontSp Font::duplicate()
     return tFontSp(new Font(getPropertyDispatch(font_, L"Duplicate")) );
 }
 
-bool Font::haveCommonAttributes(const tRangeSp& r)
+bool Font::haveCommonAttributes(const tRangeSp& r, int& fail)
 {
-    int sz  = getSize();
-    if (sz == wdUndefined)
-        return false;
-
-    int b  = getBold();
-    if (b == wdUndefined)
-        return false;
-
-    int i = getItalic();
-    if (i == wdUndefined)
-        return false;
-
-    int u = getUnderline();
-    if (u == wdUndefined)
-        return false;
-
-    int c = getColor();
-    if (c == wdUndefined)
-        return false;
-
-    int hci = r->getHighlightColorIndex();
-    if (hci == wdUndefined)
-        return false;
-
-    string_t nn = getName();
-    if (nn.empty())
-        return false;
-
-//     COLORREF c  = getColor();
-//     int rval = GetRValue(c), gVal = GetGValue(c), bVal = GetBValue(c);
-// 
-//     int      b  = getBold();
-//     COLORREF uc = getUnderlineColor();
-//     int      u  = getUnderline();
-//     bool     i  = getItalic();
-
+    int i = 0;
+    switch (fail) {
+    case 0:  if (getSize()      == wdUndefined)               { fail = 0; return false; }
+    case 1:  if (getBold()      == wdUndefined)               { fail = 1; return false; }
+    case 2:  if (getItalic()    == wdUndefined)               { fail = 2; return false; }
+    case 3:  if (getUnderline() == wdUndefined)               { fail = 3; return false; }
+    case 4:  if (getColor()     == wdUndefined)               { fail = 4; return false; }
+    case 5:  if (r->getHighlightColorIndex() == wdUndefined)  { fail = 5; return false; }
+    case 6:  if (getName().empty())                           { fail = 6; return false; }
+    }
+    fail = 0;
     return true;
 }
 

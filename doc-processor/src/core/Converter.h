@@ -47,21 +47,14 @@ public:
 
     void start();
 
-    /// in quick mode there will be lost information about text decoration, such
-    /// color, style, bold, underline. But there will be kept information about
-    /// font size.
-    /// slow mode work very slowly and keep all formating on the document while
-    /// performing conversion
-    void setMode(bool quick);
-
 private:
     void initialize(
         const string_t& inputFolder, 
         const string_t& outputFolder,
         const string_t& mappingFolder);
 
-    void convertSingleDoc(const string_t& fileName);
     void convertSingleDocQuick(const string_t& fileName);
+    void convertSingleDocPrecise(const string_t& fileName);
 
     void loadKnownAsciiFonts(const string_t& languageDir, const string_t& language);
     void loadNamesMapping(const string_t& fileName, 
@@ -104,7 +97,7 @@ private:
     string_t getOutputAbsPath(const string_t& name);
     void     logUsedFonts(const string_t& name, std::set<string_t>& usedFonts);
 
-    wstring_t processRangeQuick(tRangeSp& r); /// This is one solution
+    wstring_t processRangePrecise(tRangeSp& r); /// This is one solution
 
     /// used font list
     std::set<string_t> usedFonts_;
@@ -114,6 +107,8 @@ private:
     int    savedStart_;
     int    savedEnd_;
     bool   hasSavedSelection_;
+
+    bool   wordVisible_;
 };
 
 #endif ASCII_TO_UNICODE_CONVERTER_H

@@ -39,6 +39,9 @@
     <ClCompile Include="..\src\automation\BaseRS.cpp">
       <Filter>automation</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\utils\ScopedTimeCalculator.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -95,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="..\src\automation\Enums.h">
       <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils\ScopedTimeCalculator.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

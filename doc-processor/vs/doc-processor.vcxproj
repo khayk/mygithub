@@ -28,6 +28,7 @@
     </ClCompile>
     <ClCompile Include="..\src\utils\Common.cpp" />
     <ClCompile Include="..\src\utils\FileFinder.cpp" />
+    <ClCompile Include="..\src\utils\ScopedTimeCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\automation\BaseRS.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="..\src\utils\Common.h" />
     <ClInclude Include="..\src\utils\FileFinder.h" />
     <ClInclude Include="..\src\utils\RefCounter.h" />
+    <ClInclude Include="..\src\utils\ScopedTimeCalculator.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\resources\doc-proc.rc" />

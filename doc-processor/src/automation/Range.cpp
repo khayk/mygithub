@@ -24,12 +24,6 @@ tRangeSp Range::getNext()
     return tRangeSp();
 }
 
-// tBaseObjectSp Range::getParagraphFormat()
-// {
-//     return tBaseObjectSp(new BaseObject(getPropertyDispatch(base_, L"ParagraphFormat")) );
-// }
-// 
-
 void Range::autoFormat()
 {
     OLEMethod(DISPATCH_METHOD, NULL, base_, L"AutoFormat", 0);
@@ -38,6 +32,11 @@ void Range::autoFormat()
 int Range::getHighlightColorIndex()
 {
     return getPropertyInt(base_, L"HighlightColorIndex");
+}
+
+tFootnotesSp Range::getFootnotes()
+{
+    return tFootnotesSp(new Footnotes(getPropertyDispatch(base_, L"Footnotes")) );
 }
 
 StoryRanges::StoryRanges( IDispatch* range )
