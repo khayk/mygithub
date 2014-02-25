@@ -60,3 +60,8 @@ tParagraphsSp Document::getParagraphs()
 {
     return tParagraphsSp(new Paragraphs(getPropertyDispatch(doc_, L"Paragraphs")) );
 }
+
+tFootnotesSp Document::getFootnotes()
+{
+    return tFootnotesSp(new Footnotes(getPropertyDispatch(doc_, L"Footnotes")) );
+}

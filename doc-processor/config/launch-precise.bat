@@ -1,0 +1,1 @@
+@call ascii-to-unicode.exe --input=./input --output=./output --mapping=./mapping --working-mode=precise

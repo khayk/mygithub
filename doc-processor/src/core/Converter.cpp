@@ -325,7 +325,7 @@ void Converter::start()
     for (auto it = files.begin(); it != files.end(); ++it) {
         try {
             ScopedTimeCalculator stc(logger(), "Elapsed ");
-            logInfo(logger(), "Processing document: " + *it);
+            logInfo(logger(), "Processing [document]: " + *it);
             if ( quickMode_ )
                 convertSingleDocQuick(*it);
             else
@@ -434,13 +434,21 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     }
 
     /// -------------------------------------------///
-
     usedFonts_.clear();
     wstring_t docAsText;
     docAsText += processRangePrecise(doc->getContent());
 
-    /// -------------------------------------------///
-    /// now save result in the appropriate folder  ///
+    tFootnotesSp footnots = doc->getFootnotes();
+    int notesCount = footnots->getCount();
+    if (notesCount >= 1) {
+        logInfo(logger(), "Processing [footnotes]: ");
+
+        tNoteSp note = footnots->getItem(1);
+        tRangeSp r = note->getRange();
+        processRangePrecise(r);
+    }
+
+    /// now save result in the appropriate folder
     string_t outputDir = getOutputAbsPath(fileName);
     Poco::File(outputDir).createDirectories();
     Poco::Path p(fileName);
@@ -450,72 +458,6 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     if ( config_->getBool("app.saveAlsoAsUTF8", false) )
         writeFileAsBinary( outputDir + p.getBaseName() + " UTF8.txt", toUtf8(docAsText));
 }
-
-//tParagraphsSp  allParagraphs = doc->getParagraphs();
-//tParagraphSp   pgrph = allParagraphs->getFirst();
-//int            totalParagraphs = allParagraphs->getCount();
-//     while (pgrph) {
-//         tRangeSp r = pgrph->getRange();
-//         pgrph = pgrph->getNext();
-//     }
-
-
-/*        startPos = s->getStart();
-        s->setStart(startPos + 1);
-        //s->setEnd(startPos + 1);
-        //s->selectCurrentFont();
-        fontName = s->getFont()->getName();
-
-        if ( canSkipFont(fontName) ) {
-            s->getFont()->haveCommonAttributes();
-            s->setStart(s->getEnd());
-            docAsText += s->getText();
-        }
-
-        text = s->getText();
-        if ( fontName.empty() ) {
-            saveSelection(s);
-            fontName = makeGuess(s);            
-            restoreSelection(s);
-
-            /// if after all we have empty font name, log about that event
-            /// and go forward
-            if (fontName.empty()) {
-                logError(logger(), "EMPTY FONT NAME: Investigate");
-                s->setStart(s->getEnd());
-                continue;
-            }
-        }
-
-        /// use mapping
-        textUnicode.clear();
-        cm = getCM(s, fontName);
-        if (cm) {
-            bool spacingOnly = cm->doConversion(text, textUnicode);
-            substFont = getFontSubstitution(cm, fontName);
-            //tFontSp fontDup = s->getFont()->duplicate();
-            s->setText(textUnicode);
-            //s->getFont()->haveCommonAttributes();
-            s->getFont()->setName(substFont);
-            //s->setFont(fontDup);
-        }
-
-        /// extract text from the document as well
-        docAsText += textUnicode;
-        std::cout << "\r" << percentageStr(endPos, totalCharsQty);
-        s->setStart(s->getEnd());
-    */
-
-//     if ( !spacingOnly ) {
-//         if (!quickMode_)   
-//             s->copyFormat();
-// 
-//         s->setSelectionText(textUnicode);
-// 
-//         if (!quickMode_)   
-//             s->pasteFormat();
-//     }
-
 
 void Converter::convertSingleDocQuick( const string_t& fileName )
 {

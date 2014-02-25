@@ -3,6 +3,34 @@
 #include "OLEMethod.h"
 #include "Selection.h"
 
+
+tRangeSp Note::getRange() const
+{
+    return tRangeSp(new Range(getPropertyDispatch(disp_, L"Range")) );
+}
+
+
+tNoteSp Notes::getItem( int index )
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT x;
+    VariantInit(&x);
+    x.vt = VT_I4;
+    x.lVal = index;
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Item", 1, x);
+
+    return tNoteSp(new Note(result.pdispVal));
+}
+
+int Notes::getCount() const
+{
+    return getPropertyInt(disp_, L"Count");
+}
+
+
+
 Range::Range( IDispatch* range )
     : BaseRS(range)
 {

@@ -61,12 +61,6 @@ void Selection::selectCurrentFont()
     OLEMethod(DISPATCH_METHOD, NULL, base_, L"SelectCurrentFont", 0);
 }
 
-
-// tRangeSp Selection::getRange()
-// {
-//     return tRangeSp(new Range(getPropertyDispatch(base_, L"ParagraphFormat")) );
-// }
-
 void Selection::copyFormat()
 {
     OLEMethod(DISPATCH_METHOD, NULL, base_, L"CopyFormat", 0);

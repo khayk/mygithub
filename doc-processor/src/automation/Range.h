@@ -6,7 +6,7 @@ class Range;
 typedef boost::shared_ptr<Range> tRangeSp;
 
 #define BEGIN_OBJECT_FROM_IDISP(NEW_CLASS, BASE_CLASS)   \
-class NEW_CLASS : BASE_CLASS{                            \
+class NEW_CLASS : public BASE_CLASS{                     \
 public:                                                  \
     NEW_CLASS(IDispatch* disp) : BASE_CLASS(disp) {}     \
 
@@ -16,15 +16,41 @@ public:                                                  \
 
 ///-----------------------------------------------------------------------------
 BEGIN_OBJECT_FROM_IDISP(Note, BaseObject)
+    tRangeSp getRange() const;
 END_OBJECT(Note)
 
 ///-----------------------------------------------------------------------------
 BEGIN_OBJECT_FROM_IDISP(Notes, BaseObject)
+public:
+    int getCount() const;
+    tNoteSp getItem(int index);
 END_OBJECT(Notes)
+
+
+/*
+///-----------------------------------------------------------------------------
+BEGIN_OBJECT_FROM_IDISP(Endnote, Note)
+END_OBJECT(Endnote)
+
+///-----------------------------------------------------------------------------
+BEGIN_OBJECT_FROM_IDISP(Endnotes, Notes)
+END_OBJECT(Endnotes)
+
+*/
+
+///-----------------------------------------------------------------------------
+BEGIN_OBJECT_FROM_IDISP(Footnote, Note)
+END_OBJECT(Footnote)
 
 ///-----------------------------------------------------------------------------
 BEGIN_OBJECT_FROM_IDISP(Footnotes, Notes)
 END_OBJECT(Footnotes)
+
+///-----------------------------------------------------------------------------
+#define ADD_NOTES_INTERFACE(idisp)     \
+    tFootnotesSp getFootnotes() {      \
+    return tFootnotesSp(new Footnotes(getPropertyDispatch(idisp, L"Footnotes")) ); \
+}    
 
 class Range : public BaseRS
 {

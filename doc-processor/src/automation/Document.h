@@ -15,6 +15,9 @@ public:
     void save();
     void saveAs(const string_t& fullPath);
 
+    //ADD_NOTES_INTERFACE(doc_);
+    tFootnotesSp getFootnotes();
+
     tRangeSp       getContent();
     tStoryRangesSp getStoryRanges();
     tCharactersSp  getCharacters();
