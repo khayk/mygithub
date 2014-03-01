@@ -22,6 +22,7 @@ public:
     tStoryRangesSp getStoryRanges();
     tCharactersSp  getCharacters();
     tParagraphsSp  getParagraphs();
+    tStylesSp      getStyles();
 
 private:
     IDispatch* doc_;

@@ -67,6 +67,7 @@ public:
 };
 
 
+/// ----------------------------------------------------------------------------
 class StoryRanges {
 public:
     StoryRanges(IDispatch* range);
@@ -78,6 +79,7 @@ protected:
 };
 
 
+/// ----------------------------------------------------------------------------
 class Characters {
 public:
     Characters(IDispatch* chars);
@@ -92,6 +94,7 @@ private:
 };
 
 
+/// ----------------------------------------------------------------------------
 class Paragraph;
 typedef boost::shared_ptr<Paragraph>  tParagraphSp;
 
@@ -129,6 +132,33 @@ private:
 };
 
 
+/// ----------------------------------------------------------------------------
+class Style {
+public:
+    Style(IDispatch* style);
+    ~Style();
+
+    //const VARIANT& get() const;
+private:
+    IDispatch* style_;
+};
+
+typedef boost::shared_ptr<Style>      tStyleSp;
+
+/// ----------------------------------------------------------------------------
+class Styles {
+public:
+    Styles(IDispatch* styles) : styles_(styles) {}
+    ~Styles() { SafeRelease(styles_); }
+
+    int      getCount();
+    tStyleSp getItem(int index);
+
+private:
+    IDispatch* styles_;
+};
+
+typedef boost::shared_ptr<Styles>      tStylesSp;
 typedef boost::shared_ptr<Range>       tRangeSp;
 typedef boost::shared_ptr<Characters>  tCharactersSp;
 typedef boost::shared_ptr<Paragraphs>  tParagraphsSp;

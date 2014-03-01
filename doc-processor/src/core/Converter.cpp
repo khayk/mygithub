@@ -435,18 +435,37 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 
     /// -------------------------------------------///
     usedFonts_.clear();
+
+//     tStylesSp styles = doc->getStyles();
+//     int stylesCount =  styles->getCount();
+//     for (int i = 1; i <= stylesCount; ++i) {
+//         tStyleSp style = styles->getItem(i);
+//         style
+//     }
+
     wstring_t docAsText;
-    docAsText += processRangePrecise(doc->getContent());
+    tParagraphsSp paragraphs = doc->getParagraphs();
+    int count = paragraphs->getCount();
+//     for (int i = 1; i <= count; ++i) {
+//         tParagraphSp p = paragraphs->getItem(i);
+//         docAsText += processRangePrecise(p->getRange(), false);
+//         std::cout << "\r" << percentageStr(i, count);
+//     }
+    docAsText += processRangePrecise(doc->getContent(), true);
+    std::cout << std::endl;
+
+    /// footnotes
+    logInfo(logger(), "Processing [footnotes]: ");
 
     tFootnotesSp footnots = doc->getFootnotes();
     int notesCount = footnots->getCount();
-    if (notesCount >= 1) {
-        logInfo(logger(), "Processing [footnotes]: ");
-
-        tNoteSp note = footnots->getItem(1);
+    for (int i = 1; i <= notesCount; ++i) {
+        tNoteSp note = footnots->getItem(i);
         tRangeSp r = note->getRange();
-        processRangePrecise(r);
+        processRangePrecise(r, false);
+        std::cout << "\r" << percentageStr(i, notesCount);
     }
+    std::cout << std::endl;
 
     /// now save result in the appropriate folder
     string_t outputDir = getOutputAbsPath(fileName);
@@ -559,7 +578,7 @@ string_t Converter::getOutputAbsPath( const string_t& name )
         .toString();
 }
 
-wstring_t Converter::processRangePrecise( tRangeSp& r )
+wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 {
     string_t defaultFont = "Sylfaen";
     wstring_t       specialChars;
@@ -572,14 +591,17 @@ wstring_t Converter::processRangePrecise( tRangeSp& r )
     tCharMappingSp cm;
     string_t       fontName, newFontName;
     wstring_t      text, textUnicode, docAsText;
-    int            endPos = r->getEnd(), startPos = r->getStart();
-    int            totalCharsQty = r->getStoryLength();
+    
+    int endLabel   = r->getEnd();
+    int startLabel = r->getStart();
+    int totalCharsQty = endLabel - startLabel;
+
+    int pos = r->getStart();
 
     int CHUNK_SIZE = 256;
     if (totalCharsQty < CHUNK_SIZE)
         CHUNK_SIZE = totalCharsQty;
 
-    int pos = r->getStart();
     do {
         int chunk = CHUNK_SIZE;
         r->setStart(pos);
@@ -587,7 +609,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r )
         if (wordVisible_) r->select();
 
         /// try to find a text that can be skipped, that is a text with the
-        /// unicode font name
+        /// Unicode font name
         tFontSp font = r->getFont();
         while (font->getName().empty() && chunk > 1) {
             chunk /= 2;
@@ -599,7 +621,8 @@ wstring_t Converter::processRangePrecise( tRangeSp& r )
         if (canSkipFont(font->getName())) {
             docAsText += r->getText();
             pos = r->getEnd();
-            std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
+            if (showProgress)
+                std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty);
             continue;
         }
 
@@ -612,7 +635,8 @@ wstring_t Converter::processRangePrecise( tRangeSp& r )
                 ++pos;
                 r->setEnd(pos);
                 r->getFont()->setName(defaultFont);
-                std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
+                if (showProgress)
+                    std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty);
                 continue;
             }
             chunk = xpos;
@@ -658,9 +682,9 @@ wstring_t Converter::processRangePrecise( tRangeSp& r )
         }
 
         pos = r->getEnd();
-        std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
-    } while ( pos < totalCharsQty - 1 );
+        if (showProgress)
+            std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty);
+    } while ( pos < endLabel - 1);
 
-    std::cout << std::endl;
     return docAsText;
 }

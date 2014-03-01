@@ -195,9 +195,9 @@ tParagraphSp Paragraphs::getItem( int index )
 
     VARIANT x;
     //VariantInit(&input);
-    x.vt = VT_BSTR;
+    x.vt = VT_I4;
     x.intVal = index;
-    OLEMethod(DISPATCH_PROPERTYGET, &result, paragraphs_, L"Item", 1, x);
+    OLEMethod(DISPATCH_METHOD, &result, paragraphs_, L"Item", 1, x);
 
     return tParagraphSp(new Paragraph(result.pdispVal));
 }
@@ -205,4 +205,36 @@ tParagraphSp Paragraphs::getItem( int index )
 tParagraphSp Paragraphs::getFirst()
 {
     return tParagraphSp(new Paragraph(getPropertyDispatch(paragraphs_, L"First")) );
+}
+
+tStyleSp Styles::getItem( int index )
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT x;
+    //VariantInit(&input);
+    x.vt = VT_I4;
+    x.intVal = index;
+    OLEMethod(DISPATCH_METHOD, &result, styles_, L"Item", 1, x);
+
+    return tStyleSp(new Style(result.pdispVal));
+}
+
+int Styles::getCount()
+{
+    return getPropertyInt(styles_, L"Count");
+}
+
+
+
+Style::Style( IDispatch* style )
+    : style_(style)
+{
+
+}
+
+Style::~Style()
+{
+    SafeRelease(style_);
 }

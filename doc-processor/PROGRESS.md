@@ -1,4 +1,9 @@
-# Word Contants
+# PDF
+http://mupdf.com/
+http://pdfedit.cz/en/pdfedit_library.html
+
+# ---------------------------------------------------------------------------
+# Microsoft Word
 
 http://msdn.microsoft.com/en-us/library/office/dn353221.aspx
 
