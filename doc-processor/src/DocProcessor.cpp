@@ -17,7 +17,7 @@ using Poco::Util::HelpFormatter;
 class ChangeLoggerLevel {
 public:
     ChangeLoggerLevel(DocProcessor* dp) : dp_(dp) {
-        logInfo(dp_->logger(), makeCentralizedNote("APPLICATION STARTED", '-', 80));
+       logInfo(dp_->logger(), makeCentralizedNote("APPLICATION STARTED", '-', 80));
     }
     ~ChangeLoggerLevel() {
         logInfo(dp_->logger(), makeCentralizedNote("APPLICATION ENDED", '-', 80));

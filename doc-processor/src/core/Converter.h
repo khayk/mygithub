@@ -97,7 +97,7 @@ private:
     string_t getOutputAbsPath(const string_t& name);
     void     logUsedFonts(const string_t& name, std::set<string_t>& usedFonts);
 
-    wstring_t processRangePrecise(tRangeSp& r); /// This is one solution
+    wstring_t processRangePrecise(tRangeSp& r, bool showProgress); /// This is one solution
 
     /// used font list
     std::set<string_t> usedFonts_;

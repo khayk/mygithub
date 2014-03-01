@@ -65,3 +65,8 @@ tFootnotesSp Document::getFootnotes()
 {
     return tFootnotesSp(new Footnotes(getPropertyDispatch(doc_, L"Footnotes")) );
 }
+
+tStylesSp Document::getStyles()
+{
+    return tStylesSp(new Styles(getPropertyDispatch(doc_, L"Styles")) );
+}
