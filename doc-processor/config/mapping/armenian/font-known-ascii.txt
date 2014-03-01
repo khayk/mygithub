@@ -1,8 +1,17 @@
 Arial Armenian
+Arial ArmenianNew
 Arial LatArm
-Arial AMU       | cm-courieram.txt
-ArmArial        | cm-armarial.txt
-Courier AM      | cm-courieram.txt
-Mariam          | cm-courieram.txt
+ArialArmST
+Arik Armenian
+Arial AMU           | cm-courieram.txt
+Arm
+Arm Garamond
+Arm Helv            | cm-courieram.txt
+Arm Helvetica       | cm-courieram.txt
+ArmArial            | cm-armarial.txt
+Armenian Garamond
+ArmTimesST
+Courier AM          | cm-courieram.txt
+Mariam              | cm-courieram.txt
 Mk_Parzi   
 Times Armenian
