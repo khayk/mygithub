@@ -3,6 +3,7 @@ Arial ArmenianNew
 Arial LatArm
 ArialArmST
 Arik Armenian
+Arial AM            | cm-courieram.txt
 Arial AMU           | cm-courieram.txt
 Arm
 Arm Garamond
@@ -11,7 +12,16 @@ Arm Helvetica       | cm-courieram.txt
 ArmArial            | cm-armarial.txt
 Armenian Garamond
 ArmTimesST
+Arm Times           | cm-armtimes.txt
 Courier AM          | cm-courieram.txt
+Dallak Helv         | cm-dallak.txt
+Dallak Title        | cm-dallak.txt
+Dallak Time         | cm-dallak.txt
+Grqee FM            | cm-grqeefm.txt
+Hay Helv            | cm-hayhelv.txt
+Hay Title           | cm-hayhelv.txt
+Hay Times           | cm-hayhelv.txt
 Mariam              | cm-courieram.txt
+MK Nork             | cm-mknork.txt
 Mk_Parzi   
 Times Armenian
