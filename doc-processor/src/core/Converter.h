@@ -98,6 +98,7 @@ private:
     void     logUsedFonts(const string_t& name, std::set<string_t>& usedFonts);
 
     wstring_t processRangePrecise(tRangeSp& r, bool showProgress); /// This is one solution
+    wstring_t processRangePreciseVer2(tRangeSp& r, bool showProgress);
 
     /// used font list
     std::set<string_t> usedFonts_;

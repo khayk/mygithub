@@ -25,18 +25,18 @@ int Selection::moveCursor( MoveDirection md, bool selectWhileMoving )
 
     switch (md) {
     case mdLeft:
-        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveLeft",  3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, disp_, L"MoveLeft",  3, wdExtend, Count, wdCharacter);
         break;
     case mdRight:
-        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveRight", 3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, disp_, L"MoveRight", 3, wdExtend, Count, wdCharacter);
         break;
     case mdUp:
         wdCharacter.lVal = 5;
-        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveUp",    3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, disp_, L"MoveUp",    3, wdExtend, Count, wdCharacter);
         break;
     case mdDown:
         wdCharacter.lVal = 5;
-        OLEMethod(DISPATCH_METHOD, &result, base_, L"MoveDown",  3, wdExtend, Count, wdCharacter);
+        OLEMethod(DISPATCH_METHOD, &result, disp_, L"MoveDown",  3, wdExtend, Count, wdCharacter);
         break;
     }
 
@@ -52,23 +52,23 @@ int Selection::moveCursor( MoveDirection md, bool selectWhileMoving )
 /// ----------------------------------------------------------------------------
 void Selection::selectCurrentColor()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, base_, L"SelectCurrentColor", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, disp_, L"SelectCurrentColor", 0);
 }
 
 /// ----------------------------------------------------------------------------
 void Selection::selectCurrentFont()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, base_, L"SelectCurrentFont", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, disp_, L"SelectCurrentFont", 0);
 }
 
 void Selection::copyFormat()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, base_, L"CopyFormat", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, disp_, L"CopyFormat", 0);
 }
 
 void Selection::pasteFormat()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, base_, L"PasteFormat", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, disp_, L"PasteFormat", 0);
 }
 
 

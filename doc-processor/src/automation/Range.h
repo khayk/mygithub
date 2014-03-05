@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseRS.h"
+#include "Find.h"
 
 class Range;
 typedef boost::shared_ptr<Range> tRangeSp;
@@ -52,6 +53,7 @@ END_OBJECT(Footnotes)
     return tFootnotesSp(new Footnotes(getPropertyDispatch(idisp, L"Footnotes")) ); \
 }    
 
+
 class Range : public BaseRS
 {
 public:
@@ -64,6 +66,8 @@ public:
     
     tRangeSp getNextStoryRange();
     tRangeSp getNext();
+
+    tFindSp getFind();
 };
 
 

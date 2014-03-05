@@ -42,6 +42,9 @@
     <ClCompile Include="..\src\utils\ScopedTimeCalculator.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\automation\Find.cpp">
+      <Filter>automation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -101,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="..\src\utils\ScopedTimeCalculator.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\automation\Find.h">
+      <Filter>automation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

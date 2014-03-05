@@ -19,12 +19,12 @@ protected:
 
 typedef boost::shared_ptr<BaseObject> tBaseObjectSp;
 
-class BaseRS {
+class BaseRS : public BaseObject {
 public:
     BaseRS(IDispatch* base);
-    ~BaseRS();
+    //~BaseRS();
 
-    IDispatch* getIDispatch() const;
+    //IDispatch* getIDispatch() const;
 
     /// return the number of all characters
     int     getStoryLength() const;
@@ -48,7 +48,4 @@ public:
     /// select current object and whole document
     void select();
     void selectAll();
-
-protected:
-    IDispatch* base_;
 };

@@ -451,7 +451,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 //         docAsText += processRangePrecise(p->getRange(), false);
 //         std::cout << "\r" << percentageStr(i, count);
 //     }
-    docAsText += processRangePrecise(doc->getContent(), true);
+    docAsText += processRangePreciseVer2(doc->getContent(), true);
     std::cout << std::endl;
 
     /// footnotes
@@ -462,7 +462,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     for (int i = 1; i <= notesCount; ++i) {
         tNoteSp note = footnots->getItem(i);
         tRangeSp r = note->getRange();
-        processRangePrecise(r, false);
+        processRangePreciseVer2(r, false);
         std::cout << "\r" << percentageStr(i, notesCount);
     }
     std::cout << std::endl;
@@ -606,7 +606,8 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
         int chunk = CHUNK_SIZE;
         r->setStart(pos);
         r->setEnd(pos + chunk);
-        if (wordVisible_) r->select();
+        if (wordVisible_)
+            r->select();
 
         /// try to find a text that can be skipped, that is a text with the
         /// Unicode font name
@@ -686,5 +687,22 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
             std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty);
     } while ( pos < endLabel - 1);
 
+    return docAsText;
+}
+
+wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
+{
+    wstring_t docAsText;
+
+    int st = r->getStart();
+    int en = r->getEnd();
+
+    tFindSp f = r->getFind();
+    f->clearFormatting();
+    f->setText(L"simple");
+    tFontSp fnt = f->getFont();
+
+    fnt->setBold(1);
+    f->execute();
     return docAsText;
 }

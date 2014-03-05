@@ -38,14 +38,14 @@ Range::Range( IDispatch* range )
 
 tRangeSp Range::getNextStoryRange()
 {
-    return tRangeSp(new Range(getPropertyDispatch(base_, L"NextStoryRange")) );
+    return tRangeSp(new Range(getPropertyDispatch(disp_, L"NextStoryRange")) );
 }
 
 tRangeSp Range::getNext()
 {
     VARIANT result;
     VariantInit(&result);
-    OLEMethod(DISPATCH_METHOD, &result, base_, L"Next", 0);
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Next", 0);
 
     if (result.pdispVal)
         return tRangeSp(new Range(result.pdispVal) );
@@ -54,17 +54,22 @@ tRangeSp Range::getNext()
 
 void Range::autoFormat()
 {
-    OLEMethod(DISPATCH_METHOD, NULL, base_, L"AutoFormat", 0);
+    OLEMethod(DISPATCH_METHOD, NULL, disp_, L"AutoFormat", 0);
 }
 
 int Range::getHighlightColorIndex()
 {
-    return getPropertyInt(base_, L"HighlightColorIndex");
+    return getPropertyInt(disp_, L"HighlightColorIndex");
 }
 
 tFootnotesSp Range::getFootnotes()
 {
-    return tFootnotesSp(new Footnotes(getPropertyDispatch(base_, L"Footnotes")) );
+    return tFootnotesSp(new Footnotes(getPropertyDispatch(disp_, L"Footnotes")) );
+}
+
+tFindSp Range::getFind()
+{
+    return tFindSp(new Find(getPropertyDispatch(disp_, L"Find")) );
 }
 
 StoryRanges::StoryRanges( IDispatch* range )
