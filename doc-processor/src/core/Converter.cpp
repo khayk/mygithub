@@ -116,8 +116,12 @@ void CharMapping::loadMappingFile( const string_t& mapFile )
 
         if (from < 256)
             quickMap_[from] = to;
-        else
+        else {
             mapping_[from] = to;
+        }
+
+        /// add identical mapping to avoid false warnings
+        mapping_[to] = to;
     }
 }
 
@@ -451,7 +455,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 //         docAsText += processRangePrecise(p->getRange(), false);
 //         std::cout << "\r" << percentageStr(i, count);
 //     }
-    docAsText += processRangePreciseVer2(doc->getContent(), true);
+    docAsText += processRangePrecise(doc->getContent(), true);
     std::cout << std::endl;
 
     /// footnotes
@@ -462,10 +466,34 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     for (int i = 1; i <= notesCount; ++i) {
         tNoteSp note = footnots->getItem(i);
         tRangeSp r = note->getRange();
-        processRangePreciseVer2(r, false);
+        processRangePrecise(r, false);
         std::cout << "\r" << percentageStr(i, notesCount);
     }
-    std::cout << std::endl;
+    if (notesCount > 0)
+        std::cout << std::endl;
+
+    tSectionsSp sections = doc->getSections();
+    int sectionsCount = sections->getCount();
+    for (int i = 1; i <= sectionsCount; ++i) {
+        tSectionSp section(new Section(sections->getItem(i)));
+
+        tHeadersFootersSp hfs = section->getHeaders();
+        if (hfs) {
+            logInfo(logger(), "Processing [headers]: ");
+            tHeaderFooterSp hf( new HeaderFooter(hfs->getItem(1)) );
+            tRangeSp r = hf->getRange();
+            processRangePrecise(r, false);
+        }
+
+        hfs = section->getFooters();
+        if (hfs) {
+            logInfo(logger(), "Processing [footers]: ");
+            tHeaderFooterSp hf( new HeaderFooter(hfs->getItem(1)) );
+            tRangeSp r = hf->getRange();
+            processRangePrecise(r, false);
+        }
+    }
+
 
     /// now save result in the appropriate folder
     string_t outputDir = getOutputAbsPath(fileName);
@@ -506,7 +534,7 @@ void Converter::convertSingleDocQuick( const string_t& fileName )
             //s->getFont()->haveCommonAttributes();
             pos = s->getEnd();
             docAsText += s->getText();
-            std::cout << "\r" << percentageStr(pos, totalCharsQty);
+            std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
             continue;
         }
 
@@ -522,7 +550,7 @@ void Converter::convertSingleDocQuick( const string_t& fileName )
                 logError(logger(), "EMPTY FONT NAME: Investigate");
                 pos = s->getEnd();
                 docAsText += text;
-                std::cout << "\r" << percentageStr(pos, totalCharsQty);
+                std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
                 continue;
             }
         }
@@ -544,7 +572,7 @@ void Converter::convertSingleDocQuick( const string_t& fileName )
         docAsText += textUnicode;
         pos = s->getEnd();
 
-        std::cout << "\r" << percentageStr(pos, totalCharsQty);
+        std::cout << "\r" << percentageStr(pos, totalCharsQty - 1);
     } while ( pos < totalCharsQty - 1 );
 
 
@@ -623,7 +651,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
             docAsText += r->getText();
             pos = r->getEnd();
             if (showProgress)
-                std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty);
+                std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty - 1);
             continue;
         }
 
@@ -637,7 +665,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
                 r->setEnd(pos);
                 r->getFont()->setName(defaultFont);
                 if (showProgress)
-                    std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty);
+                    std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty - 1);
                 continue;
             }
             chunk = xpos;
@@ -684,7 +712,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 
         pos = r->getEnd();
         if (showProgress)
-            std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty);
+            std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty - 1);
     } while ( pos < endLabel - 1);
 
     return docAsText;

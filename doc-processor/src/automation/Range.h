@@ -6,7 +6,7 @@
 class Range;
 typedef boost::shared_ptr<Range> tRangeSp;
 
-#define BEGIN_OBJECT_FROM_IDISP(NEW_CLASS, BASE_CLASS)   \
+#define BEGIN_OBJECT(NEW_CLASS, BASE_CLASS)   \
 class NEW_CLASS : public BASE_CLASS{                     \
 public:                                                  \
     NEW_CLASS(IDispatch* disp) : BASE_CLASS(disp) {}     \
@@ -16,12 +16,12 @@ public:                                                  \
     typedef boost::shared_ptr<NEW_CLASS> t##NEW_CLASS##Sp;
 
 ///-----------------------------------------------------------------------------
-BEGIN_OBJECT_FROM_IDISP(Note, BaseObject)
+BEGIN_OBJECT(Note, BaseObject)
     tRangeSp getRange() const;
 END_OBJECT(Note)
 
 ///-----------------------------------------------------------------------------
-BEGIN_OBJECT_FROM_IDISP(Notes, BaseObject)
+BEGIN_OBJECT(Notes, BaseObject)
 public:
     int getCount() const;
     tNoteSp getItem(int index);
@@ -30,28 +30,60 @@ END_OBJECT(Notes)
 
 /*
 ///-----------------------------------------------------------------------------
-BEGIN_OBJECT_FROM_IDISP(Endnote, Note)
+BEGIN_OBJECT(Endnote, Note)
 END_OBJECT(Endnote)
 
 ///-----------------------------------------------------------------------------
-BEGIN_OBJECT_FROM_IDISP(Endnotes, Notes)
+BEGIN_OBJECT(Endnotes, Notes)
 END_OBJECT(Endnotes)
 
 */
 
 ///-----------------------------------------------------------------------------
-BEGIN_OBJECT_FROM_IDISP(Footnote, Note)
+BEGIN_OBJECT(Footnote, Note)
 END_OBJECT(Footnote)
 
 ///-----------------------------------------------------------------------------
-BEGIN_OBJECT_FROM_IDISP(Footnotes, Notes)
+BEGIN_OBJECT(Footnotes, Notes)
 END_OBJECT(Footnotes)
+
+///-----------------------------------------------------------------------------
+BEGIN_OBJECT(FormFields, Notes)
+END_OBJECT(FormFields)
 
 ///-----------------------------------------------------------------------------
 #define ADD_NOTES_INTERFACE(idisp)     \
     tFootnotesSp getFootnotes() {      \
     return tFootnotesSp(new Footnotes(getPropertyDispatch(idisp, L"Footnotes")) ); \
 }    
+
+/// ----------------------------------------------------------------------------
+BEGIN_OBJECT(Collection, BaseObject)
+public:
+    IDispatch* getItem(int index);
+    int        getCount();
+END_OBJECT(Collection)
+
+/// ----------------------------------------------------------------------------
+BEGIN_OBJECT(Sections, Collection)
+END_OBJECT(Sections)
+
+BEGIN_OBJECT(HeadersFooters, Collection)
+
+END_OBJECT(HeadersFooters)
+
+/// ----------------------------------------------------------------------------
+BEGIN_OBJECT(Section, BaseObject)
+public:
+    tHeadersFootersSp   getFooters();
+    tHeadersFootersSp   getHeaders();
+END_OBJECT(Section)
+
+/// ----------------------------------------------------------------------------
+BEGIN_OBJECT(HeaderFooter, BaseObject)
+public:
+    tRangeSp getRange();
+END_OBJECT(HeaderFooter)
 
 
 class Range : public BaseRS
@@ -81,7 +113,6 @@ public:
 protected:
     IDispatch* range_;
 };
-
 
 /// ----------------------------------------------------------------------------
 class Characters {

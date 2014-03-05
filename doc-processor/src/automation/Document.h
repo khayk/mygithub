@@ -17,6 +17,9 @@ public:
 
     //ADD_NOTES_INTERFACE(doc_);
     tFootnotesSp getFootnotes();
+    tFormFieldsSp getFormFields();
+
+    tSectionsSp    getSections();
 
     tRangeSp       getContent();
     tStoryRangesSp getStoryRanges();

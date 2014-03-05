@@ -243,3 +243,38 @@ Style::~Style()
 {
     SafeRelease(style_);
 }
+
+
+/// ----------------------------------------------------------------------------
+IDispatch* Collection::getItem( int index )
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT x;
+    x.vt = VT_I4;
+    x.intVal = index;
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Item", 1, x);
+
+    return result.pdispVal;
+}
+
+int Collection::getCount()
+{
+    return getPropertyInt(disp_, L"Count");
+}
+
+tHeadersFootersSp Section::getFooters()
+{
+    return tHeadersFootersSp(new HeadersFooters(getPropertyDispatch(disp_, L"Footers")) );
+}
+
+tHeadersFootersSp Section::getHeaders()
+{
+    return tHeadersFootersSp(new HeadersFooters(getPropertyDispatch(disp_, L"Headers")) );
+}
+
+tRangeSp HeaderFooter::getRange()
+{
+    return tRangeSp(new Range(getPropertyDispatch(disp_, L"Range")) );
+}
