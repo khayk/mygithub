@@ -44,6 +44,7 @@ void CharMapping::initDefaultMappings()
         0x2019,
         0x201C,
         0x201D,
+        0x2022,
         0x2026
     };
 
@@ -155,6 +156,8 @@ Converter::Converter(const tConfigPtr& config)
     else {
         logWarning(logger(), "Working in QUICK MODE. Some text style information will be lost");
     }
+
+    wantUtf8Text_ = config_->getBool("app.saveAlsoAsUTF8", false);
 
     initialize(
         config_->getString("input.folder", ""),
@@ -450,14 +453,21 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     wstring_t docAsText;
     tParagraphsSp paragraphs = doc->getParagraphs();
     int count = paragraphs->getCount();
+
+//     tSentencesSp sentences = doc->getSentences();
+//     int sentCount = sentences->getCount();
+
 //     for (int i = 1; i <= count; ++i) {
 //         tParagraphSp p = paragraphs->getItem(i);
 //         docAsText += processRangePrecise(p->getRange(), false);
 //         std::cout << "\r" << percentageStr(i, count);
 //     }
-    docAsText += processRangePrecise(doc->getContent(), true);
+
+    docAsText += processRangePreciseVer2(doc->getContent(), true);
+    //docAsText += processRangePrecise(doc->getContent(), true);
     std::cout << std::endl;
 
+    /*
     /// footnotes
     logInfo(logger(), "Processing [footnotes]: ");
 
@@ -492,7 +502,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
             tRangeSp r = hf->getRange();
             processRangePrecise(r, false);
         }
-    }
+    }*/
 
 
     /// now save result in the appropriate folder
@@ -501,8 +511,8 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     Poco::Path p(fileName);
     doc->saveAs( outputDir + p.getBaseName() + " UNICODE." + p.getExtension() );
     doc->close();
-
-    if ( config_->getBool("app.saveAlsoAsUTF8", false) )
+    
+    if ( wantUtf8Text_ )
         writeFileAsBinary( outputDir + p.getBaseName() + " UTF8.txt", toUtf8(docAsText));
 }
 
@@ -625,6 +635,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
     int totalCharsQty = endLabel - startLabel;
 
     int pos = r->getStart();
+    int endPos = 0;
 
     int CHUNK_SIZE = 256;
     if (totalCharsQty < CHUNK_SIZE)
@@ -634,6 +645,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
         int chunk = CHUNK_SIZE;
         r->setStart(pos);
         r->setEnd(pos + chunk);
+
         if (wordVisible_)
             r->select();
 
@@ -648,8 +660,12 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
         }
 
         if (canSkipFont(font->getName())) {
-            docAsText += r->getText();
-            pos = r->getEnd();
+            if ( wantUtf8Text_ ) docAsText += r->getText();
+
+            endPos = r->getEnd();
+            if (endPos == pos)
+                break;
+            pos = endPos;
             if (showProgress)
                 std::cout << "\r" << percentageStr(pos - startLabel, totalCharsQty - 1);
             continue;
@@ -660,7 +676,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
         wstring_t::size_type xpos = text.find_first_of(specialChars);
         if (xpos != wstring_t::npos) {
             if (xpos == 0) {
-                docAsText += text[xpos];
+                if ( wantUtf8Text_ ) docAsText += text[xpos];
                 ++pos;
                 r->setEnd(pos);
                 r->getFont()->setName(defaultFont);
@@ -703,11 +719,11 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 
                     r->setText(textUnicode);
                 }
-                docAsText += textUnicode;
+                if ( wantUtf8Text_ ) docAsText += textUnicode;
             }
         }
         else {
-            docAsText += text;
+            if ( wantUtf8Text_ ) docAsText += text;
         }
 
         pos = r->getEnd();
@@ -718,19 +734,68 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
     return docAsText;
 }
 
+
 wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
 {
-    wstring_t docAsText;
+    wstring_t text, textUnicode;
+    int lastPos = r->getEnd();
 
-    int st = r->getStart();
-    int en = r->getEnd();
+    r->setStart(0);
+    r->setEnd(0);
+    int pos = 0;
+    int startPos = 0;
+    int endPos = 0;
 
-    tFindSp f = r->getFind();
-    f->clearFormatting();
-    f->setText(L"simple");
-    tFontSp fnt = f->getFont();
+    do {
+        r = r->getNext(13, 1);
+        if (!r)
+            break;
 
-    fnt->setBold(1);
-    f->execute();
-    return docAsText;
+        startPos = r->getStart();
+        endPos   = r->getEnd();
+
+        r->setRange(pos, startPos);
+        //r->select();
+        processRangeClassic(r, text, textUnicode);
+
+        r->setRange(startPos, endPos);
+        //r->select();
+        processRangeClassic(r, text, textUnicode);
+
+        pos = endPos;
+
+        std::cout << "\r" << percentageStr(pos, lastPos - 1);
+    } while (true);
+    return L"";
+}
+
+
+void Converter::processRangeClassic( tRangeSp& r, wstring_t& text, wstring_t& textUnicode )
+{
+    tCharMappingSp cm;
+    tFontSp font;
+    string_t fontName, newFontName;
+
+    font = r->getFont();
+    fontName = font->getName();
+    if (fontName.empty()) {
+        logError(logger(), "empty font name");
+        return;
+    }
+
+    if ( !canSkipFont(fontName) ) {
+        cm = getCM(fontName);
+        if (cm) {
+            textUnicode.clear();
+            text     = r->getText();
+            bool spaceOnly = cm->doConversion(text, textUnicode);
+            newFontName = getFontSubstitution(cm, fontName);
+
+            font->setName(newFontName);
+
+            if (!spaceOnly) {
+                r->setText(textUnicode);
+            }
+        }
+    }
 }

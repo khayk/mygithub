@@ -86,6 +86,10 @@ public:
 END_OBJECT(HeaderFooter)
 
 
+/// ----------------------------------------------------------------------------
+BEGIN_OBJECT(Sentences, Collection)
+END_OBJECT(Sentences)
+
 class Range : public BaseRS
 {
 public:
@@ -97,9 +101,10 @@ public:
     tFootnotesSp getFootnotes();
     
     tRangeSp getNextStoryRange();
-    tRangeSp getNext();
+    tRangeSp getNext(int wdUnit, int count);
 
     tFindSp getFind();
+    void setRange(int startPos, int endPos);
 };
 
 

@@ -80,3 +80,8 @@ tSectionsSp Document::getSections()
 {
     return tSectionsSp(new Sections(getPropertyDispatch(doc_, L"Sections")) );
 }
+
+tSentencesSp Document::getSentences()
+{
+    return tSentencesSp(new Sentences(getPropertyDispatch(doc_, L"Sentences")) );
+}

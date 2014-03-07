@@ -41,11 +41,17 @@ tRangeSp Range::getNextStoryRange()
     return tRangeSp(new Range(getPropertyDispatch(disp_, L"NextStoryRange")) );
 }
 
-tRangeSp Range::getNext()
+tRangeSp Range::getNext(int wdUnit, int count)
 {
     VARIANT result;
     VariantInit(&result);
-    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Next", 0);
+    
+    VARIANT unt;
+    VariantInit(&unt);
+    unt.vt = VT_I4;
+    unt.intVal = wdUnit;
+
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Next", 1, unt);
 
     if (result.pdispVal)
         return tRangeSp(new Range(result.pdispVal) );
@@ -70,6 +76,23 @@ tFootnotesSp Range::getFootnotes()
 tFindSp Range::getFind()
 {
     return tFindSp(new Find(getPropertyDispatch(disp_, L"Find")) );
+}
+
+void Range::setRange( int startPos, int endPos )
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT x, y;
+    VariantInit(&x);
+    x.vt = VT_I4;
+    x.intVal = startPos;
+
+    VariantInit(&y);
+    y.vt = VT_I4;
+    y.intVal = endPos;
+
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"SetRange", 2, y, x);
 }
 
 StoryRanges::StoryRanges( IDispatch* range )

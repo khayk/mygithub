@@ -8,6 +8,7 @@ Arial AMU           | cm-courieram.txt
 Arm
 Arm Garamond
 Arm Helv            | cm-courieram.txt
+Armhelvetica        | cm-courieram.txt
 Arm Helvetica       | cm-courieram.txt
 ArmArial            | cm-armarial.txt
 Armenian Garamond

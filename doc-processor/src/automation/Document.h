@@ -25,6 +25,7 @@ public:
     tStoryRangesSp getStoryRanges();
     tCharactersSp  getCharacters();
     tParagraphsSp  getParagraphs();
+    tSentencesSp   getSentences();
     tStylesSp      getStyles();
 
 private:
