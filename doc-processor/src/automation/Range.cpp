@@ -72,6 +72,18 @@ tFindSp Range::getFind()
     return tFindSp(new Find(getPropertyDispatch(disp_, L"Find")) );
 }
 
+void Range::collapse()
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT x;
+    VariantInit(&x);
+    x.vt = VT_I4;
+    x.lVal = 0;
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Collapse", 1, x);
+}
+
 StoryRanges::StoryRanges( IDispatch* range )
     : range_(range)
 {

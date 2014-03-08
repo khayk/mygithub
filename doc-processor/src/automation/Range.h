@@ -68,6 +68,8 @@ public:
     tRangeSp getNext();
 
     tFindSp getFind();
+
+    void collapse();
 };
 
 
