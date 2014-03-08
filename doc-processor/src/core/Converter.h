@@ -99,6 +99,8 @@ private:
 
     wstring_t processRangePrecise(tRangeSp& r, bool showProgress); /// This is one solution
     wstring_t processRangePreciseVer2(tRangeSp& r, bool showProgress);
+    
+    void processRangeClassic(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
 
     /// used font list
     std::set<string_t> usedFonts_;
@@ -110,6 +112,7 @@ private:
     bool   hasSavedSelection_;
 
     bool   wordVisible_;
+    bool   wantUtf8Text_;
 };
 
 #endif ASCII_TO_UNICODE_CONVERTER_H

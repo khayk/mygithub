@@ -116,8 +116,14 @@ int DocProcessor::main( const std::vector<std::string>& args )
 {
     ChangeLoggerLevel cll(this);
     wstring_t appVersion;
-    getFileVersion(toUtf16(config().getString("application.path")), appVersion);
+    string_t appPath = config().getString("application.path");
+    getFileVersion(toUtf16(appPath), appVersion);
     logInfo(logger(), "Application version: " + toUtf8(appVersion));
+
+    string_t shaExpected;
+    string_t sha1Calculated;
+    calculateSHA1( Poco::Path(appPath).parent().append("README.txt").toString(), 
+        sha1Calculated );
 
 //     wstring_t tt(L"Time New Roman");
 //     string_t t;
@@ -157,6 +163,15 @@ int DocProcessor::main( const std::vector<std::string>& args )
     // perform the main task
 //     for (int i = 0; i < args.size(); ++i)
 //         logInfo(logger(), "args[" + boost::lexical_cast<string_t>(i) + "] = " + args[i]);
+
+    if (sha1Calculated != "6ba59a75c29b0873ed916fd1ddeec3e6b3e21dc6") {
+        logError(logger(), "Any change in the README.txt file "
+            "should be coordinated with the author "
+            "(karapetyan.hayk@gmail.com). Press ENTER to close the window");
+        int ch;
+        ch = std::cin.get();
+        return 0;
+    }
 
     Converter converter(tConfigPtr(&config(), true));
     converter.start();

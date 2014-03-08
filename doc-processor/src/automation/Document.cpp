@@ -70,3 +70,18 @@ tStylesSp Document::getStyles()
 {
     return tStylesSp(new Styles(getPropertyDispatch(doc_, L"Styles")) );
 }
+
+tFormFieldsSp Document::getFormFields()
+{
+    return tFormFieldsSp(new FormFields(getPropertyDispatch(doc_, L"FormFields")) );
+}
+
+tSectionsSp Document::getSections()
+{
+    return tSectionsSp(new Sections(getPropertyDispatch(doc_, L"Sections")) );
+}
+
+tSentencesSp Document::getSentences()
+{
+    return tSentencesSp(new Sentences(getPropertyDispatch(doc_, L"Sentences")) );
+}

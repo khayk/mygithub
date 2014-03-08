@@ -41,11 +41,17 @@ tRangeSp Range::getNextStoryRange()
     return tRangeSp(new Range(getPropertyDispatch(disp_, L"NextStoryRange")) );
 }
 
-tRangeSp Range::getNext()
+tRangeSp Range::getNext(int wdUnit, int count)
 {
     VARIANT result;
     VariantInit(&result);
-    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Next", 0);
+    
+    VARIANT unt;
+    VariantInit(&unt);
+    unt.vt = VT_I4;
+    unt.intVal = wdUnit;
+
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Next", 1, unt);
 
     if (result.pdispVal)
         return tRangeSp(new Range(result.pdispVal) );
@@ -82,6 +88,23 @@ void Range::collapse()
     x.vt = VT_I4;
     x.lVal = 0;
     OLEMethod(DISPATCH_METHOD, &result, disp_, L"Collapse", 1, x);
+}
+
+void Range::setRange( int startPos, int endPos )
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT x, y;
+    VariantInit(&x);
+    x.vt = VT_I4;
+    x.intVal = startPos;
+
+    VariantInit(&y);
+    y.vt = VT_I4;
+    y.intVal = endPos;
+
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"SetRange", 2, y, x);
 }
 
 StoryRanges::StoryRanges( IDispatch* range )
@@ -254,4 +277,39 @@ Style::Style( IDispatch* style )
 Style::~Style()
 {
     SafeRelease(style_);
+}
+
+
+/// ----------------------------------------------------------------------------
+IDispatch* Collection::getItem( int index )
+{
+    VARIANT result;
+    VariantInit(&result);
+
+    VARIANT x;
+    x.vt = VT_I4;
+    x.intVal = index;
+    OLEMethod(DISPATCH_METHOD, &result, disp_, L"Item", 1, x);
+
+    return result.pdispVal;
+}
+
+int Collection::getCount()
+{
+    return getPropertyInt(disp_, L"Count");
+}
+
+tHeadersFootersSp Section::getFooters()
+{
+    return tHeadersFootersSp(new HeadersFooters(getPropertyDispatch(disp_, L"Footers")) );
+}
+
+tHeadersFootersSp Section::getHeaders()
+{
+    return tHeadersFootersSp(new HeadersFooters(getPropertyDispatch(disp_, L"Headers")) );
+}
+
+tRangeSp HeaderFooter::getRange()
+{
+    return tRangeSp(new Range(getPropertyDispatch(disp_, L"Range")) );
 }

@@ -1,4 +1,6 @@
+Baltica Cyrillic | cm-timeset.txt
 Times LatRus
 TimesET          | cm-timeset.txt
+Russian Bodoni   | cm-timeset.txt
 Russian TimesET  | cm-timeset.txt
 Russian Times    | cm-timeset.txt

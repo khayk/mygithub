@@ -17,11 +17,15 @@ public:
 
     //ADD_NOTES_INTERFACE(doc_);
     tFootnotesSp getFootnotes();
+    tFormFieldsSp getFormFields();
+
+    tSectionsSp    getSections();
 
     tRangeSp       getContent();
     tStoryRangesSp getStoryRanges();
     tCharactersSp  getCharacters();
     tParagraphsSp  getParagraphs();
+    tSentencesSp   getSentences();
     tStylesSp      getStyles();
 
 private:
