@@ -38,7 +38,10 @@ Range::Range( IDispatch* range )
 
 tRangeSp Range::getNextStoryRange()
 {
-    return tRangeSp(new Range(getPropertyDispatch(disp_, L"NextStoryRange")) );
+    IDispatch* disp = getPropertyDispatch(disp_, L"NextStoryRange");
+    if (disp)
+        return tRangeSp(new Range(disp) );
+    return tRangeSp();
 }
 
 tRangeSp Range::getNext(int wdUnit, int count)
@@ -106,6 +109,32 @@ void Range::setRange( int startPos, int endPos )
 
     OLEMethod(DISPATCH_METHOD, &result, disp_, L"SetRange", 2, y, x);
 }
+
+tTextRetrievalModeSp Range::textRetrievalMode()
+{
+    return tTextRetrievalModeSp(new TextRetrievalMode(getPropertyDispatch(disp_, L"TextRetrievalMode")) );
+}
+
+tRangeSp Range::duplicate()
+{
+    return tRangeSp(new Range(getPropertyDispatch(disp_, L"Duplicate")) );
+}
+
+tParagraphFormatSp Range::getParagraphFormat()
+{
+    return tParagraphFormatSp(new ParagraphFormat(getPropertyDispatch(disp_, L"ParagraphFormat")) );
+}
+
+// 
+// tBaseObjectSp Range::getStyle()
+// {
+//     return tBaseObjectSp(new BaseObject(getPropertyDispatch(disp_, L"Style")) );
+// }
+// 
+// void Range::setStyle( const tBaseObjectSp& obj )
+// {
+//     setPropertyDispatch(disp_, obj->getIDispatch(), L"Style");
+// }
 
 StoryRanges::StoryRanges( IDispatch* range )
     : range_(range)
@@ -312,4 +341,49 @@ tHeadersFootersSp Section::getHeaders()
 tRangeSp HeaderFooter::getRange()
 {
     return tRangeSp(new Range(getPropertyDispatch(disp_, L"Range")) );
+}
+
+void TextRetrievalMode::setFieldCodes( short value )
+{
+    setPropertyBool(disp_, L"IncludeFieldCodes", value);
+}
+
+short TextRetrievalMode::getFieldCodes() const
+{
+    return getPropertyBool(disp_, L"IncludeFieldCodes");
+}
+
+void TextRetrievalMode::setHiddenText( short value )
+{
+    setPropertyBool(disp_, L"IncludeHiddenText", value);
+}
+
+short TextRetrievalMode::getHiddenText() const
+{
+    return getPropertyBool(disp_, L"IncludeHiddenText");
+}
+
+void ParagraphFormat::setAlignment( int value )
+{
+    setPropertyInt(disp_, L"Alignment", value);
+}
+
+int ParagraphFormat::getAlignment() const
+{
+    return getPropertyInt(disp_, L"Alignment");
+}
+
+void ParagraphFormat::setLineSpacing( float value )
+{
+    setPropertyFloat(disp_, L"LineSpacing", value);
+}
+
+float ParagraphFormat::getLineSpacing() const
+{
+    return getPropertyFloat(disp_, L"LineSpacing");
+}
+
+void ParagraphFormat::reset()
+{
+    OLEMethod(DISPATCH_METHOD, 0, disp_, L"Reset", 0);
 }

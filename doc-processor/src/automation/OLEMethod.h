@@ -4,9 +4,13 @@
 #include "Typedefs.h"
 
 float getPropertyFloat(IDispatch* disp, LPOLESTR propName);
+void  setPropertyFloat(IDispatch* disp, LPOLESTR propName, float val);
 
 int getPropertyInt(IDispatch* disp, LPOLESTR propName);
 int setPropertyInt(IDispatch* disp, LPOLESTR propName, int val);
+
+short getPropertyBool(IDispatch* disp, LPOLESTR propName);
+void setPropertyBool(IDispatch* disp, LPOLESTR propName, short val);
 
 wstring_t  getPropStr(IDispatch* disp, LPOLESTR propName);
 void       setPropStr(IDispatch* disp, LPOLESTR propName, const wstring_t& val);

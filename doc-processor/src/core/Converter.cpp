@@ -15,7 +15,7 @@
 #include <fstream>
 
 #include <T2embapi.h>
-
+#include <boost/lexical_cast.hpp>
 
 CharMapping::CharMapping()
     : LogSource("charMapping")
@@ -164,6 +164,16 @@ Converter::Converter(const tConfigPtr& config)
         config_->getString("output.folder", ""),
         config_->getString("mapping.folder", "")
     );
+
+    specialChars_ += (wchar_t)1;     /// footnote
+    specialChars_ += (wchar_t)2;     /// footnote
+    specialChars_ += (wchar_t)7;     /// table indicators
+    specialChars_ += (wchar_t)9;     /// 
+    specialChars_ += (wchar_t)11;     /// 
+    specialChars_ += (wchar_t)12;     /// 
+    specialChars_ += (wchar_t)13;    /// paragraph ending
+    specialChars_ += (wchar_t)47;    /// 
+
 }
 
 
@@ -451,8 +461,8 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 //     }
 
     wstring_t docAsText;
-    tParagraphsSp paragraphs = doc->getParagraphs();
-    int count = paragraphs->getCount();
+//     tParagraphsSp paragraphs = doc->getParagraphs();
+//     int count = paragraphs->getCount();
 
 //     tSentencesSp sentences = doc->getSentences();
 //     int sentCount = sentences->getCount();
@@ -463,11 +473,13 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 //         std::cout << "\r" << percentageStr(i, count);
 //     }
 
-    docAsText += processRangePreciseVer2(doc->getContent(), true);
+    tRangeSp r = doc->getContent();
+    docAsText += processRangePreciseVer2(r, true);
+
     //docAsText += processRangePrecise(doc->getContent(), true);
     std::cout << std::endl;
 
-    /*
+
     /// footnotes
     logInfo(logger(), "Processing [footnotes]: ");
 
@@ -476,7 +488,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     for (int i = 1; i <= notesCount; ++i) {
         tNoteSp note = footnots->getItem(i);
         tRangeSp r = note->getRange();
-        processRangePrecise(r, false);
+        processRangePreciseVer2(r, false);
         std::cout << "\r" << percentageStr(i, notesCount);
     }
     if (notesCount > 0)
@@ -492,7 +504,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
             logInfo(logger(), "Processing [headers]: ");
             tHeaderFooterSp hf( new HeaderFooter(hfs->getItem(1)) );
             tRangeSp r = hf->getRange();
-            processRangePrecise(r, false);
+            processRangePreciseVer2(r, false);
         }
 
         hfs = section->getFooters();
@@ -500,9 +512,9 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
             logInfo(logger(), "Processing [footers]: ");
             tHeaderFooterSp hf( new HeaderFooter(hfs->getItem(1)) );
             tRangeSp r = hf->getRange();
-            processRangePrecise(r, false);
+            processRangePreciseVer2(r, false);
         }
-    }*/
+    }
 
 
     /// now save result in the appropriate folder
@@ -619,12 +631,6 @@ string_t Converter::getOutputAbsPath( const string_t& name )
 wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 {
     string_t defaultFont = "Sylfaen";
-    wstring_t       specialChars;
-
-    specialChars += (wchar_t)2;     /// footnote
-    specialChars += (wchar_t)7;     /// table indicators
-    specialChars += (wchar_t)13;    /// paragraph ending
-    specialChars += (wchar_t)47;    /// paragraph ending
 
     tCharMappingSp cm;
     string_t       fontName, newFontName;
@@ -673,7 +679,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 
         /// skip invalid characters
         text     = r->getText();
-        wstring_t::size_type xpos = text.find_first_of(specialChars);
+        wstring_t::size_type xpos = text.find_first_of(specialChars_);
         if (xpos != wstring_t::npos) {
             if (xpos == 0) {
                 if ( wantUtf8Text_ ) docAsText += text[xpos];
@@ -739,13 +745,12 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
 {
     wstring_t text, textUnicode;
     int lastPos = r->getEnd();
+    int pos = r->getStart();
+    int startPos = pos;
+    int endPos = pos;
 
-    r->setStart(0);
-    r->setEnd(0);
-    int pos = 0;
-    int startPos = 0;
-    int endPos = 0;
-
+    r->setRange(pos, pos);
+    
     do {
         r = r->getNext(13, 1);
         if (!r)
@@ -755,15 +760,16 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         endPos   = r->getEnd();
 
         r->setRange(pos, startPos);
-        //r->select();
-        processRangeClassic(r, text, textUnicode);
+        if (wordVisible_) 
+            r->select();
+        processRangeHelper(r, text, textUnicode, pos);
 
         r->setRange(startPos, endPos);
-        //r->select();
-        processRangeClassic(r, text, textUnicode);
+        if (wordVisible_) 
+            r->select();
+        processRangeHelper(r, text, textUnicode, startPos);
 
         pos = endPos;
-
         std::cout << "\r" << percentageStr(pos, lastPos - 1);
     } while (true);
     return L"";
@@ -788,14 +794,76 @@ void Converter::processRangeClassic( tRangeSp& r, wstring_t& text, wstring_t& te
         if (cm) {
             textUnicode.clear();
             text     = r->getText();
-            bool spaceOnly = cm->doConversion(text, textUnicode);
+            cm->doConversion(text, textUnicode);
             newFontName = getFontSubstitution(cm, fontName);
-
             font->setName(newFontName);
 
-            if (!spaceOnly) {
-                r->setText(textUnicode);
+            if (text.empty())
+                return;
+            else if ( text.size() == 1 ) {
+                if (specialChars_.find(text[0]) != string_t::npos) {
+                    return;
+                }
+                else if (text[0] <= 20 ) {
+                    logWarning(logger(), boost::lexical_cast<string_t>((int) text[0]));
+                    return;
+                } 
+            }
+
+            tParagraphFormatSp pf = r->getParagraphFormat();
+            int alignment = pf->getAlignment();
+            float lineSpacing = pf->getLineSpacing();
+
+            r->setText(textUnicode);
+            
+            if ( textUnicode.size() > 1 ) {
+                pf->setAlignment(alignment);
+                pf->setLineSpacing(lineSpacing);
             }
         }
     }
+}
+
+
+void Converter::injectSecurityCheck()
+{
+/*    string_t hwInfo;
+    string_t dispHwInfo = hwInfo;
+    string_t sha1val = hwInfo, sha1extracted;
+
+    logInfo(logger(), dispHwInfo);
+
+    string_t key = generateKey();
+
+    injectTo(key, sha1val);
+    extractFrom(key, sha1extracted);
+
+    /// 4 bytes - size in kb, last use time
+    storeVal(key, val);
+    readVal(key, val);*/
+}
+
+void Converter::processRangeHelper( tRangeSp& r, wstring_t& text, wstring_t& textUnicode, int pos )
+{
+    int st = r->getStart();
+    int en = r->getEnd();
+
+    text = r->getText();
+    wstring_t::size_type xpos = text.find_first_of(specialChars_);
+    if (xpos != wstring_t::npos) {
+        if (xpos > 0) {
+            r->setRange(st, st + xpos);
+            if (wordVisible_) r->select();
+            processRangeClassic(r, text, textUnicode);
+
+            if ( en - (st + xpos + 1) > 0 ) {
+                r->setRange(st + xpos + 1, en);
+                if (wordVisible_) r->select();
+                processRangeHelper(r, text, textUnicode, 0);
+            }
+        }
+    }
+    else {
+        processRangeClassic(r, text, textUnicode);
+    }   
 }

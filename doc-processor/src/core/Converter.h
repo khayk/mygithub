@@ -101,9 +101,12 @@ private:
     wstring_t processRangePreciseVer2(tRangeSp& r, bool showProgress);
     
     void processRangeClassic(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
+    void processRangeHelper(tRangeSp& r, wstring_t& text, wstring_t& textUnicode, int pos);
 
     /// used font list
     std::set<string_t> usedFonts_;
+
+    wstring_t       specialChars_;
 
     /// used to return reference of empty mapping
     tCharMappingSp noMapping;
@@ -113,6 +116,10 @@ private:
 
     bool   wordVisible_;
     bool   wantUtf8Text_;
+
+
+private:
+    void injectSecurityCheck();
 };
 
 #endif ASCII_TO_UNICODE_CONVERTER_H
