@@ -143,20 +143,13 @@ void CharMapping::setLanguage( const string_t& language )
 Converter::Converter(const tConfigPtr& config)
     : LogSource("converter")
     , config_(config)
-    , quickMode_(true)
+    , security_(config)
 {
     word_.reset(new WordApp());
     wordVisible_ = config->getBool("winword.visible", false);
     word_->setVisible(wordVisible_);
 
-    if ( config->getString("working.mode", "") == "precise" ) {
-        logWarning(logger(), "Working in PRECISE MODE. GOOD");
-        quickMode_ = false;
-    }
-    else {
-        logWarning(logger(), "Working in QUICK MODE. Some text style information will be lost");
-    }
-
+    logWarning(logger(), "Working in PRECISE MODE. GOOD");
     wantUtf8Text_ = config_->getBool("app.saveAlsoAsUTF8", false);
 
     initialize(
@@ -343,10 +336,7 @@ void Converter::start()
         try {
             ScopedTimeCalculator stc(logger(), "Elapsed ");
             logInfo(logger(), "Processing [document]: " + *it);
-            if ( quickMode_ )
-                convertSingleDocQuick(*it);
-            else
-                convertSingleDocPrecise(*it);
+            convertSingleDocPrecise(*it);
         }
         catch (const Poco::Exception& pe) {
             logError(logger(), pe.displayText());
@@ -474,6 +464,8 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 //     }
 
     tRangeSp r = doc->getContent();
+    int64 totalBytes = r->getStoryLength();
+
     docAsText += processRangePreciseVer2(r, true);
 
     //docAsText += processRangePrecise(doc->getContent(), true);
@@ -517,6 +509,11 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     }
 
 
+    if ( !security_.getKey().updateCounters(totalBytes) ) {
+        doc->close();
+        return;
+    }
+
     /// now save result in the appropriate folder
     string_t outputDir = getOutputAbsPath(fileName);
     Poco::File(outputDir).createDirectories();
@@ -526,6 +523,8 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     
     if ( wantUtf8Text_ )
         writeFileAsBinary( outputDir + p.getBaseName() + " UTF8.txt", toUtf8(docAsText));
+
+    logContent(security_.getKey());
 }
 
 void Converter::convertSingleDocQuick( const string_t& fileName )
@@ -759,15 +758,20 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         startPos = r->getStart();
         endPos   = r->getEnd();
 
+        if (startPos >= lastPos)
+            break;
+
         r->setRange(pos, startPos);
         if (wordVisible_) 
             r->select();
-        processRangeHelper(r, text, textUnicode, pos);
+        processRangeClassic2(r, text, textUnicode);
+        //processRangeHelper(r, text, textUnicode, pos);
 
         r->setRange(startPos, endPos);
         if (wordVisible_) 
             r->select();
-        processRangeHelper(r, text, textUnicode, startPos);
+        processRangeClassic2(r, text, textUnicode);
+        //processRangeHelper(r, text, textUnicode, startPos);
 
         pos = endPos;
         std::cout << "\r" << percentageStr(pos, lastPos - 1);
@@ -775,6 +779,96 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
     return L"";
 }
 
+void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& textUnicode )
+{
+    static std::vector<int> offsets;
+
+    tCharMappingSp cm;
+    tFontSp font;
+    string_t fontName, newFontName;
+
+    font = r->getFont();
+    fontName = font->getName();
+    if (fontName.empty()) {
+        logError(logger(), "empty font name");
+        return;
+    }
+
+    if ( !canSkipFont(fontName) ) {
+        cm = getCM(fontName);
+        if (cm) {
+            textUnicode.clear();
+            text     = r->getText();
+            cm->doConversion(text, textUnicode);
+            newFontName = getFontSubstitution(cm, fontName);
+            font->setName(newFontName);
+
+            /// --------------------------------------------
+            int enPos   = r->getEnd();
+            int stPos = r->getStart();
+            string_t::size_type off = 0;
+            string_t::size_type pos = 0;
+
+            offsets.clear();
+            bool somethingChanged = false;
+            while ( true )
+            {
+                pos = text.find_first_not_of(specialChars_, off);
+                if (pos != string_t::npos) {
+                    offsets.push_back(pos);
+                    off = pos;
+                    somethingChanged = true;
+                }
+                else {
+                    break;
+                }
+
+                pos = text.find_first_of(specialChars_, off);
+                if (pos != string_t::npos) {
+                    offsets.push_back(pos);
+                    off = pos + 1;
+                    somethingChanged = true;
+                }
+                else {
+                    offsets.push_back(text.size());
+                    break;
+                }
+            }
+
+            for (int i = 0; i < offsets.size(); i += 2) {
+                int off1 = offsets[i];
+                int off2 = offsets[i+1];
+                r->setRange(stPos + off1, stPos + off2);
+                r->select();
+                r->setText(textUnicode.substr(off1, off2 - off1));
+            }
+
+            if (somethingChanged)
+                r->setRange(stPos, enPos);
+
+//             if (text.empty())
+//                 return;
+//             else if ( text.size() == 1 ) {
+//                 if (specialChars_.find(text[0]) != string_t::npos) {
+//                     return;
+//                 }
+//                 else if (text[0] <= 20 ) {
+//                     logWarning(logger(), boost::lexical_cast<string_t>((int) text[0]));
+//                     return;
+//                 } 
+//             }
+// 
+//             tParagraphFormatSp pf = r->getParagraphFormat();
+//             int alignment = pf->getAlignment();
+//             float lineSpacing = pf->getLineSpacing();
+
+//             if ( textUnicode.size() > 1 ) {
+//                 pf->setAlignment(alignment);
+//                 pf->setLineSpacing(lineSpacing);
+//             }
+        }
+    }
+}
 
 void Converter::processRangeClassic( tRangeSp& r, wstring_t& text, wstring_t& textUnicode )
 {
@@ -824,24 +918,6 @@ void Converter::processRangeClassic( tRangeSp& r, wstring_t& text, wstring_t& te
     }
 }
 
-
-void Converter::injectSecurityCheck()
-{
-/*    string_t hwInfo;
-    string_t dispHwInfo = hwInfo;
-    string_t sha1val = hwInfo, sha1extracted;
-
-    logInfo(logger(), dispHwInfo);
-
-    string_t key = generateKey();
-
-    injectTo(key, sha1val);
-    extractFrom(key, sha1extracted);
-
-    /// 4 bytes - size in kb, last use time
-    storeVal(key, val);
-    readVal(key, val);*/
-}
 
 void Converter::processRangeHelper( tRangeSp& r, wstring_t& text, wstring_t& textUnicode, int pos )
 {

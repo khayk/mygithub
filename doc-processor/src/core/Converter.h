@@ -3,10 +3,9 @@
 
 #include "../automation/WordApp.h"
 #include "../RootLogger.h"
+#include "Security.h"
 
 #include <Poco/Util/AbstractConfiguration.h>
-#include <map>
-
 typedef Poco::AutoPtr<Poco::Util::AbstractConfiguration>    tConfigPtr;
 
 class CharMapping : public LogSource {
@@ -75,7 +74,6 @@ private:
 
     tConfigPtr config_;
     tWordAppSp word_;
-    bool       quickMode_;
 
     string_t   inputFolder_;
     string_t   outputFolder_;
@@ -101,6 +99,8 @@ private:
     wstring_t processRangePreciseVer2(tRangeSp& r, bool showProgress);
     
     void processRangeClassic(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
+    void processRangeClassic2(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
+
     void processRangeHelper(tRangeSp& r, wstring_t& text, wstring_t& textUnicode, int pos);
 
     /// used font list
@@ -109,17 +109,15 @@ private:
     wstring_t       specialChars_;
 
     /// used to return reference of empty mapping
-    tCharMappingSp noMapping;
-    int    savedStart_;
-    int    savedEnd_;
-    bool   hasSavedSelection_;
+    tCharMappingSp  noMapping;
+    int             savedStart_;
+    int             savedEnd_;
+    bool            hasSavedSelection_;
 
-    bool   wordVisible_;
-    bool   wantUtf8Text_;
+    bool            wordVisible_;
+    bool            wantUtf8Text_;
 
-
-private:
-    void injectSecurityCheck();
+    Security        security_;
 };
 
 #endif ASCII_TO_UNICODE_CONVERTER_H

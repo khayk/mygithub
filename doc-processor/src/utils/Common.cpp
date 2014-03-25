@@ -7,8 +7,10 @@
 #include <Poco/DigestStream.h>
 #include <Poco/StreamCopier.h>
 
+#include <ShlObj.h>
 #include <Windows.h>
 #include <fstream>
+#include <sstream>
 
 #include <boost/scoped_array.hpp>
 
@@ -86,13 +88,13 @@ unsigned long getFileVersion( const wstring_t& fileName, wstring_t& fileVersion 
     return 0;
 }
 
-string_t makeCentralizedNote( const std::string& note, const char ch, size_t len )
+string_t makeCentralizedNote( const string_t& note, const char ch, size_t len )
 {
     if (len <= note.size() + 2)
         return note;
 
-    std::string result(len, ch);
-    std::string::size_type offset = (len - note.size()) / 2;
+    string_t result(len, ch);
+    string_t::size_type offset = (len - note.size()) / 2;
     result.replace(offset - 1, 1, " ");
     result.replace(offset, note.size(), note);
     result.replace(offset + note.size(), 1, " ");
@@ -179,6 +181,17 @@ void calculateSHA1( const string_t& file, string_t& sha1Value )
     sha1Value = DigestEngine::digestToHex(sha.digest());
 }
 
+void calculateSHA1_Str( const string_t& srcValue, string_t& sha1Value )
+{
+    std::stringstream ss(srcValue);
+
+    SHA1Engine sha;
+    DigestOutputStream dos(sha);
+    StreamCopier::copyStream(ss, dos);
+    dos.close();
+    sha1Value = DigestEngine::digestToHex(sha.digest());
+}
+
 void reportFailure( const string_t& fnName, const string_t& params, HRESULT hr )
 {
     char buf[256];
@@ -203,4 +216,32 @@ void replaceLineEndings( wstring_t& str )
     for (size_t i = 0; i < str.size(); ++i)
         if (str[i] == (char)13)
             str[i] = (char)10;
+}
+
+string_t getAppData( const string_t& vendorName, const string_t& applicationName )
+{
+    TCHAR wpath[MAX_PATH];
+    HRESULT rc = SHGetFolderPath(
+        NULL,
+        CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
+        NULL, SHGFP_TYPE_CURRENT,
+        wpath);
+
+    if (SUCCEEDED(rc)) {
+        string_t localAppData;
+        localAppData = toUtf8(wpath);
+        Poco::Path path(localAppData);
+        path.makeDirectory();
+        if (!vendorName.empty())
+            path.pushDirectory(vendorName);
+        if (!applicationName.empty())
+            path.pushDirectory(applicationName);
+        return path.toString();
+    }
+    else {
+        Poco::Path path(Poco::Path::home());
+        path.pushDirectory("." + vendorName);
+        path.pushDirectory(applicationName);
+        return path.toString();
+    }
 }
