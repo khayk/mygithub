@@ -15,7 +15,10 @@ public:
     ~CharMapping();
 
     /// returns true if there are only spacing symbols in the text
-    bool doConversion(const wstring_t& asciiText, wstring_t& unicodeText);
+    /// font name used only for logging purposes if there occurred an error
+    /// during conversion
+    bool doConversion(const wstring_t& asciiText, wstring_t& unicodeText, 
+        const string_t& fontName);
     
     /// update the mapping of the characters
     void updateCharMapping(const string_t& mapFile); 
@@ -27,7 +30,7 @@ private:
     void initDefaultMappings();
     void loadMappingFile(const string_t& mapFile);
 
-    wchar_t lookUp(wchar_t ch);
+    wchar_t lookUp(wchar_t ch, const string_t& fontName);
 
     std::map<wchar_t, wchar_t> mapping_;
     string_t language_;

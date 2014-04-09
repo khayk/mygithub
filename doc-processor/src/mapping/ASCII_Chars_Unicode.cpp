@@ -83,7 +83,7 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00AB ,  0x002C, ", COMMA"                                      },
         { 0x00AC ,  0x002D, "- HYPHEN-MINUS"                               },
         { 0x00AE ,  0x2026, "… HORIZONTAL ELLIPSIS"                        },
-        { 0x00FE ,  0x055A, "՚ ARMENIAN APOSTROPHE"                        },
+        { 0x00FE ,  0x055A, "՚ ARMENIAN APOSTROPHE"                         },
         { 0x00B0 ,  0x055B, "՛ ARMENIAN EMPHASIS MARK"                     },
         { 0x00AF ,  0x055C, "՜ ARMENIAN EXCLAMATION MARK"                  },
         { 0x00AA ,  0x055D, "՝ ARMENIAN COMMA"                             },
@@ -128,7 +128,12 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00FB ,  0x0585, "օ ARMENIAN SMALL LETTER OH"                   },
         { 0x00FD ,  0x0586, "ֆ ARMENIAN SMALL LETTER FEH"                  },
         { 0x00A8 ,  0x0587, "և ARMENIAN SMALL LIGATURE ECH YIWN"           },
-        { 0x00A3 ,  0x0589, "։ ARMENIAN FULL STOP"                         }
+        { 0x00A3 ,  0x0589, "։ ARMENIAN FULL STOP"                         },
+
+        { 0x02CA ,  0x055B, "՛ ARMENIAN EMPHASIS MARK"                     },
+        { 0x0301 ,  0x0301, "՛ ARMENIAN EMPHASIS MARK"                     },
+        { 0x0374 ,  0x0374, "՛ ARMENIAN EMPHASIS MARK"                     },
+        { 0x03BC ,  0x0562, "բ ARMENIAN SMALL LETTER BEN"                  }
 
         // { 0x0000 ,  0x058A, L"֊ ARMENIAN HYPHEN"                            },
         // { 0x0000 ,  0x058F, L"֏ ARMENIAN DRAM SIGN"                         },

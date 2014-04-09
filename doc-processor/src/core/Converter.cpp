@@ -7,6 +7,7 @@
 #include "../automation/WordApp.h"
 #include "../utils/ScopedTimeCalculator.h"
 
+#include <Poco/NumberFormatter.h>
 #include <Poco/FileStream.h>
 #include <Poco/String.h>
 #include <Poco/Path.h>
@@ -58,7 +59,7 @@ void CharMapping::initDefaultMappings()
         mapping_[identicalMappings[i]] = identicalMappings[i];
 }
 
-wchar_t CharMapping::lookUp( wchar_t ch )
+wchar_t CharMapping::lookUp( wchar_t ch, const string_t& fontName  )
 {
     if (ch >= 0 && ch < 256) {
         /// this is very quick lookup if we are working with symbols with code
@@ -73,8 +74,9 @@ wchar_t CharMapping::lookUp( wchar_t ch )
     auto it = mapping_.find(ch);
     if (it == mapping_.end()) {
         std::stringstream ss;
-        ss << "Language: " << language_ 
-            << ". No mapping for symbol: INTCODE (" << (int) ch << ") CHAR ("
+        ss << "LANG: " << language_ << ", FONT: " << fontName 
+            << ". No mapping for symbol: INTCODE (" << (int) ch << "), HEX (0x"
+            << Poco::NumberFormatter::formatHex((int)ch, 4) << "), CHAR ("
             << toUtf8(wstring_t(1, ch)) << ")";
         logError(logger(), ss.str());
         it = mapping_.insert(std::make_pair(ch, ch)).first;
@@ -82,13 +84,14 @@ wchar_t CharMapping::lookUp( wchar_t ch )
     return it->second;
 }
 
-bool CharMapping::doConversion( const wstring_t& asciiText, wstring_t& unicodeText )
+bool CharMapping::doConversion( const wstring_t& asciiText, wstring_t& unicodeText,
+    const string_t& fontName )
 {
     bool spacingOnly = true;
 
     unicodeText.resize(asciiText.size());
     for (size_t i = 0; i < asciiText.size(); ++i) {
-        unicodeText[i] = lookUp(asciiText[i]);
+        unicodeText[i] = lookUp(asciiText[i], fontName);
         spacingOnly = (spacingOnly && 
             (iswspace(unicodeText[i]) || unicodeText[i] == 1));
     }
@@ -431,9 +434,9 @@ string_t Converter::getFontSubstitution( const tCharMappingSp& cm, const string_
 void Converter::logUsedFonts( const string_t& name, std::set<string_t>& usedFonts )
 {
     std::stringstream ss;
-    ss << "Fonts found in the document '" << name << "' are: ";
+    ss << "Fonts in document '" << name << "' are: ";
     for (auto it = usedFonts.begin(); it != usedFonts.end(); ++it) {
-        ss << "[" << *it << "] ";
+        ss << *it << ", ";
     }
     logInfo(logger(), ss.str());
 }
@@ -449,14 +452,6 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 
     /// -------------------------------------------///
     usedFonts_.clear();
-
-//     tStylesSp styles = doc->getStyles();
-//     int stylesCount =  styles->getCount();
-//     for (int i = 1; i <= stylesCount; ++i) {
-//         tStyleSp style = styles->getItem(i);
-//         style
-//     }
-
     wstring_t docAsText;
 //     tParagraphsSp paragraphs = doc->getParagraphs();
 //     int count = paragraphs->getCount();
@@ -521,6 +516,9 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
         return;
     }
 #endif
+
+    logUsedFonts(fileName, usedFonts_);
+    usedFonts_.clear();
 
     /// now save result in the appropriate folder
     string_t outputDir = getOutputAbsPath(fileName);
@@ -590,7 +588,7 @@ void Converter::convertSingleDocQuick( const string_t& fileName )
         textUnicode.clear();
         cm = getCM(fontName);
         if (cm) {
-            bool spacingOnly = cm->doConversion(text, textUnicode);
+            bool spacingOnly = cm->doConversion(text, textUnicode, fontName);
             newFontName = getFontSubstitution(cm, fontName);
             //tFontSp fontDup = s->getFont()->duplicate();
             s->setText(textUnicode);
@@ -782,7 +780,8 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         processRangeClassic2(r, text, textUnicode);
 
         pos = endPos;
-        std::cout << "\r" << percentageStr(pos, lastPos - 1);
+        if (showProgress)
+            std::cout << "\r" << percentageStr(pos, lastPos - 1);
     } while (true);
     return L"";
 }
@@ -802,12 +801,14 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
         return;
     }
 
+    usedFonts_.insert(fontName);
+
     if ( !canSkipFont(fontName) ) {
         cm = getCM(fontName);
         if (cm) {
             textUnicode.clear();
             text     = r->getText();
-            cm->doConversion(text, textUnicode);
+            cm->doConversion(text, textUnicode, fontName);
             newFontName = getFontSubstitution(cm, fontName);
             font->setName(newFontName);
 
@@ -853,27 +854,6 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
 
             if (somethingChanged)
                 r->setRange(stPos, enPos);
-
-//             if (text.empty())
-//                 return;
-//             else if ( text.size() == 1 ) {
-//                 if (specialChars_.find(text[0]) != string_t::npos) {
-//                     return;
-//                 }
-//                 else if (text[0] <= 20 ) {
-//                     logWarning(logger(), boost::lexical_cast<string_t>((int) text[0]));
-//                     return;
-//                 } 
-//             }
-// 
-//             tParagraphFormatSp pf = r->getParagraphFormat();
-//             int alignment = pf->getAlignment();
-//             float lineSpacing = pf->getLineSpacing();
-
-//             if ( textUnicode.size() > 1 ) {
-//                 pf->setAlignment(alignment);
-//                 pf->setLineSpacing(lineSpacing);
-//             }
         }
     }
 }
@@ -896,7 +876,7 @@ void Converter::processRangeClassic( tRangeSp& r, wstring_t& text, wstring_t& te
         if (cm) {
             textUnicode.clear();
             text     = r->getText();
-            cm->doConversion(text, textUnicode);
+            cm->doConversion(text, textUnicode, fontName);
             newFontName = getFontSubstitution(cm, fontName);
             font->setName(newFontName);
 
