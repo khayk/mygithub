@@ -631,7 +631,7 @@ string_t Converter::getOutputAbsPath( const string_t& name )
         .makeDirectory()
         .toString();
 }
-
+/*
 wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 {
     string_t defaultFont = "Sylfaen";
@@ -744,7 +744,7 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
     return docAsText;
 }
 
-
+*/
 wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
 {
     wstring_t text, textUnicode;
@@ -770,13 +770,11 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         if (wordVisible_) 
             r->select();
         processRangeClassic2(r, text, textUnicode);
-        //processRangeHelper(r, text, textUnicode, pos);
 
         r->setRange(startPos, endPos);
         if (wordVisible_) 
             r->select();
         processRangeClassic2(r, text, textUnicode);
-        //processRangeHelper(r, text, textUnicode, startPos);
 
         pos = endPos;
         std::cout << "\r" << percentageStr(pos, lastPos - 1);
@@ -844,7 +842,7 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
                 int off1 = offsets[i];
                 int off2 = offsets[i+1];
                 r->setRange(stPos + off1, stPos + off2);
-                r->select();
+                if (wordVisible_) r->select();
                 r->setText(textUnicode.substr(off1, off2 - off1));
             }
 
