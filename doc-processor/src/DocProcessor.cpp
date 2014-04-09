@@ -246,8 +246,24 @@ int DocProcessor::main( const std::vector<std::string>& args )
         return 0;
     }
 
-    Converter converter(tConfigPtr(&config(), true));
-    converter.start();
+    bool errorOccured = true;
+    try {
+        Converter converter(tConfigPtr(&config(), true));
+        converter.start();
+        errorOccured = false;
+    }
+    catch (const Poco::Exception& e) {
+        logError(logger(), e.displayText());
+    }
+    catch (const std::exception& e) {
+        logError(logger(), e.what());
+    }
+
+    if (errorOccured) {
+        logInfo(logger(), "Press ENTER to close the window.");
+        int ch;
+        ch = std::cin.get();
+    }
 
     return Application::EXIT_OK;
 }

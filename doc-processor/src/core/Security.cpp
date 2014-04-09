@@ -3,6 +3,7 @@
 #include "../utils/Common.h"
 #include "../RootLogger.h"
 
+#include <Poco/Path.h>
 #include <Poco/File.h>
 #include <Poco/NumberParser.h>
 #include <Poco/NumberFormatter.h>
@@ -166,9 +167,6 @@ void SecurityKey::create( const string_t& token, bool personal /*= true*/ )
     setTotalDocCount(0);
     setDateCreated(time(0));
     setVersion(1005);
-
-    Poco::Util::WinRegistryKey myTrace(MY_TRACE);
-    myTrace.setString("", "1");
 }
 
 string_t SecurityKey::getToken() const
@@ -384,6 +382,8 @@ Security::Security(tConfigPtr cfg)
     appDataKeyPath_ = getAppData("", "AsciiToUnicode");
     rootKeyPath_ = cfg->getString("application.dir");
 
+    Poco::File(appDataKeyPath_).createDirectories();
+
     appDataKeyPath_ += LICENSE_FILE;
     rootKeyPath_    += LICENSE_FILE;
 
@@ -415,6 +415,9 @@ Security::Security(tConfigPtr cfg)
             }
             key_.create(selfToken_);
             key_.save(appDataKeyPath_);
+
+            Poco::Util::WinRegistryKey myTrace(MY_TRACE);
+            myTrace.setString("", "1");
             return;
         }
 

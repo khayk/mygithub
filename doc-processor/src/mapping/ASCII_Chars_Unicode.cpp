@@ -128,12 +128,8 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00FB ,  0x0585, "օ ARMENIAN SMALL LETTER OH"                   },
         { 0x00FD ,  0x0586, "ֆ ARMENIAN SMALL LETTER FEH"                  },
         { 0x00A8 ,  0x0587, "և ARMENIAN SMALL LIGATURE ECH YIWN"           },
-        { 0x00A3 ,  0x0589, "։ ARMENIAN FULL STOP"                         },
+        { 0x00A3 ,  0x0589, "։ ARMENIAN FULL STOP"                         }
 
-        { 0x2013 ,  0x2013, "– EN DASH"                                    },
-        { 0x2018 ,  0x2018, "‘ LEFT SINGLE QUOTATION MARK"                 },
-        { 0x2019 ,  0x2019, "’ RIGHT SINGLE QUOTATION MARK"                },
-        { 0x2026 ,  0x2026, "… HORIZONTAL ELLIPSIS"                        }
         // { 0x0000 ,  0x058A, L"֊ ARMENIAN HYPHEN"                            },
         // { 0x0000 ,  0x058F, L"֏ ARMENIAN DRAM SIGN"                         },
         // { 0x0000 ,  0x0559, L"ՙ ARMENIAN MODIFIER LETTER LEFT HALF RING"    },
@@ -221,11 +217,7 @@ void AsciiToUniMapping::exportRussianASCII_Unicode( const string_t& mapFile )
         { 0x00A1   , 0x0401,  "Ё CYRILLIC CAPITAL LETTER IO"            },
         { 0x00BF   , 0x0451,  "ё CYRILLIC SMALL LETTER IO"              },
 
-        { 0x00A8   , 0x2116,  "№ NUMERO SIGN"                           },
-        { 0x2014   , 0x2014,  "— Em DASH"                               },
-        { 0x201C   , 0x201C,  "“ LEFT DOUBLE QUATATION SIGN"            },
-        { 0x201D   , 0x201D,  "” RIGHT DOUBLE QUATATION SIGN"           }
-        
+        { 0x00A8   , 0x2116,  "№ NUMERO SIGN"                           }        
     };
 
     fileWriter(map, sizeof (map) / sizeof(MappingRaw), mapFile);

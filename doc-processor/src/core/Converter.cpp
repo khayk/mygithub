@@ -40,13 +40,18 @@ void CharMapping::initDefaultMappings()
         quickMap_[i] = i;
 
     wchar_t identicalMappings[] = {
-        0x2018,
-        0x2019,
-        0x201C,
-        0x201D,
+        0x2008,  /// "  Punctuation space"
+        0x2013,  /// "– EN DASH"
+        0x2014,  /// "— Em DASH"
+        0x2018,  /// "‘ LEFT SINGLE QUOTATION MARK"
+        0x2019,  /// "’ RIGHT SINGLE QUOTATION MARK"
+        0x201C,  /// "“ LEFT DOUBLE QUATATION SIGN"
+        0x201E,  /// "„ DOUBLE LOW-9 QUATATION SIGN"
+        0x201F,  /// "‟ DOUBLE HIGH-RESERVED-9 QUATATION SIGN"
+        0x201D,  /// "” RIGHT DOUBLE QUATATION SIGN"
         0x2022,
-        0x2026
-    };
+        0x2026   /// "… HORIZONTAL ELLIPSIS"
+    };   
 
     int count = sizeof(identicalMappings) / sizeof(wchar_t);
     for (int i = 0; i < count; ++i)
