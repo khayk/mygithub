@@ -21,3 +21,9 @@ typedef std::string                       string_t;
 typedef std::wstring                      wstring_t;
 
 typedef std::set<string_t>                tStringSet;
+
+typedef __int64 int64;
+const string_t LICENSE_FILE = "license.dat";
+
+#include <map>
+

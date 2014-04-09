@@ -7,9 +7,14 @@
 #include <Poco/Util/HelpFormatter.h>
 #include <Poco/File.h>
 #include "utils/Common.h"
+#include "core/Security.h"
 
 #include <boost/lexical_cast.hpp>
 #include "mapping/ASCII_Chars_Unicode.h"
+
+#include <Poco/NumberFormatter.h>
+#include <Poco/FileStream.h>
+#include <Poco/String.h>
 
 using Poco::Util::OptionCallback;
 using Poco::Util::HelpFormatter;
@@ -113,9 +118,75 @@ void DocProcessor::displayHelp()
     helpFormatter.format(std::cout);
 }
 
+void handleRequests(const string_t& requests) {
+    try {
+        Poco::Path pp(requests);
+        Poco::Path lics = pp.parent().makeDirectory().pushDirectory("licenses");
+
+        Poco::FileInputStream fis(requests);
+
+        while (!fis.eof()) {
+            string_t sl;
+            string_t sha;
+            string_t user;
+
+            std::getline(fis, sl);
+
+            /// check if there is custom mapping file specified current font
+            string_t::size_type p = sl.find('|');
+            sha = sl.substr(0, p);
+            sl = Poco::trim(sl);
+
+            if (p != string_t::npos)
+                user = sl.substr(p + 1);
+
+            sha = Poco::trim(sha);
+            user = Poco::trim(user);
+
+            if (sha.empty())
+                continue;
+
+            Poco::Path tmp = lics;
+            tmp.pushDirectory(sha); 
+            string_t ss = tmp.toString();
+
+            if ( !Poco::File(ss + LICENSE_FILE).exists() ) {
+                SecurityKey sk;
+                sk.create(sha, false);
+
+                Poco::File(ss).createDirectories();
+                sk.save(ss + LICENSE_FILE);
+            }
+        }
+    }
+    catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
+    catch (...) {
+
+    }
+}
 
 int DocProcessor::main( const std::vector<std::string>& args )
 {
+    if (!args.empty())
+        handleRequests(args[0]);
+
+//    sk.save();
+//     Security security(tConfigPtr(&config(), true));
+//     SecurityKey& key = security.getKey();
+//     logContent(key);
+//     return 0;
+    //timeAsStr(key.getLastUseTime());
+// 
+//     if ( !key.updateCounters(10010000) ) {
+//         logContent(key);
+//         return 0;
+//     }
+//     //logContent(key);
+// 
+//     return 0;
+
     ChangeLoggerLevel cll(this);
     wstring_t appVersion;
     string_t appPath = config().getString("application.path");
@@ -166,7 +237,7 @@ int DocProcessor::main( const std::vector<std::string>& args )
 //     for (int i = 0; i < args.size(); ++i)
 //         logInfo(logger(), "args[" + boost::lexical_cast<string_t>(i) + "] = " + args[i]);
 
-    if (sha1Calculated != "6ba59a75c29b0873ed916fd1ddeec3e6b3e21dc6") {
+    if (sha1Calculated != "a128b9f1fb0a7bcce2f2df7b6481beb8f1e36c2c") {
         logError(logger(), "Any change in the README.txt file "
             "should be coordinated with the author "
             "(karapetyan.hayk@gmail.com). Press ENTER to close the window");

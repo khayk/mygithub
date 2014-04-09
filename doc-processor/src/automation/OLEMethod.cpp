@@ -93,6 +93,29 @@ int setPropertyInt( IDispatch* disp, LPOLESTR propName, int value )
     return result.intVal;
 }
 
+short getPropertyBool( IDispatch* disp, LPOLESTR propName )
+{
+    VARIANT result;
+    VariantInit(&result);
+    OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
+    if (result.vt != VT_BOOL)
+        throw std::exception("Unexpected result type for VARIANT");
+    return result.boolVal;
+}
+
+void setPropertyBool( IDispatch* disp, LPOLESTR propName, short val )
+{
+    VARIANT variant;
+    VARIANT result;
+
+    VariantInit(&variant);
+    VariantInit(&result);
+
+    variant.vt =VT_BOOL;
+    variant.boolVal = val;
+    OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, variant);
+}
+
 float getPropertyFloat( IDispatch* disp, LPOLESTR propName )
 {
     VARIANT result;
@@ -101,6 +124,19 @@ float getPropertyFloat( IDispatch* disp, LPOLESTR propName )
     if (result.vt != VT_R4)
         throw std::exception("Unexpected result type for VARIANT");
     return result.fltVal;
+}
+
+void setPropertyFloat( IDispatch* disp, LPOLESTR propName, float val )
+{
+    VARIANT variant;
+    VARIANT result;
+
+    VariantInit(&variant);
+    VariantInit(&result);
+
+    variant.vt =VT_R4;
+    variant.fltVal = val;
+    OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, variant);
 }
 
 IDispatch* getPropertyDispatch( IDispatch* disp, LPOLESTR propName )
@@ -130,8 +166,11 @@ wstring_t getPropStr( IDispatch* disp, LPOLESTR propName )
     VariantInit(&result);
     OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
 
-    if (result.bstrVal)
-        return result.bstrVal;
+    if (result.bstrVal) {
+        wstring_t sr(result.bstrVal);
+        VariantClear(&result);
+        return sr;
+    }
     return wstring_t();
 }
 
@@ -146,3 +185,4 @@ void setPropStr( IDispatch* disp, LPOLESTR propName, const wstring_t& val )
     OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, variant);
     SysFreeString(variant.bstrVal);
 }
+

@@ -45,6 +45,9 @@
     <ClCompile Include="..\src\automation\Find.cpp">
       <Filter>automation</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\core\Security.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="..\src\automation\Find.h">
       <Filter>automation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\core\Security.h">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

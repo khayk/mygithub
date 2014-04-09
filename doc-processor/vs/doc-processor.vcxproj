@@ -21,6 +21,7 @@
     <ClCompile Include="..\src\automation\Selection.cpp" />
     <ClCompile Include="..\src\automation\WordApp.cpp" />
     <ClCompile Include="..\src\core\Converter.cpp" />
+    <ClCompile Include="..\src\core\Security.cpp" />
     <ClCompile Include="..\src\DocProcessor.cpp" />
     <ClCompile Include="..\src\mapping\ASCII_Chars_Unicode.cpp" />
     <ClCompile Include="..\src\stdafx.cpp">
@@ -44,6 +45,7 @@
     <ClInclude Include="..\src\automation\Typedefs.h" />
     <ClInclude Include="..\src\automation\WordApp.h" />
     <ClInclude Include="..\src\core\Converter.h" />
+    <ClInclude Include="..\src\core\Security.h" />
     <ClInclude Include="..\src\DocProcessor.h" />
     <ClInclude Include="..\src\mapping\ASCII_Chars_Unicode.h" />
     <ClInclude Include="..\src\resources\resource.h" />

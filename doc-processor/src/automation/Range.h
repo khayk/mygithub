@@ -90,6 +90,29 @@ END_OBJECT(HeaderFooter)
 BEGIN_OBJECT(Sentences, Collection)
 END_OBJECT(Sentences)
 
+/// ----------------------------------------------------------------------------
+BEGIN_OBJECT(TextRetrievalMode, BaseObject)
+public:
+    void setFieldCodes(short value);
+    short  getFieldCodes() const;
+    void setHiddenText(short value);
+    short  getHiddenText() const;
+
+END_OBJECT(TextRetrievalMode)
+
+/// ----------------------------------------------------------------------------
+
+BEGIN_OBJECT(ParagraphFormat, BaseObject)
+public:
+    void setAlignment(int value);
+    int  getAlignment() const;
+    void  setLineSpacing(float value);
+    float getLineSpacing () const;
+    void  reset();
+END_OBJECT(ParagraphFormat)
+
+     
+
 class Range : public BaseRS
 {
 public:
@@ -104,7 +127,18 @@ public:
     tRangeSp getNext(int wdUnit, int count);
 
     tFindSp getFind();
+
+    void collapse();
     void setRange(int startPos, int endPos);
+
+    tTextRetrievalModeSp textRetrievalMode();
+
+    tRangeSp duplicate();
+
+    tParagraphFormatSp getParagraphFormat();
+    tBaseObjectSp getStyle();
+    
+    void setStyle(const tBaseObjectSp& obj);
 };
 
 

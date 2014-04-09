@@ -36,6 +36,7 @@ string_t buildRelativePath(const string_t& thisPath, const string_t& relativeTo)
 
 /// calculates an SHA-1 value for a given file
 void calculateSHA1(const string_t& file, string_t& sha1Value);
+void calculateSHA1_Str( const string_t& srcValue, string_t& sha1Value );
 
 /// report about problem which occurred during function call
 void reportFailure(const string_t& fnName, const string_t& params, HRESULT hr);
@@ -43,5 +44,10 @@ void reportFailure(const string_t& fnName, const string_t& params, HRESULT hr);
 /// find characters with code '13' and convert it to '10'
 void replaceLineEndings(string_t& str);
 void replaceLineEndings(wstring_t& str);
+
+/// Return AppData folder directory for current user
+string_t getAppData(
+    const string_t& vendorName, 
+    const string_t& applicationName);
 
 #endif // PATCHER_COMMON_H__
