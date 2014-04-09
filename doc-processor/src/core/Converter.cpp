@@ -143,7 +143,9 @@ void CharMapping::setLanguage( const string_t& language )
 Converter::Converter(const tConfigPtr& config)
     : LogSource("converter")
     , config_(config)
+#ifdef SECURITY_ENABLED
     , security_(config)
+#endif
 {
     word_.reset(new WordApp());
     wordVisible_ = config->getBool("winword.visible", false);
@@ -508,11 +510,12 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
         }
     }
 
-
+#ifdef SECURITY_ENABLED
     if ( !security_.getKey().updateCounters(totalBytes) ) {
         doc->close();
         return;
     }
+#endif
 
     /// now save result in the appropriate folder
     string_t outputDir = getOutputAbsPath(fileName);
@@ -524,7 +527,9 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     if ( wantUtf8Text_ )
         writeFileAsBinary( outputDir + p.getBaseName() + " UTF8.txt", toUtf8(docAsText));
 
+#ifdef SECURITY_ENABLED
     logContent(security_.getKey());
+#endif
 }
 
 void Converter::convertSingleDocQuick( const string_t& fileName )

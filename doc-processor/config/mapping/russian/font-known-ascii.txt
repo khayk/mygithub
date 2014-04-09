@@ -1,3 +1,4 @@
+Arial LatRus     | cm-timeset.txt
 Baltica Cyrillic | cm-timeset.txt
 Times LatRus
 TimesET          | cm-timeset.txt

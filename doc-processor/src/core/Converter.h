@@ -117,7 +117,9 @@ private:
     bool            wordVisible_;
     bool            wantUtf8Text_;
 
+#ifdef SECURITY_ENABLED
     Security        security_;
+#endif
 };
 
 #endif ASCII_TO_UNICODE_CONVERTER_H

@@ -1,15 +1,10 @@
 #ifndef SECURITY_H__
 #define SECURITY_H__
 
-#include "../utils/HwInfo.h"
+//#include "../utils/HwInfo.h"
 
 #include <Poco/Util/AbstractConfiguration.h>
 typedef Poco::AutoPtr<Poco::Util::AbstractConfiguration>    tConfigPtr;
-
-
-// 1 - 356a192b7913b04c54574d18c28d46e6395428ab
-// 2 - da4b9237bacccdf19c0760cab7aec4a8359010b0
-// 3 - 77de68daecd823babbb58edb1c8e14d7106e83bb
 
 
 const int64 DAILY_LIMIT = 1024 * 1024;
