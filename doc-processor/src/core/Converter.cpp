@@ -444,6 +444,13 @@ void Converter::logUsedFonts( const string_t& name, std::set<string_t>& usedFont
 
 void Converter::convertSingleDocPrecise( const string_t& fileName )
 {
+#ifdef SECURITY_ENABLED
+    if ( !security_.getKey().updateCounters(0) ) {
+        logContent(security_.getKey());
+        return;
+    }
+#endif
+
     tDocumentsSp docs = word_->getDocuments();
     tDocumentSp  doc  = docs->open(toUtf16(getInputAbsPath(fileName)));
     if (!doc) {
@@ -512,10 +519,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     }
 
 #ifdef SECURITY_ENABLED
-    if ( !security_.getKey().updateCounters(totalBytes) ) {
-        doc->close();
-        return;
-    }
+    security_.getKey().updateCounters(totalBytes);
 #endif
 
     logUsedFonts(fileName, usedFonts_);
