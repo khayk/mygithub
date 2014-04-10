@@ -175,6 +175,7 @@ Converter::Converter(const tConfigPtr& config)
     specialChars_ += (wchar_t)11;     /// 
     specialChars_ += (wchar_t)12;     /// 
     specialChars_ += (wchar_t)13;    /// paragraph ending
+    specialChars_ += (wchar_t)21;    /// paragraph ending
     specialChars_ += (wchar_t)47;    /// 
 
 }
