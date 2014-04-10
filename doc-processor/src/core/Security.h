@@ -7,8 +7,8 @@
 typedef Poco::AutoPtr<Poco::Util::AbstractConfiguration>    tConfigPtr;
 
 
-const int64 DAILY_LIMIT = 1024 * 1024;
-const int64 BYTES_LIMIT = 50 * DAILY_LIMIT;
+const int64 DAILY_LIMIT = 256 * 1024;
+const int64 BYTES_LIMIT = 10 * 1024 * 1024;
 
 const int BLOCK_SZ = 80;
 const int KEY_LEN  = 77 * BLOCK_SZ;

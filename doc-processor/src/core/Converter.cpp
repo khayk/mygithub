@@ -524,8 +524,10 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     string_t outputDir = getOutputAbsPath(fileName);
     Poco::File(outputDir).createDirectories();
     Poco::Path p(fileName);
+    logInfo(logger(), "Saving document...");
     doc->saveAs( outputDir + p.getBaseName() + " UNICODE." + p.getExtension() );
     doc->close();
+    logInfo(logger(), "Save was successful.");
     
     if ( wantUtf8Text_ )
         writeFileAsBinary( outputDir + p.getBaseName() + " UTF8.txt", toUtf8(docAsText));
