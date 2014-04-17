@@ -186,6 +186,8 @@ bool SecurityKey::isGenuine( const string_t& token ) const
 
 bool SecurityKey::isLimitExceeded() const
 {
+    if ( !isPersonal() )
+        return false;
     return getTotalBytes() > BYTES_LIMIT;
 }
 
@@ -245,11 +247,13 @@ bool SecurityKey::updateCounters( int64 bytesProcessed )
         }
     }
 
-    setTotalDocCount( getTotalDocCount() + 1 );
-    setTotalBytes( getTotalBytes() + bytesProcessed );
-    setDailyUsage( getDailyUsage() + bytesProcessed );
+    if (bytesProcessed != 0) {
+        setTotalDocCount( getTotalDocCount() + 1 );
+        setTotalBytes( getTotalBytes() + bytesProcessed );
+        setDailyUsage( getDailyUsage() + bytesProcessed );
+        setLastUseTime( time(0) );
+    }
 
-    setLastUseTime( time(0) );
     save(dst_);
     return true;
 }

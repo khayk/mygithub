@@ -19,6 +19,7 @@ Dallak Helv         | cm-dallak.txt
 Dallak Title        | cm-dallak.txt
 Dallak Time         | cm-dallak.txt
 Grqee FM            | cm-grqeefm.txt
+GDENBE+GrqeeFMItalic| cm-grqeefm-italic.txt
 Hay Helv            | cm-hayhelv.txt
 Hay Title           | cm-hayhelv.txt
 Hay Times           | cm-hayhelv.txt
