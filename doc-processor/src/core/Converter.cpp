@@ -754,18 +754,23 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
 {
     wstring_t text, textUnicode;
-    int lastPos = r->getEnd();
-    int pos = r->getStart();
+    int pos      = r->getStart();
+    int lastPos  = r->getEnd();
     int startPos = pos;
-    int endPos = pos;
+    int endPos   = pos;
 
     r->setRange(pos, pos);
     
     do {
-        r = r->getNext(13, 1);
-        if (!r)
-            break;
+        tRangeSp newRange = r->getNext(13, 1);
+        if (!newRange) {
+            newRange = r->getNext(2, 1);
+            if (!newRange)
+                break;
+            r = newRange;
+        }
 
+        r = newRange;
         startPos = r->getStart();
         endPos   = r->getEnd();
 

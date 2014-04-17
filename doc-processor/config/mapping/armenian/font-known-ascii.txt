@@ -24,5 +24,6 @@ Hay Title           | cm-hayhelv.txt
 Hay Times           | cm-hayhelv.txt
 Mariam              | cm-courieram.txt
 MK Nork             | cm-mknork.txt
-Mk_Parzi   
+Mk_Parz
+Mk_Parzi
 Times Armenian
