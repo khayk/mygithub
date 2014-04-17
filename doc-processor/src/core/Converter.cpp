@@ -757,6 +757,8 @@ wstring_t Converter::processRangePrecise( tRangeSp& r, bool showProgress )
 */
 wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
 {
+    static DWORD lastTicks = 0;
+
     wstring_t text, textUnicode;
     int pos      = r->getStart();
     int lastPos  = r->getEnd();
@@ -778,7 +780,7 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         startPos = r->getStart();
         endPos   = r->getEnd();
 
-        if (startPos >= lastPos)
+        if (startPos > lastPos)
             break;
 
         r->setRange(pos, startPos);
@@ -792,8 +794,13 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         processRangeClassic2(r, text, textUnicode);
 
         pos = endPos;
-        if (showProgress)
-            std::cout << "\r" << percentageStr(pos, lastPos - 1);
+        if (showProgress) {
+            DWORD ticks = GetTickCount();
+            if (ticks - lastTicks > 30 || pos >= lastPos - 1) {
+                std::cout << "\r" << percentageStr(pos, lastPos - 1);
+                lastTicks = ticks;
+            }
+        }
     } while (true);
     return L"";
 }
