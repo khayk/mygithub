@@ -11,9 +11,13 @@ install express globally
 generate an app
  - express <appname> -c [stylus, less] --hogan --ejs
 
+install nodemon
+ - npm install -g nodemon
+
 npm install
 
 run app 
  - npm start
  - or node ./bin/www
+ - 
 
