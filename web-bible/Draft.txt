@@ -1,0 +1,7 @@
+
+bible   = map<id, books>
+book    = vector<chapter>
+chapter = vector<verse>
+
+
+verse is text containing all markup;
