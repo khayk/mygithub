@@ -169,8 +169,10 @@ void handleRequests(const string_t& requests) {
 
 int DocProcessor::main( const std::vector<std::string>& args )
 {
-    if (!args.empty())
+    if (!args.empty()) {
         handleRequests(args[0]);
+        return 0;
+    }
 
 //    sk.save();
 //     Security security(tConfigPtr(&config(), true));
