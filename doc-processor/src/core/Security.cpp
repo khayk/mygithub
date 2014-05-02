@@ -19,15 +19,15 @@ const string_t MY_TRACE = "HKEY_CURRENT_USER\\Software\\1fde5499-c2c7-436e-4444-
 
 MachineGUID::MachineGUID()
 {
-    HW_PROFILE_INFO   HwProfInfo;
-    if (!GetCurrentHwProfile(&HwProfInfo)) 
+    std::stringstream ss;
+    int CPUInfo[4];
+    __cpuid(CPUInfo, 0);
+    for (int i = 0; i < 4; i++)
     {
-        logError(tLogger::root(), "GetCurrentHwProfile failed with error code: " +
-            Poco::NumberFormatter::format(GetLastError()));
-        hwId_ = "1";
-        return;
+        ss << CPUInfo[i];
     }
-    hwId_ = toUtf8(wstring_t(HwProfInfo.szHwProfileGuid));
+
+    hwId_ = ss.str();
 }
 
 const string_t& MachineGUID::getHwId() const
@@ -421,7 +421,7 @@ Security::Security(tConfigPtr cfg)
             key_.save(appDataKeyPath_);
 
             Poco::Util::WinRegistryKey myTrace(MY_TRACE);
-            myTrace.setString("", "1");
+            myTrace.setString("", "2");
             return;
         }
 
@@ -443,7 +443,10 @@ SecurityKey& Security::getKey()
 bool Security::alreadyCreated() const
 {
     Poco::Util::WinRegistryKey myTrace(MY_TRACE);
-    if (myTrace.exists())
+    if (myTrace.exists()) {
+        if (myTrace.getString("") == "1")
+            return false;
         return true;
+    }
     return false;
 }

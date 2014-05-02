@@ -5,3 +5,25 @@ chapter = vector<verse>
 
 
 verse is text containing all markup;
+
+var result = search(var str) {
+    return array[];
+}
+
+object verse {
+    markupVerse: "",
+    textOnly: "",
+};
+
+object FontConfig {
+    face: "string",
+    bkcolor: value,
+    color: value,
+    italic: boolean  
+};
+
+object ViewConfig {
+    oldTstQuotes: FontConfig,
+    jesusWords: FontConfig,
+    textFont: "face name"  
+};
