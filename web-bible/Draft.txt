@@ -1,4 +1,4 @@
-
+¶
 bible   = map<id, books>
 book    = vector<chapter>
 chapter = vector<verse>
@@ -27,3 +27,47 @@ object ViewConfig {
     jesusWords: FontConfig,
     textFont: "face name"  
 };
+
+(\\\w+).(.*)(\1\*)|(\\\w+)
+
+          
+Important tags
+ 
+\id      - Id of the book (\id EXO 02-EXO-kjv.sfm The King James Version of the Holy Bible Wednesday, October 14, 2009) 
+\ide     - Encoding (\ide UTF-8) 
+\h       - Running header text (\h Genesis )
+    Can be ignored
+    \toc1    -      (\toc1 The Second Book of Moses, called Exodus)   
+    \toc2    -      (\toc2 Exodus)  
+    \toc3    -      (\toc3 Exo)   
+\mt      -      (\mt The Third Book of Moses, called Leviticus ) 
+\c       - Chapter number
+\p       - New paragraph
+\v       - Verse
+\add     -      (\add land\add*)
+\f (\f*) -     
+\nd      -      (\nd LORD\nd)
+\+nd    -       (\+nd Lord\+nd*)
+
+\ms     -       (\ms Book I )
+\q      -       (one book only   20-PSAeng-kjv.usfm)
+\b      -       (one book only   20-PSAeng-kjv.usfm)
+\d      -       (\d To the chief Musician, A Psalm of David. )
+\wj     -       
+\ie     -       (\ie The first \add epistle\add* to the Corinthians was written from Philippi by Stephanas, and Fortunatus, and Achaicus, and Timotheus. )
+\+add   -       (\+add are\+add*)
+
+
+
+Ignored tags
+
+\zw     -      
+\+zws   -        
+\zx     -      
+\+zwm   -        
+\+zw    -       
+\+zx    -       
+   
+\s      -       (\s A Prologue made by an uncertain Author )
+\is     -       (...)    
+
