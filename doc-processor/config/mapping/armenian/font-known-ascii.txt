@@ -5,7 +5,6 @@ ArialArmST
 Arik Armenian
 Arial AM            | cm-courieram.txt
 Arial AMU           | cm-courieram.txt
-Arafi               | cm-arafi.txt
 Arm
 Arm Garamond
 Arm Helv            | cm-courieram.txt
