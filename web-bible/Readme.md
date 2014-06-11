@@ -14,7 +14,6 @@ install json module (nice json view)
  - npm install -g node-inspector
 run this way (node-inspector & node --debug scriptFileName.js)
 
-
 generate an app
  - express <appname> -c [stylus, less] --hogan --ejs
 
@@ -29,3 +28,8 @@ run app
  - or node ./bin/www
  - 
 
+debug application
+ - npm install -g node-inspector
+ - node-inspector (run inspector)
+ - node --debug file-name.js
+ - node --debug-brk my-file.js
