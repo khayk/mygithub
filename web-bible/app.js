@@ -297,16 +297,16 @@ function loadBible(descFile) {
 // ---------------------------------------------------------------
 function onBibleLoaded(bible) {
 
+   console.log("-> onBibleLoaded");
+
    var verseView        = new VerseView();
    var chapterView      = new ChapterView(verseView);
    var bookView         = new BookView(chapterView);
    var bibleView        = new BibleView(bookView);
 
    viewOptions.init('Web page', 'Arial', true);
-
-   console.log("onBibleLoaded");
    bibleView.display(bible);
-   console.log("onBibleLoaded End");
+   console.log("<- onBibleLoaded");
 }
 
 
@@ -331,11 +331,23 @@ function loadBook(filePath) {
    function extractVerse(offset, size) {
       if (verseNumber !== 0) {
          var text   = str.substr(offset, size);
-         text = text.replace(/\n/gm, ' ');
+         var markup = text.trim();
 
-         var verse = new Verse(chapter, verseNumber, text, newParagraph);
+         /// remove unnecessary staff from the file
+         var deleteExpr = /(\\\w+).*?(\1\*)/gm;
+         var textOnly = markup.replace(deleteExpr, '');
+         textOnly = textOnly.replace(/\n/gm, ' ');
+         textOnly = textOnly.replace(/\s{2,}/gm, ' ');
+
+
+         var verse = new Verse(chapter, verseNumber, textOnly, newParagraph);
          chapter.verses.push(verse);
-         
+
+         // text = text.replace(/\\add\s/g, '[');
+         // text = text.replace(/\\add\*/g, ']');
+         // output += (parseInt(verseNumber) + ' ' + text + '\n');
+         //
+         //
          // text = text.replace(/\\add\s/g, '[');
          // text = text.replace(/\\add\*/g, ']');
          // output += (parseInt(verseNumber) + ' ' + text + '\n');
@@ -343,13 +355,48 @@ function loadBook(filePath) {
       }
    }
 
+   function extractBookId(header) {
+      var array = /\\id\s(\w+)/gm.exec(header);
+      if (array.length < 2) {
+         throw 'mandatory field \\id is missing';
+      }
+      return array[1];
+   }
+
+
+   function extractDescription(header) {
+      var array = /\\toc1\s+(.*)/gm.exec(header);
+      if (array == null || array.length < 2) {
+         throw 'mandatory field \\toc1 is missing';
+      }
+      return array[1];
+   }
+
+
+   function extractName(header) {
+      var array = /\\toc2\s+(.*)/gm.exec(header);
+      if (array == null || array.length < 2) {
+         throw 'mandatory field \\toc2 is missing';
+      }
+      return array[1];
+   }
+
+
+   function extractAbbreviation(header) {
+      var array = /\\toc3\s+(.*)/gm.exec(header);
+      if (array == null || array.length < 2) {
+         throw 'mandatory field \\toc3 is missing';
+      }
+      return array[1];
+   }
+
 
    while ((myArray = tagsExpr.exec(str)) !== null) {
-      
+
       /// keep header for further processing
       if (header.length === 0) {
          header = str.substr(0, myArray.index);
-         //console.log(header);
+         //console.log(header + '\n\n\n');
       }
 
       if ( myArray[1] === '\\c' ) {
@@ -375,10 +422,12 @@ function loadBook(filePath) {
 
    extractVerse(verseStart, str.length - verseStart);
 
+   header
 
-   book.id   = 1;//bookCfg[i].id;
-   book.name = "121212";//bookCfg[i].name;
-   book.abbr = '111';//bookCfg[i].abbr;
+   book.id   = extractBookId(header);
+   book.desc = extractDescription(header);
+   book.name = extractName(header);
+   book.abbr = extractAbbreviation(header);
 
    return book;
 }
