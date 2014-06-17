@@ -71,6 +71,39 @@ function child() {
 }
 //extend2(child, parent);
 
+// ---------------------------------------------------------------
+// Collect all words for fast searching
+function Dictionary() {
+   this.ciWords = {};
+   this.csWords = {};
+
+   this.addWord = function(word, ref) {
+      var valRef = this.csWords[word];
+      if ( _.isUndefined( valRef ) ) {
+         this.csWords[word] = {count: 1};
+      }
+      else {
+         ++this.csWords[word].count;
+      }
+
+      /// case insensitive words
+      var ciWord = word.toLowerCase();
+      valRef = this.ciWords[ciWord];
+      if ( _.isUndefined( valRef ) ) {
+         this.ciWords[ciWord] = {count: 1};
+      }
+      else {
+         ++this.ciWords[ciWord].count;
+      }
+   };
+
+   this.getNumWords = function() {
+
+      return Object.keys(this.csWords).length
+      //return this.csWords.size();
+   }
+}
+
 
 // ---------------------------------------------------------------
 // Represents a single verse in a chapter
@@ -160,6 +193,8 @@ function Bible(name, abbr) {
    this.abbr  = abbr;
 
    this.privateBooks = {};
+   this.dict  = null;
+
    // this.books: function() {
    //    var privateBooks = {};
    //    var booksOrder   = {};
@@ -254,45 +289,6 @@ function BibleView(bookView) {
    }
 }
 
-/*
-// the json file path, that describes the content to be loaded
-function loadBible(descFile) {
-   //console.log(file + ' is loading...');
-
-   var bible = new Bible();
-   bible.name = 'King James Version';
-   bible.abbr = 'KJV';
-
-   var bookCfg = [
-      {id:'GEN',  name:'Genesis', abbr:'Gen',  numChaps:1, numVerses:1},
-      {id:'NUM',  name:'Numbers', abbr:'Num',  numChaps:2, numVerses:2},
-      {id:'EXOD', name:'Exodus',  abbr:'Exod', numChaps:3, numVerses:3}
-   ];
-
-   for (var i = 0; i < _.size(bookCfg); i += 1) {
-
-      var book  = new Book();
-      book.parent = bible;
-      book.id   = bookCfg[i].id;
-      book.name = bookCfg[i].name;
-      book.abbr = bookCfg[i].abbr;
-
-      bible.addBook(book);
-
-      for (var j = 1; j <= bookCfg[i].numChaps; j += 1) {
-         var chapter = new Chapter(book, j);
-
-         for (var k = 1; k <= bookCfg[i].numVerses; k += 1) {
-            var verse = new Verse(chapter, k, 'verse number ' + k.toString(), false);
-            chapter.verses.push(verse);
-         }
-
-         book.chapters.push(chapter);
-      }
-   };
-
-   return bible;
-}*/
 
 // ---------------------------------------------------------------
 function onBibleLoaded(bible) {
@@ -305,14 +301,18 @@ function onBibleLoaded(bible) {
    var bibleView        = new BibleView(bookView);
 
    viewOptions.init('Web page', 'Arial', true);
-   bibleView.display(bible);
+   //bibleView.display(bible);
+   console.log(bible.dict.getNumWords());
    console.log("<- onBibleLoaded");
 }
 
 
 // ---------------------------------------------------------------
-function loadBook(filePath) {
+function loadBook(bible, filePath) {
+
    var book  = new Book();
+   book.parent = bible;
+
 
    var str = fs.readFileSync(filePath, 'utf8');
    var tagsExpr = /(\\[pvc])\s+?(\d+)?/gm;
@@ -334,7 +334,7 @@ function loadBook(filePath) {
          var markup = text.trim();
 
          /// remove unnecessary staff from the file
-         var deleteExpr = /(\\\w+).*?(\1\*)/gm;
+         var deleteExpr = /(\\zw|\\zx)[\s\S]*?(\1\*)/gm;
          var textOnly = markup.replace(deleteExpr, '');
          textOnly = textOnly.replace(/\n/gm, ' ');
          textOnly = textOnly.replace(/\s{2,}/gm, ' ');
@@ -342,6 +342,11 @@ function loadBook(filePath) {
 
          var verse = new Verse(chapter, verseNumber, textOnly, newParagraph);
          chapter.verses.push(verse);
+
+         var wordsArray = textOnly.split(' ');
+         wordsArray.forEach( function(word) {
+            bible.dict.addWord(word);
+         });
 
          // text = text.replace(/\\add\s/g, '[');
          // text = text.replace(/\\add\*/g, ']');
@@ -367,6 +372,7 @@ function loadBook(filePath) {
    function extractDescription(header) {
       var array = /\\toc1\s+(.*)/gm.exec(header);
       if (array == null || array.length < 2) {
+         return '';
          throw 'mandatory field \\toc1 is missing';
       }
       return array[1];
@@ -376,6 +382,7 @@ function loadBook(filePath) {
    function extractName(header) {
       var array = /\\toc2\s+(.*)/gm.exec(header);
       if (array == null || array.length < 2) {
+         return '';
          throw 'mandatory field \\toc2 is missing';
       }
       return array[1];
@@ -385,6 +392,7 @@ function loadBook(filePath) {
    function extractAbbreviation(header) {
       var array = /\\toc3\s+(.*)/gm.exec(header);
       if (array == null || array.length < 2) {
+         return '';
          throw 'mandatory field \\toc3 is missing';
       }
       return array[1];
@@ -422,26 +430,31 @@ function loadBook(filePath) {
 
    extractVerse(verseStart, str.length - verseStart);
 
-   header
-
    book.id   = extractBookId(header);
    book.desc = extractDescription(header);
    book.name = extractName(header);
    book.abbr = extractAbbreviation(header);
+
+   bible.addBook(book);
 
    return book;
 }
 
 
 // ---------------------------------------------------------------
-function loadBible(lang, version) {
+function loadBible(dataRoot, lang, version) {
 
-   var dataRoot = './content/test/';
-   var dataDir  = dataRoot + lang + '/' + version + '/';
+   var dataDir    = dataRoot;
 
-      /// enumerate files in a given directory
+   if (lang.length > 0)
+      dataDir += (lang + '/');
+   if (version.length > 0)
+      dataDir += version + '/';
+
+   /// enumerate files in a given directory
    fs.readdir(dataDir, function(err, files) {
       var bible    = new Bible();
+      bible.dict   = new Dictionary();
 
       if (err) {
          console.log("ERROR: ", err);
@@ -451,12 +464,7 @@ function loadBible(lang, version) {
       files.forEach( function(p) {
          if ( path.extname(p) === '.usfm' ) {
             console.log("Processing file: ", p);
-            var book = loadBook(dataDir + p);
-            book.parent = bible;
-            bible.addBook(book);
-
-            //console.log(book.chapters[0].toString());
-            //console.log(book.toString());
+            var book = loadBook(bible, dataDir + p);
          }
       });
 
@@ -467,7 +475,12 @@ function loadBible(lang, version) {
 
 // ---------------------------------------------------------------
 function scriptEntry() {
-   var bible = loadBible('eng', 'kjv');
+   //var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/'
+   //var bible = loadBible(dataRoot, '', '');
+
+   var dataRoot = './content/test/';
+   var bible = loadBible(dataRoot, 'eng', 'kjv');
+
 }
 
 scriptEntry();
