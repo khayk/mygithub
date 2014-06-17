@@ -74,6 +74,8 @@ function child() {
 // ---------------------------------------------------------------
 // Collect all words for fast searching
 function Dictionary() {
+
+   // case sensitive and insensitive words
    this.ciWords = {};
    this.csWords = {};
 
@@ -86,7 +88,7 @@ function Dictionary() {
          ++this.csWords[word].count;
       }
 
-      /// case insensitive words
+      // case insensitive words
       var ciWord = word.toLowerCase();
       valRef = this.ciWords[ciWord];
       if ( _.isUndefined( valRef ) ) {
@@ -97,13 +99,24 @@ function Dictionary() {
       }
    };
 
-   this.getNumWords = function() {
+   this.getNumCSWords = function() {
+      return Object.keys(this.csWords).length;
+   };
 
-      return Object.keys(this.csWords).length
-      //return this.csWords.size();
+   this.getNumCIWords = function() {
+      return Object.keys(this.ciWords).length;
+   };
+
+   this.showStatistics = function() {
+      console.log("Case   sensitive words count: ", this.getNumCSWords());
+      console.log("Case insensitive words count: ", this.getNumCIWords());
+
+      for (a in this.ciWords) {
+         console.log(a);
+      }
+      //console.log(Object.keys(this.ciWords)[0]);
    }
 }
-
 
 // ---------------------------------------------------------------
 // Represents a single verse in a chapter
@@ -130,8 +143,8 @@ function Chapter(book, number) {
    this.number = number;
    this.verses = [];
 
-   /// the pair <verse index, heading>, where heading should be displayed
-   /// just about the verse with the "verse index"
+   // the pair <verse index, heading>, where heading should be displayed
+   // just about the verse with the "verse index"
    this.heading = {};
 }
 
@@ -301,8 +314,10 @@ function onBibleLoaded(bible) {
    var bibleView        = new BibleView(bookView);
 
    viewOptions.init('Web page', 'Arial', true);
+
+
    //bibleView.display(bible);
-   console.log(bible.dict.getNumWords());
+   bible.dict.showStatistics();
    console.log("<- onBibleLoaded");
 }
 
@@ -333,11 +348,13 @@ function loadBook(bible, filePath) {
          var text   = str.substr(offset, size);
          var markup = text.trim();
 
-         /// remove unnecessary staff from the file
-         var deleteExpr = /(\\zw|\\zx)[\s\S]*?(\1\*)/gm;
+         // remove unnecessary staff from the file
+         // !original one! var deleteExpr = /(\\zw|\\zx)[\s\S]*?(\1\*)/gm;
+         var deleteExpr = /(\\\w+)[\s\S]*?(\1\*)/gm;
          var textOnly = markup.replace(deleteExpr, '');
          textOnly = textOnly.replace(/\n/gm, ' ');
          textOnly = textOnly.replace(/\s{2,}/gm, ' ');
+         textOnly = textOnly.replace(/[,\.:;\"]/gm, '');
 
 
          var verse = new Verse(chapter, verseNumber, textOnly, newParagraph);
@@ -401,7 +418,7 @@ function loadBook(bible, filePath) {
 
    while ((myArray = tagsExpr.exec(str)) !== null) {
 
-      /// keep header for further processing
+      // keep header for further processing
       if (header.length === 0) {
          header = str.substr(0, myArray.index);
          //console.log(header + '\n\n\n');
@@ -451,7 +468,7 @@ function loadBible(dataRoot, lang, version) {
    if (version.length > 0)
       dataDir += version + '/';
 
-   /// enumerate files in a given directory
+   // enumerate files in a given directory
    fs.readdir(dataDir, function(err, files) {
       var bible    = new Bible();
       bible.dict   = new Dictionary();
