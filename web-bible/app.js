@@ -495,8 +495,33 @@ function scriptEntry() {
    //var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/'
    //var bible = loadBible(dataRoot, '', '');
 
-   var dataRoot = './content/test/';
-   var bible = loadBible(dataRoot, 'eng', 'kjv');
+   // var dataRoot = './content/test/';
+   // var bible = loadBible(dataRoot, 'eng', 'kjv');
+
+   var obj = {};
+   obj['z'] = 1;
+   obj['a'] = 47;
+   obj['g'] = 33;
+   obj['c'] = -1;
+
+   console.log(obj);
+
+   var vvv = [];
+   //Object.keys(obj).sort();
+   Object.keys(obj)
+      .map(function (k) { return [k, obj[k]]; })
+      .sort(function (a, b) {
+         if (a[1] < b[1]) return -1;
+         if (a[1] > b[1]) return 1;
+         return 0;
+      })
+      .forEach(function (d) {
+         vvv.push(d[0]);
+         console.log(d[1]);
+      });
+
+
+   console.log(obj);
 
 }
 
