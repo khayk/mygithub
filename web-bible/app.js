@@ -92,7 +92,7 @@ function Dictionary() {
       var ciWord = word.toLowerCase();
       valRef = this.ciWords[ciWord];
       if ( _.isUndefined( valRef ) ) {
-         this.ciWords[ciWord] = {count: 1};
+         this.ciWords[ciWord] = {count: 1, refer: ref};
       }
       else {
          ++this.ciWords[ciWord].count;
@@ -354,7 +354,7 @@ function loadBook(bible, filePath) {
          var textOnly = markup.replace(deleteExpr, '');
          textOnly = textOnly.replace(/\n/gm, ' ');
          textOnly = textOnly.replace(/\s{2,}/gm, ' ');
-         textOnly = textOnly.replace(/[,\.:;\"]/gm, '');
+         textOnly = textOnly.replace(/[,\.:;\"\?]/gm, '');
 
 
          var verse = new Verse(chapter, verseNumber, textOnly, newParagraph);
@@ -495,34 +495,27 @@ function scriptEntry() {
    //var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/'
    //var bible = loadBible(dataRoot, '', '');
 
-   // var dataRoot = './content/test/';
-   // var bible = loadBible(dataRoot, 'eng', 'kjv');
+   var dataRoot = './content/test/';
+   var bible = loadBible(dataRoot, 'eng', 'kjv');
 
-   var obj = {};
-   obj['z'] = 1;
-   obj['a'] = 47;
-   obj['g'] = 33;
-   obj['c'] = -1;
+   // var obj = {};
+   // obj['z'] = 1;
+   // obj['a'] = 47;
+   // obj['g'] = 33;
+   // obj['c'] = -1;
 
-   console.log(obj);
+   console.log(bible);
 
-   var vvv = [];
-   //Object.keys(obj).sort();
-   Object.keys(obj)
-      .map(function (k) { return [k, obj[k]]; })
-      .sort(function (a, b) {
-         if (a[1] < b[1]) return -1;
-         if (a[1] > b[1]) return 1;
-         return 0;
-      })
-      .forEach(function (d) {
-         vvv.push(d[0]);
-         console.log(d[1]);
-      });
+   // var vvv = Object.keys(obj)
+   //    .map(function (k) { return [k, obj[k]]; })
+   //    .sort(function (a, b) {
+   //       return a[1] - b[1]
+   //    });
 
-
-   console.log(obj);
-
+      // .forEach(function (d) {
+      //    vvv.push(d[0]);
+      //    console.log(d[1]);
+      // });
 }
 
 scriptEntry();
