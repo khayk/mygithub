@@ -80,9 +80,15 @@ function Dictionary() {
    this.csWords = {};
 
    this.addWord = function(word, ref) {
+      // ignore empty words
+      if (word.length == 0) {
+         console.log("empty word with reference", ref);
+         return;
+      }
+
       var valRef = this.csWords[word];
       if ( _.isUndefined( valRef ) ) {
-         this.csWords[word] = {count: 1};
+         this.csWords[word] = {count: 1, refer: ref};
       }
       else {
          ++this.csWords[word].count;
@@ -111,9 +117,9 @@ function Dictionary() {
       console.log("Case   sensitive words count: ", this.getNumCSWords());
       console.log("Case insensitive words count: ", this.getNumCIWords());
 
-      for (a in this.ciWords) {
-         console.log(a);
-      }
+      // for (a in this.ciWords) {
+      //    console.log(a);
+      // }
       //console.log(Object.keys(this.ciWords)[0]);
    }
 }
@@ -135,6 +141,37 @@ Verse.prototype = {
       return 'null:' + this.number;
    }
 };
+
+
+// ---------------------------------------------------------------
+// Verse container, holds one or more verses
+function VerseGroup() {
+   this.chap   = null;
+   this.start  = 0;
+   this.end    = 0;
+}
+
+VerseGroup.prototype = {
+   numVerses: function() {
+      return this.end - this.start;
+   },
+
+   // parse and construct verses described by str
+   // expected format is
+   // BOOK CHAP:VERSE
+   // BOOK CHAP:VERSE1-VERSEN (describes range)
+   // BOOK CHAP:VERSE1,VERSE[I],... (several verses)
+   // Book Chapter:VerseStart-VerseEnd
+   parse: function(bible, str) {
+
+   },
+
+   // combine specified groups into one
+   join: function(group1, group2) {
+
+   }
+}
+
 
 // ---------------------------------------------------------------
 // Represents a chapter in the book
@@ -303,24 +340,6 @@ function BibleView(bookView) {
 }
 
 
-// ---------------------------------------------------------------
-function onBibleLoaded(bible) {
-
-   console.log("-> onBibleLoaded");
-
-   var verseView        = new VerseView();
-   var chapterView      = new ChapterView(verseView);
-   var bookView         = new BookView(chapterView);
-   var bibleView        = new BibleView(bookView);
-
-   viewOptions.init('Web page', 'Arial', true);
-
-
-   //bibleView.display(bible);
-   bible.dict.showStatistics();
-   console.log("<- onBibleLoaded");
-}
-
 
 // ---------------------------------------------------------------
 function loadBook(bible, filePath) {
@@ -354,8 +373,9 @@ function loadBook(bible, filePath) {
          var textOnly = markup.replace(deleteExpr, '');
          textOnly = textOnly.replace(/\n/gm, ' ');
          textOnly = textOnly.replace(/\s{2,}/gm, ' ');
-         textOnly = textOnly.replace(/[,\.:;\"\?]/gm, '');
 
+         // get rid of any non character
+         textOnly = textOnly.replace(/[,\.:;\"\?\(\)\!]/gm, '');
 
          var verse = new Verse(chapter, verseNumber, textOnly, newParagraph);
          chapter.verses.push(verse);
@@ -421,7 +441,6 @@ function loadBook(bible, filePath) {
       // keep header for further processing
       if (header.length === 0) {
          header = str.substr(0, myArray.index);
-         //console.log(header + '\n\n\n');
       }
 
       if ( myArray[1] === '\\c' ) {
@@ -459,7 +478,7 @@ function loadBook(bible, filePath) {
 
 
 // ---------------------------------------------------------------
-function loadBible(dataRoot, lang, version) {
+function loadBible(dataRoot, lang, version, callback) {
 
    var dataDir    = dataRoot;
 
@@ -474,7 +493,7 @@ function loadBible(dataRoot, lang, version) {
       bible.dict   = new Dictionary();
 
       if (err) {
-         console.log("ERROR: ", err);
+         callback(err, bible);
          return;
       }
 
@@ -485,8 +504,33 @@ function loadBible(dataRoot, lang, version) {
          }
       });
 
-      onBibleLoaded(bible);
+      callback(err, bible);
    });
+}
+
+
+// ---------------------------------------------------------------
+function onBibleLoaded(err, bible) {
+   console.log("-> onBibleLoaded");
+   if (err) {
+      console.log('ERROR: ', err);
+      return;
+   }
+
+   var verseView        = new VerseView();
+   var chapterView      = new ChapterView(verseView);
+   var bookView         = new BookView(chapterView);
+   var bibleView        = new BibleView(bookView);
+
+   viewOptions.init('Web page', 'Arial', true);
+
+   //bibleView.display(bible);
+   bible.dict.showStatistics();
+
+   // check that the search in the bible word correctly
+   var result = bible.find('Gen 1:1');
+
+   console.log("<- onBibleLoaded");
 }
 
 
@@ -496,7 +540,7 @@ function scriptEntry() {
    //var bible = loadBible(dataRoot, '', '');
 
    var dataRoot = './content/test/';
-   var bible = loadBible(dataRoot, 'eng', 'kjv');
+   loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
 
    // var obj = {};
    // obj['z'] = 1;
@@ -504,7 +548,7 @@ function scriptEntry() {
    // obj['g'] = 33;
    // obj['c'] = -1;
 
-   console.log(bible);
+   //console.log(bible);
 
    // var vvv = Object.keys(obj)
    //    .map(function (k) { return [k, obj[k]]; })
@@ -512,10 +556,10 @@ function scriptEntry() {
    //       return a[1] - b[1]
    //    });
 
-      // .forEach(function (d) {
-      //    vvv.push(d[0]);
-      //    console.log(d[1]);
-      // });
+   // .forEach(function (d) {
+   //    vvv.push(d[0]);
+   //    console.log(d[1]);
+   // });
 }
 
 scriptEntry();
