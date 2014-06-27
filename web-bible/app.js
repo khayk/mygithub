@@ -259,6 +259,29 @@ Bible.prototype = {
 
    getBook: function(id) {
       return this.privateBooks[id];
+   },
+
+   ref: function(query) {
+      var array = /(.+?)\s+(\d+):?(\d+)?/gm.exec(query);
+      if (array.length < 2)
+         return;
+
+      var bookName = array[1].toLowerCase();
+
+      var bookCandidates = [];
+      _.each(this.privateBooks, function(book) {
+         if ( book.abbr.toLowerCase().search(bookName) >= 0 )
+            bookCandidates.push(book);
+      });
+
+      for (var i = 0; i < bookCandidates.length; ++i) {
+         console.log(bookCandidates[i].abbr);
+      }
+      //var result = array[1].toLowerCase();
+   },
+
+   search: function(query, opts) {
+
    }
 }
 
@@ -441,6 +464,7 @@ function loadBook(bible, filePath) {
       // keep header for further processing
       if (header.length === 0) {
          header = str.substr(0, myArray.index);
+         break;
       }
 
       if ( myArray[1] === '\\c' ) {
@@ -527,8 +551,11 @@ function onBibleLoaded(err, bible) {
    //bibleView.display(bible);
    bible.dict.showStatistics();
 
-   // check that the search in the bible word correctly
-   var result = bible.find('Gen 1:1');
+   // check that the verse reference works correctly
+   var result = bible.ref('Gen 1:1');
+
+   // check that the search works properly
+   var result = bible.search('in', {wholeWord: true, caseSensitive: true});
 
    console.log("<- onBibleLoaded");
 }
@@ -536,11 +563,11 @@ function onBibleLoaded(err, bible) {
 
 // ---------------------------------------------------------------
 function scriptEntry() {
-   //var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/'
-   //var bible = loadBible(dataRoot, '', '');
+   var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/'
+   var bible = loadBible(dataRoot, '', '', onBibleLoaded);
 
-   var dataRoot = './content/test/';
-   loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
+   // var dataRoot = './content/test/';
+   // loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
 
    // var obj = {};
    // obj['z'] = 1;
