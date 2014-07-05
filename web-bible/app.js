@@ -555,7 +555,7 @@ function onBibleLoaded(err, bible) {
    var result = bible.ref('Gen 1:1');
 
    // check that the search works properly
-   var result = bible.search('in', {wholeWord: true, caseSensitive: true});
+   result = bible.search('in', {wholeWord: true, caseSensitive: true});
 
    console.log("<- onBibleLoaded");
 }
@@ -563,7 +563,7 @@ function onBibleLoaded(err, bible) {
 
 // ---------------------------------------------------------------
 function scriptEntry() {
-   var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/'
+   var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/';
    var bible = loadBible(dataRoot, '', '', onBibleLoaded);
 
    // var dataRoot = './content/test/';
