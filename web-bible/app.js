@@ -464,7 +464,7 @@ function loadBook(bible, filePath) {
       // keep header for further processing
       if (header.length === 0) {
          header = str.substr(0, myArray.index);
-         break;
+         //break;
       }
 
       if ( myArray[1] === '\\c' ) {
@@ -486,7 +486,6 @@ function loadBook(bible, filePath) {
          newParagraph = 1;
       }
    }
-
 
    extractVerse(verseStart, str.length - verseStart);
 
@@ -546,7 +545,7 @@ function onBibleLoaded(err, bible) {
    var bookView         = new BookView(chapterView);
    var bibleView        = new BibleView(bookView);
 
-   viewOptions.init('Web page', 'Arial', true);
+   viewOptions.init('Web page', 'Trebuchet MS', true);
 
    //bibleView.display(bible);
    bible.dict.showStatistics();
@@ -563,7 +562,7 @@ function onBibleLoaded(err, bible) {
 
 // ---------------------------------------------------------------
 function scriptEntry() {
-   var dataRoot = 'C:/Users/Hayk/Dropbox (Personal)/Private/projects/lessons/nodejs/tests/bible_/';
+   var dataRoot = 'c:/Users/Hayk/Dropbox (Personal)/Private/projects/bible project/data/real/';
    var bible = loadBible(dataRoot, '', '', onBibleLoaded);
 
    // var dataRoot = './content/test/';
