@@ -5,6 +5,11 @@ var fs   = require('fs');
 var path = require('path');
 
 
+var theApp = {
+   startTime: null,
+   endTime: null,
+};
+
 function extend(child, parent) {
    var fnObj = function() {};
    fnObj.prototype = parent.prototype;
@@ -81,8 +86,8 @@ function Dictionary() {
 
    this.addWord = function(word, ref) {
       // ignore empty words
-      if (word.length == 0) {
-         console.log("empty word with reference", ref);
+      if (word.length === 0) {
+         //console.log("empty word with reference", ref);
          return;
       }
 
@@ -121,7 +126,7 @@ function Dictionary() {
       //    console.log(a);
       // }
       //console.log(Object.keys(this.ciWords)[0]);
-   }
+   };
 }
 
 // ---------------------------------------------------------------
@@ -131,11 +136,11 @@ function Verse(chapter, number, text, newParagraph) {
    this.number       = number;
    this.text         = text;
    this.newParagraph = newParagraph;
-};
+}
 
 Verse.prototype = {
    id: function() {
-      if (this.parent != null) {
+      if (this.parent !== null) {
          return this.parent.id() + ':' + this.number;
       }
       return 'null:' + this.number;
@@ -170,7 +175,7 @@ VerseGroup.prototype = {
    join: function(group1, group2) {
 
    }
-}
+};
 
 
 // ---------------------------------------------------------------
@@ -201,7 +206,7 @@ Chapter.prototype = {
          throw "Invalid verse number: " + number.toString();
       return this.verses[number - 1];
    }
-}
+};
 
 
 // ---------------------------------------------------------------
@@ -233,7 +238,7 @@ Book.prototype = {
       }
       return this.chapters[number - 1];
    }
-}
+};
 
 
 
@@ -252,6 +257,9 @@ function Bible(name, abbr) {
 }
 
 Bible.prototype = {
+   numBooks: function() {
+      return Object.keys(this.privateBooks).length;
+   },
 
    addBook: function(book) {
       this.privateBooks[book.id] = book;
@@ -283,7 +291,7 @@ Bible.prototype = {
    search: function(query, opts) {
 
    }
-}
+};
 
 
 
@@ -298,7 +306,7 @@ function ViewOptions() {
       this.viewMode      = vm;
       this.font          = font;
       this.paragraphMode = pm;
-   }
+   };
 }
 
 var viewOptions = new ViewOptions();
@@ -311,7 +319,7 @@ function VerseView() {
       // if (viewOptions.paragraphMode === false) {
       //    return verse.number + '. ' + verse.text;
       // }
-   }
+   };
 }
 
 
@@ -323,7 +331,7 @@ function ChapterView(verseView) {
       var result = '';
 
       _.each(chapter.verses, function(v) {
-         if (result.length != 0)
+         if (result.length !== 0)
             result += '\n';
          result += chapter.id();
          result += ':';
@@ -331,7 +339,7 @@ function ChapterView(verseView) {
       });
 
       return result;
-   }
+   };
    this.verseView = verseView;
 }
 
@@ -344,10 +352,10 @@ function BookView(chapterView) {
       var chapView = this.chapterView;
       _.each(book.chapters, function(c) {
          console.log(chapView.display(c));
-      })
+      });
 
       console.log('\n\n');
-   }
+   };
 }
 
 // ---------------------------------------------------------------
@@ -359,7 +367,7 @@ function BibleView(bookView) {
       _.each(bible.privateBooks, function(book) {
          bookView.display(book);
       });
-   }
+   };
 }
 
 
@@ -369,7 +377,6 @@ function loadBook(bible, filePath) {
 
    var book  = new Book();
    book.parent = bible;
-
 
    var str = fs.readFileSync(filePath, 'utf8');
    var tagsExpr = /(\\[pvc])\s+?(\d+)?/gm;
@@ -382,7 +389,7 @@ function loadBook(bible, filePath) {
 
    var verseNumber  = 0;
    var verseStart   = 0;
-   var output = '';
+   var output       = '';
 
 
    function extractVerse(offset, size) {
@@ -431,8 +438,8 @@ function loadBook(bible, filePath) {
 
    function extractDescription(header) {
       var array = /\\toc1\s+(.*)/gm.exec(header);
-      if (array == null || array.length < 2) {
-         return '';
+      if (array === null || array.length < 2) {
+         //return '';
          throw 'mandatory field \\toc1 is missing';
       }
       return array[1];
@@ -441,8 +448,8 @@ function loadBook(bible, filePath) {
 
    function extractName(header) {
       var array = /\\toc2\s+(.*)/gm.exec(header);
-      if (array == null || array.length < 2) {
-         return '';
+      if (array === null || array.length < 2) {
+         //return '';
          throw 'mandatory field \\toc2 is missing';
       }
       return array[1];
@@ -451,50 +458,55 @@ function loadBook(bible, filePath) {
 
    function extractAbbreviation(header) {
       var array = /\\toc3\s+(.*)/gm.exec(header);
-      if (array == null || array.length < 2) {
-         return '';
+      if (array === null || array.length < 2) {
+         //return '';
          throw 'mandatory field \\toc3 is missing';
       }
       return array[1];
    }
 
+   try {
+      while ((myArray = tagsExpr.exec(str)) !== null) {
 
-   while ((myArray = tagsExpr.exec(str)) !== null) {
+         // keep header for further processing
+         if (header.length === 0) {
+            header = str.substr(0, myArray.index);
+            //break;
+         }
 
-      // keep header for further processing
-      if (header.length === 0) {
-         header = str.substr(0, myArray.index);
-         //break;
+         if ( myArray[1] === '\\c' ) {
+            var number = myArray[2];
+
+            chapter = new Chapter(book, number);
+            newParagraph = 0;
+            book.chapters.push(chapter);
+         }
+         else if ( myArray[1] === '\\v' ) {
+            extractVerse(verseStart, myArray.index - verseStart);
+
+            newParagraph = 0;
+            verseStart  = myArray.index + myArray[0].length;
+            verseNumber = myArray[2];
+         }
+         else if ( myArray[1] === '\\p' ) {
+            extractVerse(verseStart, myArray.index - verseStart);
+            newParagraph = 1;
+         }
       }
 
-      if ( myArray[1] === '\\c' ) {
-         var number = myArray[2];
+      extractVerse(verseStart, str.length - verseStart);
 
-         chapter = new Chapter(book, number);
-         newParagraph = 0;
-         book.chapters.push(chapter);
-      }
-      else if ( myArray[1] === '\\v' ) {
-         extractVerse(verseStart, myArray.index - verseStart);
+      book.id   = extractBookId(header);
+      book.desc = extractDescription(header);
+      book.name = extractName(header);
+      book.abbr = extractAbbreviation(header);
 
-         newParagraph = 0;
-         verseStart  = myArray.index + myArray[0].length;
-         verseNumber = myArray[2];
-      }
-      else if ( myArray[1] === '\\p' ) {
-         extractVerse(verseStart, myArray.index - verseStart);
-         newParagraph = 1;
-      }
+      bible.addBook(book);
    }
-
-   extractVerse(verseStart, str.length - verseStart);
-
-   book.id   = extractBookId(header);
-   book.desc = extractDescription(header);
-   book.name = extractName(header);
-   book.abbr = extractAbbreviation(header);
-
-   bible.addBook(book);
+   catch (err) {
+      console.error("Failed to load: %s, Exception: %s",
+                    path.basename(filePath), err);
+   }
 
    return book;
 }
@@ -522,7 +534,7 @@ function loadBible(dataRoot, lang, version, callback) {
 
       files.forEach( function(p) {
          if ( path.extname(p) === '.usfm' ) {
-            console.log("Processing file: ", p);
+            //console.log("Processing file: ", p);
             var book = loadBook(bible, dataDir + p);
          }
       });
@@ -532,11 +544,23 @@ function loadBible(dataRoot, lang, version, callback) {
 }
 
 
+function measureTime(startTime) {
+   var diff = process.hrtime(startTime);
+   if (diff[0] > 0)
+      console.log('Benchmark took %d seconds, %d nanosecdons', diff[0], diff[1] );
+   else
+      console.log('Benchmark took %d nanosecdons', diff[1]);
+
+   console.log("Initialization completed.");
+}
+
+
 // ---------------------------------------------------------------
 function onBibleLoaded(err, bible) {
    console.log("-> onBibleLoaded");
    if (err) {
       console.log('ERROR: ', err);
+      measureTime(theApp.startTime);
       return;
    }
 
@@ -556,14 +580,22 @@ function onBibleLoaded(err, bible) {
    // check that the search works properly
    result = bible.search('in', {wholeWord: true, caseSensitive: true});
 
+   console.log("Number of books: ", bible.numBooks());
+   measureTime(theApp.startTime);
+
    console.log("<- onBibleLoaded");
 }
 
 
 // ---------------------------------------------------------------
 function scriptEntry() {
+   console.log("Initializing...");
+
+   /// start time measurement
+   theApp.startTime = process.hrtime();
+
    var dataRoot = 'c:/Users/Hayk/Dropbox (Personal)/Private/projects/bible project/data/real/';
-   var bible = loadBible(dataRoot, '', '', onBibleLoaded);
+   loadBible(dataRoot, '', '', onBibleLoaded);
 
    // var dataRoot = './content/test/';
    // loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
