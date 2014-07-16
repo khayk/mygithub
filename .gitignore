@@ -20,9 +20,12 @@
 *.sdf
 *.opensdf
 *.unsuccessfulbuild
+
+# files & folders
 ipch/
 obj/
 [Bb]in
 [Dd]ebug*/
 [Rr]elease*/
 Ankh.NoLoad
+node_modules
