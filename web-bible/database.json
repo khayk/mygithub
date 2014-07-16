@@ -1,0 +1,20 @@
+{
+    ui_languages: ["en", "ru", "am"],
+    book_languages: [""],
+
+    account: {
+        id: "1234567890",
+        name : {first: "Hayk", last: "Karapetyan"},
+        birth: new Date("Jan 01, 1980"),
+        user: "hayk",
+        password: "secret",
+        email: "hayk@gmail.com",
+        gender: "male",
+        language : {ui: "en", book_lang: ""},
+        pic_id: "binary data",
+        social_link: {
+            fb: {},
+            google: {}
+        }
+    }
+}

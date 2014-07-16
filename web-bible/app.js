@@ -3,7 +3,19 @@
 var _    = require('underscore');
 var fs   = require('fs');
 var path = require('path');
+var i18n = require("i18n");
 
+i18n.configure({
+   locales: ['en', 'am', 'ru'],
+   directory: __dirname + '/locales',
+});
+
+var greeting = i18n.__('Hello2');
+console.log(greeting);
+
+i18n.setLocale('am');
+greeting = i18n.__('Hello2');
+console.log(greeting);
 
 var theApp = {
    startTime: null,
@@ -595,7 +607,7 @@ function scriptEntry() {
    theApp.startTime = process.hrtime();
 
    var dataRoot = 'c:/Users/Hayk/Dropbox (Personal)/Private/projects/bible project/data/real/';
-   loadBible(dataRoot, '', '', onBibleLoaded);
+   //loadBible(dataRoot, '', '', onBibleLoaded);
 
    // var dataRoot = './content/test/';
    // loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
