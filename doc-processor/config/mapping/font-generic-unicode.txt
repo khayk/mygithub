@@ -9,4 +9,5 @@ Sylfaen
 Tahoma
 Times New Roman
 Times Unicode
+Times
 Verdana

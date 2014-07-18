@@ -478,7 +478,6 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 
     docAsText += processRangePreciseVer2(r, true);
 
-    //docAsText += processRangePrecise(doc->getContent(), true);
     std::cout << std::endl;
 
 
@@ -766,7 +765,7 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
     int endPos   = pos;
 
     r->setRange(pos, pos);
-    
+
     do {
         tRangeSp newRange = r->getNext(13, 1);
         if (!newRange) {
@@ -780,7 +779,7 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         startPos = r->getStart();
         endPos   = r->getEnd();
 
-        if (startPos > lastPos)
+        if (startPos > lastPos && pos > lastPos)
             break;
 
         r->setRange(pos, startPos);

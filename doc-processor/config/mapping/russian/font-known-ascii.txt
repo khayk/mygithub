@@ -5,3 +5,6 @@ TimesET          | cm-timeset.txt
 Russian Bodoni   | cm-timeset.txt
 Russian TimesET  | cm-timeset.txt
 Russian Times    | cm-timeset.txt
+Russian Baltica  | cm-timeset.txt
+Russian Text Book| cm-timeset.txt
+
