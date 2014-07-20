@@ -1,20 +1,62 @@
-{
-    ui_languages: ["en", "ru", "am"],
-    book_languages: [""],
+/// do I need to search based on selected language?
+///     no
+/// where to search
+///     1. bible
+///     2. commentaries
+///     3. notes
 
-    account: {
-        id: "1234567890",
-        name : {first: "Hayk", last: "Karapetyan"},
-        birth: new Date("Jan 01, 1980"),
-        user: "hayk",
-        password: "secret",
-        email: "hayk@gmail.com",
-        gender: "male",
-        language : {ui: "en", book_lang: ""},
-        pic_id: "binary data",
-        social_link: {
-            fb: {},
-            google: {}
-        }
-    }
-}
+
+///
+localization: {
+    id_:
+    name:   "utf8 name",
+    locale: ["en", "ru", "am"],
+},
+
+
+///
+location: {
+    id_:        "l222",
+    country_id: "",
+    city_id:    ""
+},
+
+
+///
+media_type: {
+    id_:  ""
+    name: ["picture"]
+},
+
+
+///
+media: {
+    id_:     "",
+    type_id: "",
+    path:    "",
+},
+
+
+///
+social: {
+    id_:    "soc_id"
+    fb:     {},
+    google: {},
+},
+
+
+///
+account: {
+    id_:         "123",
+    realname:    {first: "Hayk", last: "Karapetyan"},
+    username:    "hayk",
+    password:    "pass",   /// keep an SHA1 value, do not store password
+    email:       "mail@mail.ru",
+    gender:      bool,
+    birth:       new Date("Jan 01, 1980"),
+    location_id: "",
+    social_id:   ["ids",  ... , ""],
+    media_id:    ["ids",  ... , ""]
+},
+
+
