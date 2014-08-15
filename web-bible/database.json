@@ -7,56 +7,98 @@
 
 
 ///
-localization: {
-    id_:
-    name:   "utf8 name",
-    locale: ["en", "ru", "am"],
+localization {
+    "id_":     1111,
+    "name":   "utf8 name",
+    "locale": ["en", "ru", "am"],
 },
 
 
 ///
-location: {
-    id_:        "l222",
-    country_id: "",
-    city_id:    ""
+location {
+    "id_":  12222,
+    "country_id": "",
+    "city_id":    "",
+    "village_id": "",
 },
 
 
 ///
-media_type: {
-    id_:  ""
-    name: ["picture"]
+media_type {
+    "id_":  "",
+    "name": ["picture"]
 },
 
 
 ///
-media: {
-    id_:     "",
-    type_id: "",
-    path:    "",
-},
+// media {
+//     "id_":     "",
+//     "type_id": "",
+//     "path":    "",
+// },
 
 
 ///
-social: {
-    id_:    "soc_id"
-    fb:     {},
-    google: {},
-},
+// social {
+//     "id_":    "soc_id",
+//     "type":   "fb, google, ...",
+
+//     "fb":     {},
+//     "google": {},
+// },
+
+
 
 
 ///
-account: {
-    id_:         "123",
-    realname:    {first: "Hayk", last: "Karapetyan"},
-    username:    "hayk",
-    password:    "pass",   /// keep an SHA1 value, do not store password
-    email:       "mail@mail.ru",
-    gender:      bool,
-    birth:       new Date("Jan 01, 1980"),
-    location_id: "",
-    social_id:   ["ids",  ... , ""],
-    media_id:    ["ids",  ... , ""]
+account {
+    "id_":         "123",
+    "realname":    {"first": "Hayk", "last": "Karapetyan"},
+    "username":    "hayk",
+    "password":    "pass",   /// keep an SHA1 value, do not store password
+    "email":       "mail@mail.ru",
+    "gender":      "male",
+    "birth":       "Jan 01, 1980",
+    "location_id": ""
+    //"media_id":    ["ids",  ""]
+    //"social_id":   "social id_",
 },
 
+/*
+verse or range  [attributes]
+    awesome
+    great
+    neutral
+    baffelled
+    question        comment,  (have attached "answer")
+*/
 
+///
+note_state {
+    "name":  ["open", "investigating", "resolved"]
+}
+
+///
+mark_type {
+    "_id":   "",
+    "name":  ["awesome", "great", "neutral", "baffelled"]
+}
+
+"question"
+
+note_type {
+    "id_":   "",
+    "type":  ["comment", "question", "answer"]
+}
+
+/// note is a generic concept, it can be just a mark without any additional
+/// attributes, or it can be some text, or question or comment
+note {
+    "id_":          "int",
+    "acc_id":       "string",
+    "mark_type_id": "int",
+    "ref_id":      ["", ],
+    "text":        "",
+    "type_id":     [""],
+    "answer_id":   ""
+}
