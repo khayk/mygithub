@@ -8,7 +8,7 @@
 
 ///
 localization {
-    "id_":     1111,
+    "_id":     1111,
     "name":   "utf8 name",
     "locale": ["en", "ru", "am"],
 },
@@ -16,7 +16,7 @@ localization {
 
 ///
 location {
-    "id_":  12222,
+    "_id":  12222,
     "country_id": "",
     "city_id":    "",
     "village_id": "",
@@ -25,14 +25,14 @@ location {
 
 ///
 media_type {
-    "id_":  "",
+    "_id":  "",
     "name": ["picture"]
 },
 
 
 ///
 // media {
-//     "id_":     "",
+//     "_id":     "",
 //     "type_id": "",
 //     "path":    "",
 // },
@@ -40,7 +40,7 @@ media_type {
 
 ///
 // social {
-//     "id_":    "soc_id",
+//     "_id":    "soc_id",
 //     "type":   "fb, google, ...",
 
 //     "fb":     {},
@@ -52,17 +52,15 @@ media_type {
 
 ///
 account {
-    "id_":         "123",
+    "_id":         123,
     "realname":    {"first": "Hayk", "last": "Karapetyan"},
     "username":    "hayk",
     "password":    "pass",   /// keep an SHA1 value, do not store password
     "email":       "mail@mail.ru",
     "gender":      "male",
-    "birth":       "Jan 01, 1980",
-    "location_id": ""
-    //"media_id":    ["ids",  ""]
-    //"social_id":   "social id_",
+    "birth":       "Jan 01, 1980",  // ISODate
 },
+
 
 /*
 verse or range  [attributes]
@@ -73,10 +71,11 @@ verse or range  [attributes]
     question        comment,  (have attached "answer")
 */
 
+
 ///
 note_state {
     "name":  ["open", "investigating", "resolved"]
-}
+},
 
 ///
 mark_type {
@@ -87,18 +86,26 @@ mark_type {
 "question"
 
 note_type {
-    "id_":   "",
+    "_id":   "",
     "type":  ["comment", "question", "answer"]
 }
 
 /// note is a generic concept, it can be just a mark without any additional
 /// attributes, or it can be some text, or question or comment
 note {
-    "id_":          "int",
-    "acc_id":       "string",
+    "_id":          1,
+    "acc_id":       123,
     "mark_type_id": "int",
-    "ref_id":      ["", ],
-    "text":        "",
-    "type_id":     [""],
-    "answer_id":   ""
+    "ref_id":       ["", ],
+    "text":         "actual note text",
+    "type_id":      [""],
+    "answer_id":    3,    /// answer is also a simple note (note for one
+                          /// person can be an anser for anoter)
+},
+
+reference {
+    "_id": 1,
+    "book": "gen",
+    "chap": 5,
+    "num":  4,
 }
