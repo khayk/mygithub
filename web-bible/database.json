@@ -8,24 +8,22 @@
 
 ///
 localization {
-    "_id":     1111,
-    "name":   "utf8 name",
-    "locale": ["en", "ru", "am"],
+    "_id"   : 1111,
+    "name"  : "utf8 name",
+    "locale": ["en", "ru", "am"]
 },
 
 
 ///
 location {
-    "_id":  12222,
-    "country_id": "",
-    "city_id":    "",
-    "village_id": "",
+    "_id"       : 12222,
+    "country_id": ""
 },
 
 
 ///
 media_type {
-    "_id":  "",
+    "_id" : "",
     "name": ["picture"]
 },
 
@@ -48,64 +46,79 @@ media_type {
 // },
 
 
+statistics {
+    "_id"         : "int",
+    "acc_id"      : "ref",
+    "registration": "ISODate"
+},
 
 
 ///
 account {
-    "_id":         123,
-    "realname":    {"first": "Hayk", "last": "Karapetyan"},
-    "username":    "hayk",
-    "password":    "pass",   /// keep an SHA1 value, do not store password
-    "email":       "mail@mail.ru",
-    "gender":      "male",
-    "birth":       "Jan 01, 1980",  // ISODate
-},
-
-
-/*
-verse or range  [attributes]
-    awesome
-    great
-    neutral
-    baffelled
-    question        comment,  (have attached "answer")
-*/
-
-
-///
-note_state {
-    "name":  ["open", "investigating", "resolved"]
-},
-
-///
-mark_type {
-    "_id":   "",
-    "name":  ["awesome", "great", "neutral", "baffelled"]
-}
-
-"question"
-
-note_type {
-    "_id":   "",
-    "type":  ["comment", "question", "answer"]
-}
-
-/// note is a generic concept, it can be just a mark without any additional
-/// attributes, or it can be some text, or question or comment
-note {
-    "_id":          1,
-    "acc_id":       123,
-    "mark_type_id": "int",
-    "ref_id":       ["", ],
-    "text":         "actual note text",
-    "type_id":      [""],
-    "answer_id":    3,    /// answer is also a simple note (note for one
-                          /// person can be an anser for anoter)
+    "_id"       : 123,
+    "realname"  : {"first": "Hayk", "last": "Karapetyan"},
+    "username"  : "hayk",
+    "password"  : "pass",   /// keep an SHA1 value, do not store password
+    "email"     : "mail@mail.ru",
+    "gender"    : "male",
+    "birth"     : "Jan 01, 1980",  // ISODate
+    "occupation": "occup_id"
 },
 
 reference {
-    "_id": 1,
+    "_id" : 1,
     "book": "gen",
     "chap": 5,
-    "num":  4,
+    "num" : 4
 }
+
+///
+attitude_type {
+    "_id"  :  "",
+    "name" : ["awesome", "great", "neutral", "dislike", "baffelled"],
+    "desc" : "description of the attitude"
+},
+
+
+attitude {
+    "_id"      : 1,
+    "acc_id"   : 123,
+    "type_id"  : 2,
+    "bible_ref": "ref to bible",
+},
+
+//"comment_id": 333,  /// note id if this is note [OPTIONAL]
+
+comment_type {
+    "_id" : "",
+    "name": ["note", "question", "answer"]
+},
+
+/// note is a generic concept, it can be just a attitude without any additional
+/// attributes, or it can be some text, or question or comment
+comment {
+    "_id"        : 1,
+    "acc_id"     : 123,
+    "attitude_id": "int", /// [OPTIONAL]
+    "ref_id"     : "",
+    "text"       : "actual comment text",
+    "type_id"    : ""   /// redundant info [OPTIONAL]
+},
+
+questions_state {
+    "_id" : 1,
+    "name": "state display name",
+    "desc": "description of the state"
+},
+
+question {
+    "_id"       : 2,
+    "comment_id": 2,
+    "state"     : ["open", "investigating", "resolved"], /// enabled only for comments with "question" type
+    "answer_id" : "comment_id"   /// answer is just another comment
+},
+
+note {
+    "_id"       : 2,
+    "comment_id": 3
+},

@@ -71,3 +71,11 @@ Ignored tags
 \s      -       (\s A Prologue made by an uncertain Author )
 \is     -       (...)
 
+
+===============================================================================
+
+bible reading workflow
+
+1. encountered a verse
+    1.1. mark
+    1.2. add note on verse
