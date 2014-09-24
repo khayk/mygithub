@@ -7,56 +7,118 @@
 
 
 ///
-localization: {
-    id_:
-    name:   "utf8 name",
-    locale: ["en", "ru", "am"],
+localization {
+    "_id"   : 1111,
+    "name"  : "utf8 name",
+    "locale": ["en", "ru", "am"]
 },
 
 
 ///
-location: {
-    id_:        "l222",
-    country_id: "",
-    city_id:    ""
+location {
+    "_id"       : 12222,
+    "country_id": ""
 },
 
 
 ///
-media_type: {
-    id_:  ""
-    name: ["picture"]
+media_type {
+    "_id" : "",
+    "name": ["picture"]
 },
 
 
 ///
-media: {
-    id_:     "",
-    type_id: "",
-    path:    "",
+// media {
+//     "_id":     "",
+//     "type_id": "",
+//     "path":    "",
+// },
+
+
+///
+// social {
+//     "_id":    "soc_id",
+//     "type":   "fb, google, ...",
+
+//     "fb":     {},
+//     "google": {},
+// },
+
+
+statistics {
+    "_id"         : "int",
+    "acc_id"      : "ref",
+    "registration": "ISODate"
 },
 
 
 ///
-social: {
-    id_:    "soc_id"
-    fb:     {},
-    google: {},
+account {
+    "_id"       : 123,
+    "realname"  : {"first": "Hayk", "last": "Karapetyan"},
+    "username"  : "hayk",
+    "password"  : "pass",   /// keep an SHA1 value, do not store password
+    "email"     : "mail@mail.ru",
+    "gender"    : "male",
+    "birth"     : "Jan 01, 1980",  // ISODate
+    "occupation": "occup_id"
 },
 
+reference {
+    "_id" : 1,
+    "book": "gen",
+    "chap": 5,
+    "num" : 4
+}
 
 ///
-account: {
-    id_:         "123",
-    realname:    {first: "Hayk", last: "Karapetyan"},
-    username:    "hayk",
-    password:    "pass",   /// keep an SHA1 value, do not store password
-    email:       "mail@mail.ru",
-    gender:      bool,
-    birth:       new Date("Jan 01, 1980"),
-    location_id: "",
-    social_id:   ["ids",  ... , ""],
-    media_id:    ["ids",  ... , ""]
+attitude_type {
+    "_id"  :  "",
+    "name" : ["awesome", "great", "neutral", "dislike", "baffelled"],
+    "desc" : "description of the attitude"
 },
 
 
+attitude {
+    "_id"      : 1,
+    "acc_id"   : 123,
+    "type_id"  : 2,
+    "bible_ref": "ref to bible",
+},
+
+//"comment_id": 333,  /// note id if this is note [OPTIONAL]
+
+comment_type {
+    "_id" : "",
+    "name": ["note", "question", "answer"]
+},
+
+/// note is a generic concept, it can be just a attitude without any additional
+/// attributes, or it can be some text, or question or comment
+comment {
+    "_id"        : 1,
+    "acc_id"     : 123,
+    "attitude_id": "int", /// [OPTIONAL]
+    "ref_id"     : "",
+    "text"       : "actual comment text",
+    "type_id"    : ""   /// redundant info [OPTIONAL]
+},
+
+questions_state {
+    "_id" : 1,
+    "name": "state display name",
+    "desc": "description of the state"
+},
+
+question {
+    "_id"       : 2,
+    "comment_id": 2,
+    "state"     : ["open", "investigating", "resolved"], /// enabled only for comments with "question" type
+    "answer_id" : "comment_id"   /// answer is just another comment
+},
+
+note {
+    "_id"       : 2,
+    "comment_id": 3
+},
