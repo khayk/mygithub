@@ -8,6 +8,7 @@ install express globally
  - npm install -g express
  - sudo
 
+npm install -g live-server
 
 install json module (nice json view)
  - npm install prettyjson -g

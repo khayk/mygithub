@@ -27,4 +27,5 @@ Mariam              | cm-courieram.txt
 MK Nork             | cm-mknork.txt
 Mk_Parz
 Mk_Parzi
+Nork New            | cm-mknork.txt
 Times Armenian
