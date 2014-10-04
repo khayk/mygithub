@@ -65,12 +65,15 @@ account {
     "occupation": "occup_id"
 },
 
+
 reference {
     "_id" : 1,
     "book": "gen",
     "chap": 5,
     "num" : 4
-}
+},
+
+
 
 ///
 attitude_type {
