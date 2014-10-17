@@ -1,3 +1,4 @@
+Arafi               | cm-arafi.txt
 Arial Armenian
 Arial ArmenianNew
 Arial LatArm

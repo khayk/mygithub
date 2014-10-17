@@ -105,6 +105,12 @@ void CharMapping::updateCharMapping( const string_t& mapFile )
 
 void CharMapping::loadMappingFile( const string_t& mapFile )
 {
+    if (mapFile.find("cm-arafi.txt") != string_t::npos) {
+        /// clear default mapping
+        for (wchar_t i = 33; i <= 0x007E; ++i)
+            quickMap_[i] = 0;
+    }
+
     Poco::FileInputStream fis(mapFile);
     
     wchar_t from, to;
