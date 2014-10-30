@@ -1,0 +1,35 @@
+
+
+#wrap {
+    position: absolute;
+    width:  100vw;
+    height: 100vh;
+    background: #000;
+}
+
+#header {
+    display: block;
+    background: #060;
+    height: 55px;
+    float: left;
+    width: 100%;
+}
+
+#main {
+    display: block;
+    position: absolute;
+    background: #555;
+    width: 100%;
+    top: 55px;
+    bottom: 40px;
+    overflow: auto;
+}
+
+#footer {
+    position: absolute;
+    clear: both;
+    height: 40px;
+    background: #dda;
+    bottom: 0;
+    width: 100%;
+}

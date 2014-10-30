@@ -3,8 +3,9 @@
 var _    = require('underscore');
 var fs   = require('fs');
 var path = require('path');
-var i18n = require("i18n");
+var i18n = require('i18n');
 
+/*
 i18n.configure({
    locales: ['en', 'am', 'ru'],
    directory: __dirname + '/locales',
@@ -16,6 +17,7 @@ console.log(greeting);
 i18n.setLocale('am');
 greeting = i18n.__('Hello2');
 console.log(greeting);
+*/
 
 var theApp = {
    startTime: null,
@@ -99,7 +101,7 @@ function Dictionary() {
    this.addWord = function(word, ref) {
       // ignore empty words
       if (word.length === 0) {
-         //console.log("empty word with reference", ref);
+         //console.log('empty word with reference', ref);
          return;
       }
 
@@ -131,8 +133,8 @@ function Dictionary() {
    };
 
    this.showStatistics = function() {
-      console.log("Case   sensitive words count: ", this.getNumCSWords());
-      console.log("Case insensitive words count: ", this.getNumCIWords());
+      console.log('Case   sensitive words count: ', this.getNumCSWords());
+      console.log('Case insensitive words count: ', this.getNumCIWords());
 
       // for (a in this.ciWords) {
       //    console.log(a);
@@ -198,7 +200,7 @@ function Chapter(book, number) {
    this.verses = [];
 
    // the pair <verse index, heading>, where heading should be displayed
-   // just about the verse with the "verse index"
+   // just about the verse with the 'verse index'
    this.heading = {};
 }
 
@@ -215,7 +217,7 @@ Chapter.prototype = {
    // Return the verse with specified number
    getVerse: function(number) {
       if (number < 1 || number > this.numVerses())
-         throw "Invalid verse number: " + number.toString();
+         throw 'Invalid verse number: ' + number.toString();
       return this.verses[number - 1];
    }
 };
@@ -516,7 +518,7 @@ function loadBook(bible, filePath) {
       bible.addBook(book);
    }
    catch (err) {
-      console.error("Failed to load: %s, Exception: %s",
+      console.error('Failed to load: %s, Exception: %s',
                     path.basename(filePath), err);
    }
 
@@ -546,7 +548,7 @@ function loadBible(dataRoot, lang, version, callback) {
 
       files.forEach( function(p) {
          if ( path.extname(p) === '.usfm' ) {
-            //console.log("Processing file: ", p);
+            //console.log('Processing file: ', p);
             var book = loadBook(bible, dataDir + p);
          }
       });
@@ -563,13 +565,13 @@ function measureTime(startTime) {
    else
       console.log('Benchmark took %d nanosecdons', diff[1]);
 
-   console.log("Initialization completed.");
+   console.log('Initialization completed.');
 }
 
 
 // ---------------------------------------------------------------
 function onBibleLoaded(err, bible) {
-   console.log("-> onBibleLoaded");
+   console.log('-> onBibleLoaded');
    if (err) {
       console.log('ERROR: ', err);
       measureTime(theApp.startTime);
@@ -592,25 +594,26 @@ function onBibleLoaded(err, bible) {
    // check that the search works properly
    result = bible.search('in', {wholeWord: true, caseSensitive: true});
 
-   console.log("Number of books: ", bible.numBooks());
+   console.log('Number of books: ', bible.numBooks());
    measureTime(theApp.startTime);
 
-   console.log("<- onBibleLoaded");
+   console.log('<- onBibleLoaded');
 }
 
 
 // ---------------------------------------------------------------
 function scriptEntry() {
-   console.log("Initializing...");
+   console.log('Initializing...');
 
    /// start time measurement
    theApp.startTime = process.hrtime();
 
-   var dataRoot = 'c:/Users/Hayk/Dropbox (Personal)/Private/projects/bible project/data/real/';
+   //var dataRoot = 'c:/Dev/projects/mygithub/web-bible/content/test/eng/kjv/';
+   //var dataRoot = 'c:/Users/Hayk/Dropbox/Private/projects/bible project/data/real/';
    //loadBible(dataRoot, '', '', onBibleLoaded);
 
-   // var dataRoot = './content/test/';
-   // loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
+   var dataRoot = './content/test/';
+   loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
 
    // var obj = {};
    // obj['z'] = 1;

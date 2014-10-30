@@ -1,0 +1,101 @@
+{
+    // describe bible books format
+    // valid values are "usfm", "text"
+    "format": "{{TYPE}}",
+
+    // every change should increase revision number
+    "revision": "{{VERSION}}",
+
+    // bible name
+    "book": "{{BIBLE NAME}}",
+
+    // year of the book
+    "year": "{{YEAR}}",
+
+    // valid values are "en", "am", "ru" and all those which
+    // are presented in the database as an valid languages
+    "lang": "{{LANGUAGE}}",
+
+    "toc": [
+        // old testament
+        {"id":"GEN", "name":"", "desc": ""},
+        {"id":"EXO", "name":"", "desc": ""},
+        {"id":"LEV", "name":"", "desc": ""},
+        {"id":"NUM", "name":"", "desc": ""},
+        {"id":"DEU", "name":"", "desc": ""},
+        {"id":"JOS", "name":"", "desc": ""},
+        {"id":"JDG", "name":"", "desc": ""},
+        {"id":"RUT", "name":"", "desc": ""},
+        {"id":"1SA", "name":"", "desc": ""},
+        {"id":"2SA", "name":"", "desc": ""},
+        {"id":"1KI", "name":"", "desc": ""},
+        {"id":"2KI", "name":"", "desc": ""},
+        {"id":"1CH", "name":"", "desc": ""},
+        {"id":"2CH", "name":"", "desc": ""},
+        {"id":"EZR", "name":"", "desc": ""},
+        {"id":"NEH", "name":"", "desc": ""},
+        {"id":"EST", "name":"", "desc": ""},
+        {"id":"PSA", "name":"", "desc": ""},
+        {"id":"PRO", "name":"", "desc": ""},
+        {"id":"ECC", "name":"", "desc": ""},
+        {"id":"SNG", "name":"", "desc": ""},
+        {"id":"JOB", "name":"", "desc": ""},
+        {"id":"ISA", "name":"", "desc": ""},
+        {"id":"HOS", "name":"", "desc": ""},
+        {"id":"AMO", "name":"", "desc": ""},
+        {"id":"MIC", "name":"", "desc": ""},
+        {"id":"JOL", "name":"", "desc": ""},
+        {"id":"OBA", "name":"", "desc": ""},
+        {"id":"JON", "name":"", "desc": ""},
+        {"id":"NAM", "name":"", "desc": ""},
+        {"id":"HAB", "name":"", "desc": ""},
+        {"id":"ZEP", "name":"", "desc": ""},
+        {"id":"HAG", "name":"", "desc": ""},
+        {"id":"ZEC", "name":"", "desc": ""},
+        {"id":"MAL", "name":"", "desc": ""},
+        {"id":"JER", "name":"", "desc": ""},
+        {"id":"LAM", "name":"", "desc": ""},
+        {"id":"DAN", "name":"", "desc": ""},
+        {"id":"EZK", "name":"", "desc": ""},
+
+        // new testament...
+        {"id":"MAT", "name":"", "desc":""},
+        {"id":"MRK", "name":"", "desc":""},
+        {"id":"LUK", "name":"", "desc":""},
+        {"id":"JHN", "name":"", "desc":""},
+        {"id":"ACT", "name":"", "desc":""},
+        {"id":"ROM", "name":"", "desc":""},
+        {"id":"1CO", "name":"", "desc":""},
+        {"id":"2CO", "name":"", "desc":""},
+        {"id":"GAL", "name":"", "desc":""},
+        {"id":"EPH", "name":"", "desc":""},
+        {"id":"PHP", "name":"", "desc":""},
+        {"id":"COL", "name":"", "desc":""},
+        {"id":"1TH", "name":"", "desc":""},
+        {"id":"2TH", "name":"", "desc":""},
+        {"id":"1TI", "name":"", "desc":""},
+        {"id":"2TI", "name":"", "desc":""},
+        {"id":"TIT", "name":"", "desc":""},
+        {"id":"PHM", "name":"", "desc":""},
+        {"id":"HEB", "name":"", "desc":""},
+        {"id":"JAS", "name":"", "desc":""},
+        {"id":"1PE", "name":"", "desc":""},
+        {"id":"2PE", "name":"", "desc":""},
+        {"id":"1JN", "name":"", "desc":""},
+        {"id":"2JN", "name":"", "desc":""},
+        {"id":"3JN", "name":"", "desc":""},
+        {"id":"JUD", "name":"", "desc":""},
+        {"id":"REV", "name":"", "desc":""},
+
+        // additional books but NOT apocryphes
+        {"id":"1ES", "name":"", "desc": ""},
+        {"id":"JDT", "name":"", "desc": ""},
+        {"id":"TOB", "name":"", "desc": ""},
+        {"id":"1MA", "name":"", "desc": ""},
+        {"id":"2MA", "name":"", "desc": ""},
+        {"id":"3MA", "name":"", "desc": ""},
+        {"id":"WIS", "name":"", "desc": ""},
+        {"id":"SIR", "name":"", "desc": ""},
+        {"id":"BAR", "name":"", "desc": ""}
+    ]
+}

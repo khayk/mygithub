@@ -1,0 +1,164 @@
+body {
+	font-family: Garamond;
+	background: #EEE;
+}
+
+#wrap {
+	//min-width: 40em;
+	background: #999;
+	height: 100vh;
+	width: 90vw;
+	margin: auto;
+	//overflow: hidden;
+}
+
+#top {
+	height: 4em;
+	width: 100%;
+	background: orange;
+}
+
+section {
+	width: 80%;
+	height: calc(100% - 6em);
+	float: right;
+	overflow: auto;
+	background: #BBB;
+}
+
+aside {
+	//min-width: 8em;
+	width: 20%;
+	height: calc(100% - 6em);
+	float: left;
+	overflow: auto;
+	background: #CCC;
+}
+
+footer {
+	width: 100%;
+	clear: both;
+	height: 2em;
+	background: #070;
+}
+
+span {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    color: rgb(34, 34, 34);
+    cursor: pointer;
+    display: inline;
+    font-family: Bitter, Georgia, 'Times New Roman', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: auto;
+    line-height: 25.6000003814697px;
+    width: auto;
+}
+
+.verseText {
+    font-family: Bitter, Georgia, 'Times New Roman', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: auto;
+}
+
+.verseNumber {
+    display: inline-block;
+    font-family: Bitter, Georgia, 'Times New Roman', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    height: 25px;
+}
+
+/*
+#main_menu li {
+	display: inline;
+	padding-right: 10px;
+	font-color: #666;
+	font-style: italic;
+}
+
+#main_menu {
+	//border: 1px solid black;
+	margin: 0;
+	padding: 0;
+}
+
+
+#right p {
+	padding-left: 20px;
+}
+
+ul a {
+	text-decoration: none;
+}
+
+ul a:hover {
+	text-decoration: underline;
+}
+
+.ls_cont {
+	list-style: none;
+	padding-left: 0px;
+}
+
+footer {
+	clear: both;
+	background: #A88;
+}
+
+
+/*body {
+	margin: 5px;
+	padding: 5px;
+	//padding-top: 5px;
+	height: auto;
+	font-family: Calibri, Georgia, Ubuntu-C;
+	//text-align: center;
+	border: 1px solid gray;
+}
+
+div {
+	padding: 5px;
+	border: 1px solid gray;
+	margin: 5px;
+}
+
+#wrap {
+	width: 800px;
+	padding: 0;
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+#menu {
+	background-color: #C2D6FF;
+	width: 100%;
+	height: 50px;
+	//float: left;
+}
+
+#sidebar {
+	background-color: #85C2A3;
+	width: 200px;
+	height: 80%;
+	float: left;
+	overflow: hidden;
+	//position: absolute;
+}
+
+#footer {
+	background-color: #80CC80;
+	//float: bottom;
+	clear: both;
+}
+
+
+*/
