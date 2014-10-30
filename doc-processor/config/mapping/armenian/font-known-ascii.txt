@@ -19,7 +19,10 @@ Courier AM          | cm-courieram.txt
 Dallak Helv         | cm-dallak.txt
 Dallak Title        | cm-dallak.txt
 Dallak Time         | cm-dallak.txt
+DallakTime          | cm-dallak.txt
 Grqee FM            | cm-grqeefm.txt
+Grqee Nor
+GrqeeNor
 GDENBE+GrqeeFMItalic| cm-grqeefm-italic.txt
 Hay Helv            | cm-hayhelv.txt
 Hay Title           | cm-hayhelv.txt
