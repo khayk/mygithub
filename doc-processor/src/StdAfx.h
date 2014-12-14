@@ -27,5 +27,5 @@ const string_t LICENSE_FILE = "license.dat";
 
 #include <map>
 
-#define SECURITY_ENABLED
+//#define SECURITY_ENABLED
 

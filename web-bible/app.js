@@ -387,7 +387,7 @@ var viewOptions = new ViewOptions();
 // ---------------------------------------------------------------
 function VerseView() {
    this.display = function(verse) {
-      return verse.number + '. ' + verse.text;
+      return verse.number + ' ' + verse.text;
 
       // if (viewOptions.paragraphMode === false) {
       //    return verse.number + '. ' + verse.text;
@@ -401,17 +401,15 @@ function ChapterView(verseView) {
    this.display = function(chapter) {
 
       var vv = this.verseView;
-      var result = '';
+      var out = '';
 
       _.each(chapter.verses, function(v) {
-         if (result.length !== 0)
-            result += '\n';
-         result += chapter.id();
-         result += ':';
-         result += vv.display(v);
+         // if (out.length !== 0)
+         //    out += '\n';
+         out += chapter.id() + ':' + vv.display(v) + '\n';
       });
 
-      return result;
+      return out;
    };
    this.verseView = verseView;
 }
@@ -421,13 +419,13 @@ function BookView(chapterView) {
    this.chapterView = chapterView;
 
    this.display = function(book) {
-
+      var out = '';
       var chapView = this.chapterView;
       _.each(book.chapters, function(c) {
-         console.log(chapView.display(c));
+         out += chapView.display(c);
       });
-
-      console.log('\n\n');
+      out += '\n\n';
+      return out;
    };
 }
 
@@ -436,10 +434,12 @@ function BibleView(bookView) {
    this.bookView = bookView;
 
    this.display = function(bible) {
+      var out = '';
       var bookView = this.bookView;
       _.each(bible.privateBooks, function(book) {
-         bookView.display(book);
+         out += bookView.display(book);
       });
+      return out;
    };
 }
 
@@ -478,7 +478,7 @@ function loadBook(bible, filePath) {
          textOnly = textOnly.replace(/\s{2,}/gm, ' ');
 
          // get rid of any non character
-         textOnly = textOnly.replace(/[,\.:;\"\?\(\)\!]/gm, '');
+         //textOnly = textOnly.replace(/[,\.:;\"\?\(\)\!]/gm, '');
 
          var verse = new Verse(chapter, verseNumber, textOnly, newParagraph);
          chapter.verses.push(verse);
@@ -512,7 +512,7 @@ function loadBook(bible, filePath) {
    function extractDescription(header) {
       var array = /\\toc1\s+(.*)/gm.exec(header);
       if (array === null || array.length < 2) {
-         //return '';
+         return '';
          throw 'mandatory field \\toc1 is missing';
       }
       return array[1];
@@ -522,7 +522,7 @@ function loadBook(bible, filePath) {
    function extractName(header) {
       var array = /\\toc2\s+(.*)/gm.exec(header);
       if (array === null || array.length < 2) {
-         //return '';
+         return '';
          throw 'mandatory field \\toc2 is missing';
       }
       return array[1];
@@ -532,7 +532,7 @@ function loadBook(bible, filePath) {
    function extractAbbreviation(header) {
       var array = /\\toc3\s+(.*)/gm.exec(header);
       if (array === null || array.length < 2) {
-         //return '';
+         return '';
          throw 'mandatory field \\toc3 is missing';
       }
       return array[1];

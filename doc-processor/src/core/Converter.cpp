@@ -105,6 +105,12 @@ void CharMapping::updateCharMapping( const string_t& mapFile )
 
 void CharMapping::loadMappingFile( const string_t& mapFile )
 {
+    if (mapFile.find("cm-arafi.txt") != string_t::npos) {
+        /// clear default mapping
+        for (wchar_t i = 0x0021; i <= 0x007E; ++i)
+            quickMap_[i] = 0;
+    }
+
     Poco::FileInputStream fis(mapFile);
     
     wchar_t from, to;
@@ -251,6 +257,7 @@ void Converter::loadKnownAsciiFonts( const string_t& languageDir,
         /// check if there is custom mapping file specified current font
         string_t::size_type p = sl.find('|');
         fontName = sl.substr(0, p);
+        
         sl = Poco::trim(sl);
 
         if (p != string_t::npos)
@@ -378,6 +385,15 @@ tCharMappingSp& Converter::getCM( const string_t& font )
     /// select mapping
     auto it = fontCharMaps_.find(font);
     if (it == fontCharMaps_.end()) {
+
+        string_t::size_type p = font.find(',');
+        if (p != string_t::npos) {
+            logInfo(logger(), "Reused \'" + font.substr(0, p) + "\' for \'" + font + "\'");
+            tCharMappingSp& reuseMapping = getCM(font.substr(0, p));
+            fontCharMaps_.insert(std::make_pair(font, reuseMapping));
+            return reuseMapping;
+        }
+
         if ( !canSkipFont(font) ) {
             logError(logger(), "Font '" + font + "' is not found in mapping folder");
 
@@ -949,3 +965,4 @@ void Converter::processRangeHelper( tRangeSp& r, wstring_t& text, wstring_t& tex
         processRangeClassic(r, text, textUnicode);
     }   
 }
+
