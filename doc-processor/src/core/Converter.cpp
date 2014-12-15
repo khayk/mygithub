@@ -394,6 +394,22 @@ tCharMappingSp& Converter::getCM( const string_t& font )
             return reuseMapping;
         }
 
+        p = font.find("Bold");
+        if (p != string_t::npos) {
+            logInfo(logger(), "Reused \'" + font.substr(0, p) + "\' for \'" + font + "\'");
+            tCharMappingSp& reuseMapping = getCM(font.substr(0, p));
+            fontCharMaps_.insert(std::make_pair(font, reuseMapping));
+            return reuseMapping;
+        }
+
+        p = font.find("Italic");
+        if (p != string_t::npos) {
+            logInfo(logger(), "Reused \'" + font.substr(0, p) + "\' for \'" + font + "\'");
+            tCharMappingSp& reuseMapping = getCM(font.substr(0, p));
+            fontCharMaps_.insert(std::make_pair(font, reuseMapping));
+            return reuseMapping;
+        }
+
         if ( !canSkipFont(font) ) {
             logError(logger(), "Font '" + font + "' is not found in mapping folder");
 

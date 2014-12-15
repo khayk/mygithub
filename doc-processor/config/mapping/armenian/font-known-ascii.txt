@@ -21,6 +21,7 @@ Dallak Title        | cm-dallak.txt
 Dallak Time         | cm-dallak.txt
 DallakTime          | cm-dallak.txt
 Grqee FM            | cm-grqeefm.txt
+GrqeeFM             | cm-grqeefm.txt
 Grqee Nor
 GrqeeNor
 GDENBE+GrqeeFMItalic| cm-grqeefm-italic.txt
