@@ -19,10 +19,6 @@ greeting = i18n.__('Hello2');
 console.log(greeting);
 */
 
-var theApp = {
-   startTime: null,
-   endTime: null,
-};
 
 function extend(child, parent) {
    var fnObj = function() {};
@@ -89,6 +85,69 @@ function child() {
    parent.apply(this, arguments);
 }
 //extend2(child, parent);
+
+
+var app = {
+   startTime: null,
+   endTime: null,
+};
+
+
+var cfg = {
+   dataRoot:    './data/',
+   mappingFile: 'id-mapping.json',
+   packName:    'package.json',
+   environment: 'test',
+   encoding:    'utf8'
+};
+
+var globals = {
+
+};
+
+function BBMRecord(id, index, abbr, type) {
+   this.id       = id;     // book unique id
+   this.index    = index;  // book order number
+   this.abbr     = abbr;
+   this.type     = type;   // 1 - old, 2 - new, 3 - additional
+}
+
+// books base mapping
+function BBM () {
+   this.records = [];
+   this.recById = {};
+   this.recByOn = {};
+}
+
+
+BBM.prototype = {
+   initialize: function(options, callback) {
+      var file    = options.dataRoot + options.mappingFile;
+      var thisRef = this;
+
+      fs.readFile(file, options.encoding, function(err, data) {
+         if (err)
+            return callback(err);
+
+         var js = JSON.parse(data);
+         js.forEach(function(x) {
+            var obj = new BBMRecord(x.id, x.index, x.abbr, x.type);
+            thisRef.records.push(obj);
+            thisRef.recById[obj.id]    = thisRef.records.length - 1;
+            thisRef.recByOn[obj.index] = thisRef.records.length - 1;
+         });
+         callback(null);
+      });
+   },
+
+   recordById: function(id) {
+      return this.records[this.recById[id]];
+   },
+
+   recordByOn: function(on) {
+      return this.records[this.recByOn[on]];
+   }
+};
 
 // ---------------------------------------------------------------
 // Collect all words for fast searching
@@ -527,9 +586,9 @@ function loadBook(bible, filePath) {
 
 
 // ---------------------------------------------------------------
-function loadBible(dataRoot, lang, version, callback) {
+function loadBible_USFM(lookupDir, lang, version, callback) {
 
-   var dataDir    = dataRoot;
+   var dataDir    = lookupDir;
 
    if (lang.length > 0)
       dataDir += (lang + '/');
@@ -574,7 +633,7 @@ function onBibleLoaded(err, bible) {
    console.log('-> onBibleLoaded');
    if (err) {
       console.log('ERROR: ', err);
-      measureTime(theApp.startTime);
+      measureTime(app.startTime);
       return;
    }
 
@@ -595,37 +654,51 @@ function onBibleLoaded(err, bible) {
    result = bible.search('in', {wholeWord: true, caseSensitive: true});
 
    console.log('Number of books: ', bible.numBooks());
-   measureTime(theApp.startTime);
+   measureTime(app.startTime);
 
    console.log('<- onBibleLoaded');
 }
 
+
+function loadBible_Text(lookupDir, lang, version, callback) {
+
+}
+
+function appInited(err) {
+   if (err) {
+      console.log("Error while initializing application: ", err);
+      return err;
+   }
+
+   console.log("id-mapping loaded successfully.");
+
+   var res = cfg.bbm.recordById("JER");
+   console.log(res);
+   console.log(cfg.bbm.recordByOn(res.index));
+}
 
 // ---------------------------------------------------------------
 function scriptEntry() {
    console.log('Initializing...');
 
    /// start time measurement
-   theApp.startTime = process.hrtime();
+   app.startTime = process.hrtime();
 
    //var dataRoot = 'c:/Dev/projects/mygithub/web-bible/content/test/eng/kjv/';
    //var dataRoot = 'c:/Users/Hayk/Dropbox/Private/projects/bible project/data/real/';
-   //loadBible(dataRoot, '', '', onBibleLoaded);
+   //loadBible_USFM(dataRoot, '', '', onBibleLoaded);
 
-   var dataRoot = './content/test/';
-   //loadBible(dataRoot, 'eng', 'kjv', onBibleLoaded);
+   var env      = 'test';
+   var dataRoot = './data';
 
-   var bible    = new Bible();
-   bible.dict   = new Dictionary();
-   loadBook(bible, 'd:/projects/draft/savebible/attempt3/Ejmiacin/new/usfm/49-MAT.usfm');
+   var dataDir = dataRoot + '/' + env + '/';
 
-   var verseView        = new VerseView();
-   var chapterView      = new ChapterView(verseView);
-   var bookView         = new BookView(chapterView);
-   var bibleView        = new BibleView(bookView);
+   cfg.bbm = new BBM();
+   cfg.bbm.initialize(cfg, appInited);
 
-   fs.writeFile('d:/temp.txt', bibleView.display(bible), function(err) {
-   });
+   //loadBible_USFM(dataRoot, 'en', 'kjv', onBibleLoaded);
+
+   //loadBible_Text(bibleDir, 'am', 'eab', onBibleLoaded);
 
    // var obj = {};
    // obj['z'] = 1;
