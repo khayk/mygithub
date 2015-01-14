@@ -1,22 +1,22 @@
 {
     // describe bible books format
     // valid values are "usfm", "text"
-    "format": "text",
+    "format":"text",
 
     // every change should increase revision number
-    "revision": "0.0.1",
+    "revision":"0.0.1",
 
     // bible name
-    "book": "KJV test",
+    "book":"KJV test",
 
     // year of the book
-    "year": "2014",
+    "year":"2014",
 
     // valid values are "en", "am", "ru" and all those which
     // are presented in the database as an valid languages
-    "lang": "en",
+    "lang":"en",
 
-    "toc": [
+    "toc":[
         // old testament
         {"id":"GEN", "name":"Genesis",   "desc":"1 Moses in some Bibles"},
         {"id":"EXO", "name":"Exodus",    "desc":"2 Moses in some Bibles"},
