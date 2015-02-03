@@ -6,11 +6,13 @@
 ///     3. notes
 
 
+/// http://www.ethnologue.com/
+
 ///
 localization {
     "_id"   : 1111,
     "name"  : "utf8 name",
-    "locale": ["en", "ru", "am"]
+    "locale": ["en", "ru", "hy"]
 },
 
 
