@@ -84,6 +84,7 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00AC ,  0x002D, "- HYPHEN-MINUS"                               },
         { 0x00AE ,  0x2026, "… HORIZONTAL ELLIPSIS"                        },
         { 0x00FE ,  0x055A, "՚ ARMENIAN APOSTROPHE"                         },
+        { 0x00FF ,  0x055A, "՚ ARMENIAN APOSTROPHE"                         },
         { 0x00B0 ,  0x055B, "՛ ARMENIAN EMPHASIS MARK"                     },
         { 0x00AF ,  0x055C, "՜ ARMENIAN EXCLAMATION MARK"                  },
         { 0x00AA ,  0x055D, "՝ ARMENIAN COMMA"                             },
