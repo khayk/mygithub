@@ -82,6 +82,7 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x00A9 ,  0x002E, ". FULL STOP"                                  },
         { 0x00AB ,  0x002C, ", COMMA"                                      },
         { 0x00AC ,  0x002D, "- HYPHEN-MINUS"                               },
+        { 0x00AD ,  0x058A, "֊ ARMENIAN HYPHEN"                            },
         { 0x00AE ,  0x2026, "… HORIZONTAL ELLIPSIS"                        },
         { 0x00FE ,  0x055A, "՚ ARMENIAN APOSTROPHE"                         },
         { 0x00FF ,  0x055A, "՚ ARMENIAN APOSTROPHE"                         },
@@ -134,6 +135,8 @@ void AsciiToUniMapping::exportArmenianASCII_Unicode( const string_t& mapFile )
         { 0x02CA ,  0x055B, "՛ ARMENIAN EMPHASIS MARK"                     },
         { 0x0301 ,  0x0301, "՛ ARMENIAN EMPHASIS MARK"                     },
         { 0x0374 ,  0x0374, "՛ ARMENIAN EMPHASIS MARK"                     },
+        { 0x2020 ,  0x2020, "† CROSS"                                      },
+
         { 0x03BC ,  0x0562, "բ ARMENIAN SMALL LETTER BEN"                  }
 
         // { 0x0000 ,  0x058A, L"֊ ARMENIAN HYPHEN"                            },

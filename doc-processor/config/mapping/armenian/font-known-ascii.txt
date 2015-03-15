@@ -15,6 +15,7 @@ ArmArial            | cm-armarial.txt
 Armenian Garamond
 ArmTimesST
 Arm Times           | cm-armtimes.txt
+ArTarumianHelvetica
 Courier AM          | cm-courieram.txt
 Dallak Helv         | cm-dallak.txt
 Dallak Title        | cm-dallak.txt
