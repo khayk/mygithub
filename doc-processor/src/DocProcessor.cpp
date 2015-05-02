@@ -213,8 +213,8 @@ int DocProcessor::main( const std::vector<std::string>& args )
 //     return 0;
 //     AsciiToUniMapping::exportArmenianASCII_Unicode("../config/mapping/armenian/char-mapping-default.txt");
 //     AsciiToUniMapping::exportRussianASCII_Unicode("../config/mapping/russian/char-mapping-default.txt");
-//     AsciiToUniMapping::createArafi_UnicodeMapping("../config/mapping/armenian/cm-arafi.txt");
-//     return Application::EXIT_OK;
+//    AsciiToUniMapping::createArafi_UnicodeMapping("../config/mapping/armenian/cm-arafi.txt");
+//    return Application::EXIT_OK;
 
 /*    HDC hdc = CreateCompatibleDC(NULL);
     HFONT font;

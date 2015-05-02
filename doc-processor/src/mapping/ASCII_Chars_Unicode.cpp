@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "ASCII_Chars_Unicode.h"
+#include <Poco/NumberFormatter.h>
+
 #include "../utils/Common.h"
 
 #include <boost/lexical_cast.hpp>
@@ -13,7 +15,7 @@ struct MappingRaw {
 
 void fileWriter(MappingRaw* map, const int numRows, const string_t& fileName)
 {
-    std::set<wchar_t> uniqnessCheck;
+    std::map<wchar_t, wchar_t> uniqnessCheck;
     std::stringstream ss;
 
     for (int i = 0; i < numRows; ++i) {
@@ -22,9 +24,20 @@ void fileWriter(MappingRaw* map, const int numRows, const string_t& fileName)
             //<< "|" << map[i].desc;
         ss << std::endl;
 
-        if ( !uniqnessCheck.insert(map[i].from).second )
-            throw std::logic_error("Character have different mapping: " 
-            + boost::lexical_cast<string_t>((int)map[i].from) );
+        auto it = uniqnessCheck.insert(std::make_pair(map[i].from, map[i].to));
+        if ( !it.second ) {
+            wchar_t ch = map[i].from;
+            wchar_t to = it.first->second;
+            std::stringstream ss;
+            ss  << "Character INTCODE(" << (int) ch << "), HEX (0x" 
+                << Poco::NumberFormatter::formatHex((int)ch, 4) << "), CHAR ("
+                << toUtf8(wstring_t(1, ch)) << ")"
+                << " already mapped to INTCODE(" << (int)to << "), HEX (0x" 
+                << Poco::NumberFormatter::formatHex((int)to, 4) << "), CHAR ("
+                << toUtf8(wstring_t(1, to)) << ")";
+
+            throw std::logic_error(ss.str().c_str());
+        }
     }
 
     writeFileAsBinary(fileName, ss.str());

@@ -110,6 +110,7 @@ private:
     std::set<string_t> usedFonts_;
 
     wstring_t       specialChars_;
+    wstring_t       specialCharsArafi_;
 
     /// used to return reference of empty mapping
     tCharMappingSp  noMapping;

@@ -113,19 +113,22 @@ void CharMapping::loadMappingFile( const string_t& mapFile )
 
     Poco::FileInputStream fis(mapFile);
     
+    int line = 0;
     wchar_t from, to;
     while (!fis.eof()) {
         string_t sl;
         wstring_t wsl;
         std::getline(fis, sl);
+        ++line;
 
         sl = Poco::trim(sl);
         if (sl.empty())
             continue;
 
         wsl = toUtf16(sl);
-        if (wsl.size() != 3)
-            throw std::logic_error("Invalid character mapping file: " + mapFile);
+        if (wsl.size() != 3) {
+            throw std::logic_error("Invalid character mapping file: " + mapFile + ", line: " + Poco::NumberFormatter::format(line));
+        }
         from = wsl[0];
         to   = wsl[2];
 
@@ -184,6 +187,8 @@ Converter::Converter(const tConfigPtr& config)
     specialChars_ += (wchar_t)21;    /// paragraph ending
     specialChars_ += (wchar_t)47;    /// 
 
+    specialCharsArafi_ = specialChars_;
+    specialCharsArafi_.pop_back();
 }
 
 
@@ -851,6 +856,8 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
         return;
     }
 
+    const wstring_t* specialChars = &specialChars_;
+
     usedFonts_.insert(fontName);
 
     if ( !canSkipFont(fontName) ) {
@@ -862,6 +869,9 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
             newFontName = getFontSubstitution(cm, fontName);
             font->setName(newFontName);
 
+            if (fontName.find("Arafi") != string_t::npos)
+                specialChars = &specialCharsArafi_;
+
             /// --------------------------------------------
             int enPos   = r->getEnd();
             int stPos = r->getStart();
@@ -872,7 +882,7 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
             bool somethingChanged = false;
             while ( true )
             {
-                pos = text.find_first_not_of(specialChars_, off);
+                pos = text.find_first_not_of(*specialChars, off);
                 if (pos != string_t::npos) {
                     offsets.push_back(pos);
                     off = pos;
@@ -882,7 +892,7 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
                     break;
                 }
 
-                pos = text.find_first_of(specialChars_, off);
+                pos = text.find_first_of(*specialChars, off);
                 if (pos != string_t::npos) {
                     offsets.push_back(pos);
                     off = pos + 1;
