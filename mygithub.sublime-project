@@ -1,0 +1,14 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				"crack-code-interview",
+				"bible-tool"
+			],
+			"follow_symlinks": true,
+			"path": "."
+		}
+	]
+}

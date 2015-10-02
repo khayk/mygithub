@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="pch">
+      <UniqueIdentifier>{11589055-9a8b-4e70-bff2-3abb5e74c93b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{55baeceb-d194-49df-86ed-58630287345c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\common-includes.cpp" />
+    <ClCompile Include="..\src\stdafx.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\doc-processor\src\utils\Common.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\doc-processor\src\utils\FileFinder.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\targetver.h" />
+    <ClInclude Include="..\src\stdafx.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\doc-processor\src\utils\Common.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\doc-processor\src\utils\FileFinder.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
