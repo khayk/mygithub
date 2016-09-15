@@ -17,11 +17,11 @@ public:
     /// returns true if there are only spacing symbols in the text
     /// font name used only for logging purposes if there occurred an error
     /// during conversion
-    bool doConversion(const wstring_t& asciiText, wstring_t& unicodeText, 
+    bool doConversion(const wstring_t& asciiText, wstring_t& unicodeText,
         const string_t& fontName);
-    
+
     /// update the mapping of the characters
-    void updateCharMapping(const string_t& mapFile); 
+    void updateCharMapping(const string_t& mapFile);
 
     string_t getLanguage() const;
     void setLanguage(const string_t& language);
@@ -41,7 +41,7 @@ private:
 
 typedef boost::shared_ptr<CharMapping> tCharMappingSp;
 
-/// 
+///
 class Converter : public LogSource {
 public:
     Converter(const tConfigPtr& config);
@@ -51,7 +51,7 @@ public:
 
 private:
     void initialize(
-        const string_t& inputFolder, 
+        const string_t& inputFolder,
         const string_t& outputFolder,
         const string_t& mappingFolder);
 
@@ -59,8 +59,8 @@ private:
     void convertSingleDocPrecise(const string_t& fileName);
 
     void loadKnownAsciiFonts(const string_t& languageDir, const string_t& language);
-    void loadNamesMapping(const string_t& fileName, 
-                          const string_t& language, 
+    void loadNamesMapping(const string_t& fileName,
+                          const string_t& language,
                           bool optional = false);
     void loadFontList(const string_t& fileName, std::set<string_t>& cnt);
     string_t percentageStr(int current, int total);
@@ -100,7 +100,7 @@ private:
 
     wstring_t processRangePrecise(tRangeSp& r, bool showProgress); /// This is one solution
     wstring_t processRangePreciseVer2(tRangeSp& r, bool showProgress);
-    
+
     void processRangeClassic(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
     void processRangeClassic2(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
 
