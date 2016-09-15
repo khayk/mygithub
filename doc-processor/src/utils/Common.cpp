@@ -11,6 +11,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 #include <boost/scoped_array.hpp>
 
@@ -143,7 +144,7 @@ string_t buildRelativePath(const string_t& thisPath, const string_t& relativeTo)
 
     std::pair<string_t::const_iterator, string_t::const_iterator> mypair;
 
-    mypair = mismatch(thisPath.begin(), thisPath.end(), relativeTo.begin());
+    mypair = std::mismatch(thisPath.begin(), thisPath.end(), relativeTo.begin());
     if (mypair.first != thisPath.end() && mypair.first != thisPath.begin()) {
         string_t::size_type offset = 0, pos = 0;
         offset = (mypair.first - thisPath.begin());
