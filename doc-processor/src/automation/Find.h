@@ -5,7 +5,7 @@
 #include "BaseRS.h"
 
 class Range;
-typedef boost::shared_ptr<Range> tRangeSp;
+typedef std::shared_ptr<Range> tRangeSp;
 
 class Find : public BaseObject
 {
@@ -22,6 +22,6 @@ public:
 };
 
 class Find;
-typedef boost::shared_ptr<Find> tFindSp;
+typedef std::shared_ptr<Find> tFindSp;
 
 #endif

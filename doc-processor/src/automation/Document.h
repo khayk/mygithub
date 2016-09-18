@@ -32,7 +32,7 @@ private:
     IDispatch* doc_;
 };
 
-typedef boost::shared_ptr<Document> tDocumentSp;
-typedef boost::weak_ptr<Document>   tDocumentWp;
+typedef std::shared_ptr<Document> tDocumentSp;
+typedef std::weak_ptr<Document>   tDocumentWp;
 
 #endif

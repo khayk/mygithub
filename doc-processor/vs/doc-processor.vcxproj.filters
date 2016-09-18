@@ -48,6 +48,9 @@
     <ClCompile Include="..\src\core\Security.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\excel\ExcelApp.cpp">
+      <Filter>excel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\stdafx.h" />
@@ -114,6 +117,9 @@
     <ClInclude Include="..\src\core\Security.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\excel\ExcelApp.h">
+      <Filter>excel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
@@ -130,6 +136,9 @@
     </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{7f4832b7-a1ea-4380-b4d5-ddc11b60d5f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="excel">
+      <UniqueIdentifier>{d9c1e239-febe-4beb-a32e-0e8fe63cb348}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 #include "Find.h"
 
 class Range;
-typedef boost::shared_ptr<Range> tRangeSp;
+typedef std::shared_ptr<Range> tRangeSp;
 
 #define BEGIN_OBJECT(NEW_CLASS, BASE_CLASS)   \
 class NEW_CLASS : public BASE_CLASS{                     \
@@ -13,7 +13,7 @@ public:                                                  \
 
 #define END_OBJECT(NEW_CLASS)                            \
 };                                                       \
-    typedef boost::shared_ptr<NEW_CLASS> t##NEW_CLASS##Sp;
+    typedef std::shared_ptr<NEW_CLASS> t##NEW_CLASS##Sp;
 
 ///-----------------------------------------------------------------------------
 BEGIN_OBJECT(Note, BaseObject)
@@ -170,7 +170,7 @@ private:
 
 /// ----------------------------------------------------------------------------
 class Paragraph;
-typedef boost::shared_ptr<Paragraph>  tParagraphSp;
+typedef std::shared_ptr<Paragraph>  tParagraphSp;
 
 class Paragraph {
 public:
@@ -217,7 +217,7 @@ private:
     IDispatch* style_;
 };
 
-typedef boost::shared_ptr<Style>      tStyleSp;
+typedef std::shared_ptr<Style>      tStyleSp;
 
 /// ----------------------------------------------------------------------------
 class Styles {
@@ -232,8 +232,8 @@ private:
     IDispatch* styles_;
 };
 
-typedef boost::shared_ptr<Styles>      tStylesSp;
-typedef boost::shared_ptr<Range>       tRangeSp;
-typedef boost::shared_ptr<Characters>  tCharactersSp;
-typedef boost::shared_ptr<Paragraphs>  tParagraphsSp;
-typedef boost::shared_ptr<StoryRanges> tStoryRangesSp;
+typedef std::shared_ptr<Styles>      tStylesSp;
+typedef std::shared_ptr<Range>       tRangeSp;
+typedef std::shared_ptr<Characters>  tCharactersSp;
+typedef std::shared_ptr<Paragraphs>  tParagraphsSp;
+typedef std::shared_ptr<StoryRanges> tStoryRangesSp;

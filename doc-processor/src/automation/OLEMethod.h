@@ -15,6 +15,9 @@ void setPropertyBool(IDispatch* disp, LPOLESTR propName, short val);
 wstring_t  getPropStr(IDispatch* disp, LPOLESTR propName);
 void       setPropStr(IDispatch* disp, LPOLESTR propName, const wstring_t& val);
 
+VARIANT  getPropVariant(IDispatch* disp, LPOLESTR propName);
+void setPropVariant(IDispatch* disp, LPOLESTR propName, const VARIANT& val);
+
 IDispatch* getPropertyDispatch(IDispatch* disp, LPOLESTR propName);
 void setPropertyDispatch(IDispatch* dispFor, IDispatch* dispFrom, LPOLESTR propName);
 

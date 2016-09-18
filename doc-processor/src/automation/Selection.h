@@ -25,7 +25,7 @@ public: /// methods
     void pasteFormat();
 };
 
-typedef boost::shared_ptr<Selection> tSelectionSp;
+typedef std::shared_ptr<Selection> tSelectionSp;
 
 #endif
 

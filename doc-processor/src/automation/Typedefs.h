@@ -2,10 +2,12 @@
 #define WORD_TYPEDEFS_H
 
 #include <ole2.h>
-#include <boost/shared_ptr.hpp>
 #include <boost/intrusive_ptr.hpp>
 #include "../utils/RefCounter.h"
+#include "../utils/Common.h"
 #include "Enums.h"
+#include <memory>
+#include <string>
 
 typedef boost::intrusive_ptr<IDispatch> tDispatchIp;
 
@@ -16,11 +18,10 @@ typedef boost::intrusive_ptr<IDispatch> tDispatchIp;
 {                                                                              \
     if (FAILED(hr)) {                                                          \
         reportFailure(fnName, param, hr);                                      \
-        return E_FAIL;                                                         \
+        return;                                                                \
     }                                                                          \
 }
 
-#define Validation2(fnName, hr)    Validation3(fnName, string_t(""), hr)
-
+#define Validation2(fnName, hr)    Validation3(fnName, std::string(""), hr)
 
 #endif

@@ -30,7 +30,6 @@ int Notes::getCount() const
 }
 
 
-
 Range::Range( IDispatch* range )
     : BaseRS(range)
 {

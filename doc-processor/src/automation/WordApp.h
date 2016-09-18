@@ -9,7 +9,8 @@ public:
     WordApp();
     ~WordApp();
 
-public:   /// interfaces
+public:
+	/// interfaces
     tDocumentsSp getDocuments();
 
     /// returns an active document in the application
@@ -24,7 +25,7 @@ public:   /// Methods
     void setVisible(bool visible);
 
 protected:
-    HRESULT initialize( bool visible = true );
+    void initialize( bool visible = true );
 
 private:
     IDispatch* wordApp_;
@@ -32,6 +33,6 @@ private:
     HRESULT		hr_;
 };
 
-typedef boost::shared_ptr<WordApp> tWordAppSp;
+typedef std::shared_ptr<WordApp> tWordAppSp;
 
 #endif

@@ -186,3 +186,18 @@ void setPropStr( IDispatch* disp, LPOLESTR propName, const wstring_t& val )
     SysFreeString(variant.bstrVal);
 }
 
+VARIANT getPropVariant(IDispatch* disp, LPOLESTR propName)
+{
+	VARIANT result;
+	VariantInit(&result);
+	OLEMethod(DISPATCH_PROPERTYGET, &result, disp, propName, 0);
+	return result;
+}
+
+void setPropVariant(IDispatch* disp, LPOLESTR propName, const VARIANT& val)
+{
+	VARIANT result;
+	VariantInit(&result);
+	OLEMethod(DISPATCH_PROPERTYPUT, &result, disp, propName, 1, val);
+}
+

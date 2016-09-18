@@ -2,6 +2,7 @@
 #define ASCII_TO_UNICODE_CONVERTER_H
 
 #include "../automation/WordApp.h"
+#include "../excel/ExcelApp.h"
 #include "../RootLogger.h"
 #include "Security.h"
 
@@ -39,7 +40,7 @@ private:
     wchar_t quickMap_[QUICK_MAP];
 };
 
-typedef boost::shared_ptr<CharMapping> tCharMappingSp;
+typedef std::shared_ptr<CharMapping> tCharMappingSp;
 
 ///
 class Converter : public LogSource {
@@ -50,10 +51,15 @@ public:
     void start();
 
 private:
+	tWordAppSp& word();
+	tExcelAppSp& excel();
+
     void initialize(
         const string_t& inputFolder,
         const string_t& outputFolder,
         const string_t& mappingFolder);
+
+	void convertSingleExcel(const std::string& fileName);
 
     void convertSingleDocQuick(const string_t& fileName);
     void convertSingleDocPrecise(const string_t& fileName);
@@ -75,8 +81,9 @@ private:
     /// will be used for substitution
     std::map<string_t, string_t> defaultFonts_;
 
-    tConfigPtr config_;
-    tWordAppSp word_;
+    tConfigPtr  config_;
+    tWordAppSp  word_;
+	tExcelAppSp excel_;
 
     string_t   inputFolder_;
     string_t   outputFolder_;
@@ -101,8 +108,11 @@ private:
     wstring_t processRangePrecise(tRangeSp& r, bool showProgress); /// This is one solution
     wstring_t processRangePreciseVer2(tRangeSp& r, bool showProgress);
 
+	void convertText(tExcelRangeSp& r, wstring_t& text, wstring_t& textUnicode);
+
     void processRangeClassic(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
     void processRangeClassic2(tRangeSp& r, wstring_t& text, wstring_t& textUnicode);
+
 
     void processRangeHelper(tRangeSp& r, wstring_t& text, wstring_t& textUnicode, int pos);
 
@@ -119,6 +129,7 @@ private:
     bool            hasSavedSelection_;
 
     bool            wordVisible_;
+	bool            excelVisible_;
     bool            wantUtf8Text_;
 
 #ifdef SECURITY_ENABLED

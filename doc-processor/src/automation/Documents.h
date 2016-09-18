@@ -10,7 +10,7 @@ public:
     Documents(IDispatch* docs);
     ~Documents();
     
-    tDocumentSp open(const wstring_t& docName);
+    tDocumentSp open(const std::wstring& docName);
     void closeAll();
 
 private:
@@ -18,6 +18,6 @@ private:
     std::list<tDocumentWp> docsList;
 };
 
-typedef boost::shared_ptr<Documents> tDocumentsSp;
+typedef std::shared_ptr<Documents> tDocumentsSp;
 
 #endif

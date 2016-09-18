@@ -17,7 +17,7 @@ WordApp::~WordApp()
 }
 
 /// ----------------------------------------------------------------------------
-HRESULT WordApp::initialize( bool visible )
+void WordApp::initialize( bool visible )
 {
     CLSID clsid;
     hr_ = CLSIDFromProgID(L"Word.Application", &clsid);
@@ -28,7 +28,6 @@ HRESULT WordApp::initialize( bool visible )
     Validation2("CoCreateInstance", hr_);
 
     setVisible(false);
-    return hr_;
 }
 
 /// ----------------------------------------------------------------------------

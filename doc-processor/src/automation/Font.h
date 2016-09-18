@@ -5,8 +5,8 @@
 
 class Font;
 class Range;
-typedef boost::shared_ptr<Font> tFontSp;
-typedef boost::shared_ptr<Range> tRangeSp;
+typedef std::shared_ptr<Font> tFontSp;
+typedef std::shared_ptr<Range> tRangeSp;
 
 class Font
 {

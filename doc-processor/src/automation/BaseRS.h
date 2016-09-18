@@ -4,7 +4,7 @@
 #include "Font.h"
 
 class Range;
-typedef boost::shared_ptr<Range> tRangeSp;
+typedef std::shared_ptr<Range> tRangeSp;
 
 class BaseObject {
 public:
@@ -17,7 +17,7 @@ protected:
     IDispatch* disp_;
 };
 
-typedef boost::shared_ptr<BaseObject> tBaseObjectSp;
+typedef std::shared_ptr<BaseObject> tBaseObjectSp;
 
 class BaseRS : public BaseObject {
 public:

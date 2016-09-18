@@ -164,10 +164,6 @@ Converter::Converter(const tConfigPtr& config)
     , security_(config)
 #endif
 {
-    word_.reset(new WordApp());
-    wordVisible_ = config->getBool("winword.visible", false);
-    word_->setVisible(wordVisible_);
-
     logWarning(logger(), "Working in PRECISE MODE. GOOD");
     wantUtf8Text_ = config_->getBool("app.saveAlsoAsUTF8", false);
 
@@ -194,7 +190,28 @@ Converter::Converter(const tConfigPtr& config)
 
 Converter::~Converter()
 {
+	excel_.reset();
     word_.reset();
+}
+
+tWordAppSp& Converter::word()
+{
+	if (!word_) {
+		word_.reset(new WordApp());
+		wordVisible_ = config_->getBool("winword.visible", false);
+		word_->setVisible(wordVisible_);
+	}
+	return word_;
+}
+
+tExcelAppSp& Converter::excel()
+{
+	if (!excel_) {
+		excel_.reset(new ExcelApp());
+		excelVisible_ = config_->getBool("excel.visible", false);
+		excel_->setVisible(excelVisible_);
+	}
+	return excel_;
 }
 
 void Converter::initialize( 
@@ -239,6 +256,67 @@ void Converter::initialize(
     }
 }
 
+
+void Converter::convertSingleExcel(const std::string& fileName)
+{
+	tWorkbooksSp wbs = excel()->getWorkbooks();
+	tWorkbookSp wb = wbs->open(toUtf16(getInputAbsPath(fileName)));
+	if (!wb) {
+		logError(logger(), "Error while opening excel file: " + fileName);
+		return;
+	}
+
+	tWorksheetsSp wss = wb->worksheets();
+	int numSheets = wss->getCount();
+	for (int i = 1; i <= numSheets; ++i) {
+		tWorksheetSp ws = wss->getItem(i);
+		if (!ws) {
+			std::cout << "no worksheet at index: " << i << std::endl;
+		}
+
+		tExcelRangeSp r = ws->usedRange();	
+		//r = r->cells();
+		int rows = r->numRows();
+		int cols = r->numCols();
+		int count = r->count();
+
+		std::wstring wstr;
+		std::wstring wstrUni;
+
+		for (int j = 1; j <= count; ++j) {
+			tExcelRangeSp cc = r->item(j);
+			//wstr = cc->getText();
+
+			//std::wcout << wstr << std::endl;
+			convertText(cc, wstr, wstrUni);
+		}
+
+// 		while (count > 0) {
+// 			std::cout << er->getIDispatch() << std::endl;
+// 			wstr = er->getText();
+// 			tFontSp font = er->getFont();
+// 			std::cout << font->getName() << std::endl;
+// 			convertText(font, wstr, wstrUni);
+// 
+// 			//std::wcout << wstr << std::endl;
+// 			er = er->next();
+// 			--count;
+// 		}
+
+	}
+
+	string_t outputDir = getOutputAbsPath(fileName);
+	Poco::File(outputDir).createDirectories();
+	Poco::Path p(fileName);
+	logInfo(logger(), "Saving worksheet...");
+	std::string newName = outputDir + p.getBaseName() + " UNICODE." + p.getExtension();
+	Poco::File pf(newName);
+	if (pf.exists())
+		pf.remove();
+	wb->saveAs(newName);
+	wb->close();
+	logInfo(logger(), "Save was successful.");
+}
 
 void Converter::loadKnownAsciiFonts( const string_t& languageDir,
     const string_t& language)
@@ -352,14 +430,19 @@ bool Converter::isIgnoredFont( const string_t& name ) const
 
 void Converter::start()
 {
-    FileFinder ff(true, inputFolder_, "docx;doc");
+	FileFinder ff(true, inputFolder_, "docx;doc;xlsx;xls");
 
     auto files = ff.getFiles();
     for (auto it = files.begin(); it != files.end(); ++it) {
         try {
             ScopedTimeCalculator stc(logger(), "Elapsed ");
             logInfo(logger(), "Processing [document]: " + *it);
-            convertSingleDocPrecise(*it);
+			std::string::size_type pt = (*it).find_last_of('.');
+			auto ext = (*it).substr(pt + 1);
+			if (ext.find("doc") != std::string::npos)
+				convertSingleDocPrecise(*it);
+			else
+				convertSingleExcel(*it);
         }
         catch (const Poco::Exception& pe) {
             logError(logger(), pe.displayText());
@@ -488,7 +571,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
     }
 #endif
 
-    tDocumentsSp docs = word_->getDocuments();
+	tDocumentsSp docs = word()->getDocuments();
     tDocumentSp  doc  = docs->open(toUtf16(getInputAbsPath(fileName)));
     if (!doc) {
         logError(logger(), "Error while opening document: " + fileName);
@@ -580,7 +663,7 @@ void Converter::convertSingleDocPrecise( const string_t& fileName )
 
 void Converter::convertSingleDocQuick( const string_t& fileName )
 {
-    tDocumentsSp docs = word_->getDocuments();
+	tDocumentsSp docs = word()->getDocuments();
     tDocumentSp  doc  = docs->open(toUtf16(getInputAbsPath(fileName)));
     if (!doc) {
         logError(logger(), "Error while opening document: " + fileName);
@@ -592,7 +675,7 @@ void Converter::convertSingleDocQuick( const string_t& fileName )
     wstring_t      text, textUnicode, docAsText;
     int            c = 0;
 
-    tSelectionSp s = word_->getSelection();
+	tSelectionSp s = word()->getSelection();
     int pos = 0;
     int totalCharsQty = s->getStoryLength();
 
@@ -839,6 +922,32 @@ wstring_t Converter::processRangePreciseVer2( tRangeSp& r, bool showProgress )
         }
     } while (true);
     return L"";
+}
+
+void Converter::convertText(tExcelRangeSp& r, wstring_t& text, wstring_t& textUnicode)
+{
+	tFontSp font;
+	string_t fontName, newFontName;
+
+	font = r->getFont();
+	fontName = font->getName();
+	if (fontName.empty()) {
+		logError(logger(), "empty font name");
+		return;
+	}
+
+	usedFonts_.insert(fontName);
+	if (!canSkipFont(fontName)) {
+		tCharMappingSp cm = getCM(fontName);
+		if (cm) {
+			textUnicode.clear();
+			text = r->getValue2();
+			cm->doConversion(text, textUnicode, fontName);
+			newFontName = getFontSubstitution(cm, fontName);
+			font->setName(newFontName);
+			r->setValue2(textUnicode);
+		}
+	}
 }
 
 void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& textUnicode )
