@@ -21,6 +21,10 @@ public:
 
 	//tExcelRangeSp cells();
 
+// 	void select();
+// 	void activate();
+// 	void show();
+
 	tExcelRangeSp item(int itemNumber);
 	tExcelRangeSp rows();
 	tExcelRangeSp columns();

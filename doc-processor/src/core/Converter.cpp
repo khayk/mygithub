@@ -273,7 +273,9 @@ void Converter::convertSingleExcel(const std::string& fileName)
 		if (!ws) {
 			std::cout << "no worksheet at index: " << i << std::endl;
 		}
-
+		std::cout << "Processing worksheet " << i << " / " << numSheets << std::endl;
+		if (excelVisible_)
+			ws->activate();
 		tExcelRangeSp r = ws->usedRange();	
 		//r = r->cells();
 		int rows = r->numRows();
@@ -283,12 +285,18 @@ void Converter::convertSingleExcel(const std::string& fileName)
 		std::wstring wstr;
 		std::wstring wstrUni;
 
+		int total = rows * cols;
+		int current = 0, lastDisplayed = 0;
+
 		for (int j = 1; j <= count; ++j) {
 			tExcelRangeSp cc = r->item(j);
-			//wstr = cc->getText();
-
-			//std::wcout << wstr << std::endl;
 			convertText(cc, wstr, wstrUni);
+
+			current = (int)(100.0 * (double)(j) / (double)total);
+			if (lastDisplayed < current) {
+				lastDisplayed = current;
+				std::cout << lastDisplayed << " % completed\r";
+			}
 		}
 
 // 		while (count > 0) {
@@ -945,6 +953,8 @@ void Converter::convertText(tExcelRangeSp& r, wstring_t& text, wstring_t& textUn
 			cm->doConversion(text, textUnicode, fontName);
 			newFontName = getFontSubstitution(cm, fontName);
 			font->setName(newFontName);
+			if (textUnicode.empty())
+				return;
 			r->setValue2(textUnicode);
 		}
 	}

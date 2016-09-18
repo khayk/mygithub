@@ -259,3 +259,18 @@ void ExcelRange::setValue2(const std::wstring& text)
 	setPropVariant(disp_, L"Value2", variant);
 	SysFreeString(variant.bstrVal);
 }
+
+// void ExcelRange::activate()
+// {
+// 	OLEMethod(DISPATCH_METHOD, NULL, disp_, L"Activate", 0);
+// }
+// 
+// void ExcelRange::select()
+// {
+// 	OLEMethod(DISPATCH_METHOD, NULL, disp_, L"Select", 0);
+// }
+// 
+// void ExcelRange::show()
+// {
+// 	OLEMethod(DISPATCH_METHOD, NULL, disp_, L"Show", 0);
+// }
