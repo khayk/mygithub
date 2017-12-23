@@ -22,6 +22,7 @@
 *.unsuccessfulbuild
 
 # files & folders
+.vs/
 ipch/
 obj/
 [Bb]in
