@@ -1,37 +1,41 @@
-Arafi               | cm-arafi.txt
+Arafi                         | cm-arafi.txt
 Arial Armenian
 Arial ArmenianNew
 Arial LatArm
 ArialArmST
 Arik Armenian
-Arial AM            | cm-courieram.txt
-Arial AMU           | cm-courieram.txt
+Arial AM                      | cm-courieram.txt
+Arial AMU                     | cm-courieram.txt
 Arm
 Arm Garamond
-Arm Helv            | cm-courieram.txt
-Armhelvetica        | cm-courieram.txt
-Arm Helvetica       | cm-courieram.txt
-ArmArial            | cm-armarial.txt
+Arm Helv                      | cm-courieram.txt
+Armhelvetica                  | cm-courieram.txt
+Arm Helvetica                 | cm-courieram.txt
+ArmArial                      | cm-armarial.txt
 Armenian Garamond
 ArmTimesST
-Arm Times           | cm-armtimes.txt
+Arm Times                     | cm-armtimes.txt
+ArTarumianIshxan              | cm-artarumian-ishxan.txt
 ArTarumianHelvetica
-Courier AM          | cm-courieram.txt
-Dallak Helv         | cm-dallak.txt
-Dallak Title        | cm-dallak.txt
-Dallak Time         | cm-dallak.txt
-DallakTime          | cm-dallak.txt
-Grqee FM            | cm-grqeefm.txt
-GrqeeFM             | cm-grqeefm.txt
+ArTarumianHelvetica Extra     | cm-artarumian-times.txt
+ArTarumianHelvetica ExtraBold | cm-artarumian-times.txt
+ArTarumianTimes               | cm-artarumian-times.txt
+Courier AM                    | cm-courieram.txt
+Dallak Helv                   | cm-dallak.txt
+Dallak Title                  | cm-dallak.txt
+Dallak Time                   | cm-dallak.txt
+DallakTime                    | cm-dallak.txt
+Grqee FM                      | cm-grqeefm.txt
+GrqeeFM                       | cm-grqeefm.txt
 Grqee Nor
 GrqeeNor
-GDENBE+GrqeeFMItalic| cm-grqeefm-italic.txt
-Hay Helv            | cm-hayhelv.txt
-Hay Title           | cm-hayhelv.txt
-Hay Times           | cm-hayhelv.txt
-Mariam              | cm-courieram.txt
-MK Nork             | cm-mknork.txt
+GDENBE+GrqeeFMItalic          | cm-grqeefm-italic.txt
+Hay Helv                      | cm-hayhelv.txt
+Hay Title                     | cm-hayhelv.txt
+Hay Times                     | cm-hayhelv.txt
+Mariam                        | cm-courieram.txt
+MK Nork                       | cm-mknork.txt
 Mk_Parz
 Mk_Parzi
-Nork New            | cm-mknork.txt
+Nork New                      | cm-mknork.txt
 Times Armenian

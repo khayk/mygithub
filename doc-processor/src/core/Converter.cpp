@@ -962,7 +962,7 @@ void Converter::convertText(tExcelRangeSp& r, wstring_t& text, wstring_t& textUn
 
 void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& textUnicode )
 {
-    static std::vector<int> offsets;
+    static std::vector<size_t> offsets;
 
     tCharMappingSp cm;
     tFontSp font;
@@ -1024,8 +1024,8 @@ void Converter::processRangeClassic2( tRangeSp& r, wstring_t& text, wstring_t& t
             }
 
             for (int i = 0; i < offsets.size(); i += 2) {
-                int off1 = offsets[i];
-                int off2 = offsets[i+1];
+                int off1 = (int) offsets[i];
+                int off2 = (int) offsets[i+1];
                 r->setRange(stPos + off1, stPos + off2);
                 if (wordVisible_) r->select();
                 r->setText(textUnicode.substr(off1, off2 - off1));
@@ -1092,7 +1092,7 @@ void Converter::processRangeHelper( tRangeSp& r, wstring_t& text, wstring_t& tex
     int en = r->getEnd();
 
     text = r->getText();
-    wstring_t::size_type xpos = text.find_first_of(specialChars_);
+    wstring_t::size_type xpos = (int)text.find_first_of(specialChars_);
     if (xpos != wstring_t::npos) {
         if (xpos > 0) {
             r->setRange(st, st + xpos);

@@ -11,7 +11,7 @@
 #include <Poco/Util/WinRegistryKey.h>
 #include <Poco/DateTimeFormatter.h>
 
-
+#include <intrin.h>  
 #include <sstream>
 
 const int64 SECOND_PER_DAY = 60 * 60 * 24;
