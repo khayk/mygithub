@@ -16,7 +16,6 @@
 #include <fstream>
 
 #include <T2embapi.h>
-#include <boost/lexical_cast.hpp>
 
 CharMapping::CharMapping()
     : LogSource("charMapping")
@@ -447,7 +446,7 @@ void Converter::start()
             logInfo(logger(), "Processing [document]: " + *it);
 			std::string::size_type pt = (*it).find_last_of('.');
 			auto ext = (*it).substr(pt + 1);
-			if (ext.find("doc") != std::string::npos)
+			if (Poco::toLower(ext).find("doc") != std::string::npos)
 				convertSingleDocPrecise(*it);
 			else
 				convertSingleExcel(*it);
@@ -1066,7 +1065,7 @@ void Converter::processRangeClassic( tRangeSp& r, wstring_t& text, wstring_t& te
                     return;
                 }
                 else if (text[0] <= 20 ) {
-                    logWarning(logger(), boost::lexical_cast<string_t>((int) text[0]));
+                    logWarning(logger(), std::to_string((int) text[0]));
                     return;
                 } 
             }

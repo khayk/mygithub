@@ -13,8 +13,6 @@
 #include <sstream>
 #include <algorithm>
 
-#include <boost/scoped_array.hpp>
-
 using Poco::SHA1Engine;
 using Poco::DigestEngine;
 using Poco::StreamCopier;
@@ -45,7 +43,9 @@ unsigned long getFileVersion( const wstring_t& fileName, wstring_t& fileVersion 
     int minor2 = 0;
 
     if (sz) {
-        boost::scoped_array<char> dataBuffer(new char[sz+1]);
+        //boost::scoped_array<char> dataBuffer(new char[sz+1]);
+        std::unique_ptr<char[]> dataBuffer(new char[sz + 1]);
+
         memset(dataBuffer.get(), 0, sz + 1);
         UINT itemLength = 0;
         LPBYTE tempBuffer = 0;

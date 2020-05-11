@@ -1,12 +1,7 @@
 #ifndef FILE_FINDER_H__
 #define FILE_FINDER_H__
 
-/// we do so to avoid include boost header file, as it is an implementation detail
-namespace boost {
-namespace filesystem {
-class path;
-}
-}
+#include <filesystem>
 
 /// Discover files in the specified path
 class FileFinder {
@@ -47,7 +42,7 @@ public:
 
 private:
 
-    void performScan(const boost::filesystem::path& path, const std::set<string_t>& exts);
+    void performScan(const std::filesystem::path& path, const std::set<string_t>& exts);
 
 private:
     tStringSet ignore_;

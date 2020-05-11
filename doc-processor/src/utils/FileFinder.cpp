@@ -6,9 +6,9 @@
 #include <Poco/Path.h>
 #include <Poco/String.h>
 #include <Poco/StringTokenizer.h>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 /// check if the file extension specified by 'it' matches with one from exts
 /// @param  itr    extension string
@@ -73,7 +73,7 @@ const tStringSet& FileFinder::getDirs() const
     return dirs_;
 }
 
-void FileFinder::performScan( const boost::filesystem::path& dir_path, const std::set<string_t>& exts )
+void FileFinder::performScan( const fs::path& dir_path, const std::set<string_t>& exts )
 {
     if ( !fs::exists( dir_path ) )
         return;

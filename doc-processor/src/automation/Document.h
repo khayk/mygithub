@@ -2,7 +2,6 @@
 #define WINDWORD_DOCUMENT_H
 
 #include "Typedefs.h"
-#include <boost/weak_ptr.hpp>
 #include "Range.h"
 
 class Document

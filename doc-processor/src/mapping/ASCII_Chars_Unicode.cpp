@@ -4,7 +4,6 @@
 
 #include "../utils/Common.h"
 
-#include <boost/lexical_cast.hpp>
 #include <sstream>
 
 struct MappingRaw {

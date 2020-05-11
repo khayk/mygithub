@@ -9,7 +9,6 @@
 #include "utils/Common.h"
 #include "core/Security.h"
 
-#include <boost/lexical_cast.hpp>
 #include "mapping/ASCII_Chars_Unicode.h"
 
 #include <Poco/NumberFormatter.h>
@@ -238,7 +237,7 @@ int DocProcessor::main( const std::vector<std::string>& args )
 
     // perform the main task
 //     for (int i = 0; i < args.size(); ++i)
-//         logInfo(logger(), "args[" + boost::lexical_cast<string_t>(i) + "] = " + args[i]);
+//         logInfo(logger(), "args[" + std::to_string(i) + "] = " + args[i]);
 
     if (sha1Calculated != "a128b9f1fb0a7bcce2f2df7b6481beb8f1e36c2c") {
         logError(logger(), "Any change in the README.txt file "

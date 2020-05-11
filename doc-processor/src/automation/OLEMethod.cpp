@@ -2,9 +2,6 @@
 #include "OLEMethod.h"
 #include "../utils/Common.h"
 
-#include <boost/scoped_array.hpp>
-#include <boost/lexical_cast.hpp>
-
 HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *disp, 
     LPOLESTR ptName, int cArgs...) 
 {
@@ -37,7 +34,7 @@ HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *disp,
     }
 
     // Allocate memory for arguments...
-    boost::scoped_array<VARIANT> pArgs(new VARIANT[cArgs+1]);
+    std::unique_ptr<VARIANT[]> pArgs(new VARIANT[cArgs + 1]);
 
     // Extract arguments...
     for(int i=0; i<cArgs; i++) {
@@ -59,7 +56,7 @@ HRESULT OLEMethod(int autoType, VARIANT *pvResult, IDispatch *disp,
         &dp, pvResult, NULL, NULL);
     if (FAILED(hr)) {
         reportFailure("IDispatch::Invoke", string_t("Name:") + szName 
-            + " dispId: " + boost::lexical_cast<string_t>(dispID), hr);
+            + " dispId: " + std::to_string(dispID), hr);
         return hr;
     }
 
